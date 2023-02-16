@@ -71,36 +71,3 @@ const product2 = {
    stock:25
 }
 */
-
-
- 
-
-
-   
-
-/*
-1. --Realizar una clase "ProductManager" que gestione un conjunto de productos.
-Incluir: 
---Creación desde su constructor con el elemento products, el cual será un arregla vacío.
-Propiedades de cada producto:
---title, description, price, thumbnail, code, stock
-Metodo "addProduct" que agrega un producto al arreglo de productos inicial. Validar que no se repita el campo "code" y que todos los campos sean obligatorios
-Metodo "getProducts" que devuelve el arreglo con todos los productos creados hasta ese momento
-Metodo getProductById: busaca el arreglo que coincida con el id, si no coincide mostrar en consola un error "Not Found"
-*/
-/*
--- Testing --
-Se creará una instancia de la clase “ProductManager”
-Se llamará “getProducts” recién creada la instancia, debe devolver un arreglo vacío []
-Se llamará al método “addProduct” con los campos:
-title: “producto prueba”
-description:”Este es un producto prueba”
-price:200,
-thumbnail:”Sin imagen”
-code:”abc123”,
-stock:25
-El objeto debe agregarse satisfactoriamente con un id generado automáticamente SIN REPETIRSE
-Se llamará el método “getProducts” nuevamente, esta vez debe aparecer el producto recién agregado
-Se llamará al método “addProduct” con los mismos campos de arriba, debe arrojar un error porque el código estará repetido.
-Se evaluará que getProductById devuelva error si no encuentra el producto o el producto en caso de encontrarlo
-*/
