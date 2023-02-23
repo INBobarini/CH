@@ -1,3 +1,6 @@
+import productos from "./ProductManager.js";
+
+console.log(productos)
 class ProductManager{    
    static products = [];
    static idCounter = 0;
