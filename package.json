@@ -1,21 +1,19 @@
 {
-  "type":"module",
-  "name": "ch",
+  "name": "des3",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Lenciades/CH.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Lenciades/CH/issues"
+  "type": "module",
+  "dependencies": {
+    "express": "^4.18.2"
   },
-  "homepage": "https://github.com/Lenciades/CH#readme"
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  }
 }

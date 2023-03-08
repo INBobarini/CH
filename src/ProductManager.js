@@ -2,8 +2,8 @@ import fs from 'fs'
 
 class ProductManager{
     static idCounter = 0;
-    constructor(path){
-        this.path = path;
+    constructor(){
+        this.path = "./src/ProductLibrary.json";
         this.products = [];
     }
  
@@ -35,7 +35,9 @@ class ProductManager{
     }
     async getProductById(id){//lee el archivo, busca el producto con el id y lo devuelve como objeto
         let products = await this.getProducts()
-        return products.find(e=>{return e.id===id}) ? products.find(e=>{return e.id===id}) : "No encontrado"
+        let idNum = Number(id)
+        let found = products.find(e=>e.id===idNum)
+        return found? found : {error:"No encontrado"}
     }
     async updateProduct(id,obj){//recibir el id del producto a actualizar y campo a actualizar/objeto completo, no borrar ID. 
         let products = await this.getProducts()
@@ -53,26 +55,7 @@ class ProductManager{
         fs.promises.writeFile(this.path, json)
     }
 }
+ 
+export default ProductManager;
 
-const path = "./ProductLibrary.json"
-
-/*
-const instance = new ProductManager(path);
-const testProduct = {
-    title: "producto prueba",
-    description: "Este es un producto prueba",
-    price:200,
-    thumbnail: "Sin imagen",
-    code: "abc123",
-    stock:25
-}
-
-await instance.getProducts(path)
-await instance.addProduct(testProduct)
-await instance.getProducts(path)
-await instance.getProductById(0)
-console.log( await instance.updateProduct(0,{title: `updated title: ${Math.random()}`}) )
-await instance.addProduct(testProduct) 
-await instance.deleteProduct(2)
-*/
 
