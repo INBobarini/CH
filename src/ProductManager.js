@@ -1,31 +1,42 @@
 import fs from 'fs'
 
+let prodLibraryPath = "./src/ProductLibrary.json"
+let productLibrary =  await loadProducts()
+
+async function loadProducts(){//carga en memoria por primera vez
+    return JSON.parse(await fs.promises.readFile(prodLibraryPath,'utf-8')) 
+}
+
 class ProductManager{
     static idCounter = 0;
     constructor(){
-        this.path = "./src/ProductLibrary.json";
-        this.products = [];
+        this.path = prodLibraryPath
+        this.products = productLibrary
     }
- 
-    async addProduct(obj){
-        // TODO validar entrada
-        
+
+    async addProduct(obj){ 
+        if(!validProduct(obj)){return {"error":"producto inválido"}}
+        if(repeatedCode(obj.code)){return ({"error":`producto ya presente`})}
         class Product{
-            constructor(obj){//dar formato id title description price thumbnail code stock
+            constructor(obj){
                 this.title = obj.title;
                 this.description = obj.description;
-                this.price = obj.price;
-                this.thumbnail = obj.thumbnail;
                 this.code = obj.code;
+                this.price = obj.price;
+                this.thumbnail = obj.thumbnail || [];
                 this.stock = obj.stock;
-                this.id = ProductManager.idCounter++; //asignar id autoincrementable
+                this.status = obj.status;
+                this.id = "id" + Math.random().toString(16).slice(2)
+                //el id a asignar es el maximo id encontrado +1, 0 por si no hay productos cargados
             }
         }
         let product = new Product(obj)
         this.products.push(product) //guardar en el arreglo
+        console.log(`product○ agregado:`)
+        console.table(product)
         let json = JSON.stringify(this.products,null,'\t')
         await fs.promises.writeFile(this.path, json)
-        // TODO guardar en archivo
+        await loadProducts()
         return product;
     }
     async getProducts(){ //leer el archivo de productos y devolver un arreglo con los productos
@@ -35,8 +46,7 @@ class ProductManager{
     }
     async getProductById(id){//lee el archivo, busca el producto con el id y lo devuelve como objeto
         let products = await this.getProducts()
-        let idNum = Number(id)
-        let found = products.find(e=>e.id===idNum)
+        let found = products.find(e=>e.id===id)
         return found? found : {error:"No encontrado"}
     }
     async updateProduct(id,obj){//recibir el id del producto a actualizar y campo a actualizar/objeto completo, no borrar ID. 
@@ -55,7 +65,75 @@ class ProductManager{
         fs.promises.writeFile(this.path, json)
     }
 }
- 
+function repeatedCode(newCode){//verifica si el codigo se repitió retorna falso si es único, el id si está reptido
+    let repeated = false;
+    for (const product of productLibrary){
+        if (product.code === newCode){
+            repeated = true; 
+        }
+    };
+    return repeated
+}
+
+const pAttReq = {
+    title: true,
+    description: true,
+    code: true,
+    price: true,
+    stock: true,
+    category: true,
+    thumbnails: false,
+    status: true,
+}
+const pAttTypes = {
+    title: "string",
+    description: "string",
+    code: "string",
+    price: "number",
+    stock: "number",
+    category: "string", 
+    thumbnails: "object", //un array es de tipo objeto
+    status: "boolean",
+}
+function validProduct(obj){
+    if (!obj.hasOwnProperty("status")){//agrega la key "status" si no está
+        Object.assign(obj,{status:true})
+    }
+    
+    let hasSameLength = Object.keys(pAttReq).length === Object.keys(obj).length 
+    if (!hasSameLength) {return {hasSameLength}}//chequea que el producto nuevo tenga tantas propiedades como el producto modelo
+
+    return validData(obj)
+}
+
+function validData(obj){// validData() va separado de validProduct() porque se usa en el metodo put/update y no sólo en el post/add
+    let hasSameKeys = Object.keys(obj).reduce((acc,val)=>{//chequea que las propiedades del nuevo producto sean las del producto modelo
+        return acc && pAttReq.hasOwnProperty(val)},true
+    )
+    if (!hasSameKeys) {return {hasSameKeys}}
+    
+    let hasReqValues = true
+    for (const key in obj){
+        if(pAttReq[key]){// solo chequear los campos obligatorios
+            if(obj[key]===0){return true} // pasa si el valor es 0, porque 0 es falso en JS
+            if((obj[key]=="")||(obj[key]==[])) { //verifica si es empty string/array
+                hasReqValues = false
+                return
+            }
+        }
+    }   
+    if (!hasReqValues) {return {hasReqValues}}
+    
+    let hasCorrectTypes = true
+    for (const key in obj){//verifica los tipos de los valores contra el modelo de producto
+        if(pAttTypes[key]!=typeof(obj[key])) hasCorrectTypes = false
+    }
+    if (!hasCorrectTypes) {return {hasCorrectTypes}}
+
+    return true
+}
+
+
 export default ProductManager;
 
 
