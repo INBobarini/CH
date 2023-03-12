@@ -18,27 +18,27 @@ productosRouter.get('/', async(req,res)=>{
 
 /*- La ruta GET /:pid deberá traer sólo el producto con el id proporcionado*/
 productosRouter.get('/:pid', async(req,res)=>{
+    console.log({"GET":req.params.pid})
     let product = await pManager.getProductById(req.params.pid)
     res.send({product})
 })
-/*- La ruta raíz POST / deberá agregar un nuevo producto con los campos:
-    id: Number/String (A tu elección, el id NO se manda desde body, 
-        se autogenera como lo hemos visto desde los primeros entregables, 
-        asegurando que NUNCA se repetirán los ids en el archivo.
-    title:String,
-    description:String
-    code:String
-    price:Number
-    status:Boolean
-    stock:Number
-    category:String
-    thumbnails:Array de Strings que contenga las rutas donde están almacenadas las imágenes referentes a dicho producto
-    Status es true por defecto.
-    Todos los campos son obligatorios, a excepción de thumbnails
-*/
+
 productosRouter.post('/', async(req,res)=>{
+    console.log({"POST":req.body})
     let product = await pManager.addProduct(req.body)
     res.send({product})
+})
+
+productosRouter.put('/:pid', async(req,res)=>{
+    console.log({"PUT":[req.params.pid,req.body]})
+    let updatedProduct = await pManager.updateProduct(req.params.pid,req.body)
+    res.send({updatedProduct})
+})
+
+productosRouter.delete('/:pid', async(req,res)=>{
+    console.log({"DELETE":req.params.pid})
+    let deletedProduct = await pManager.deleteProduct(req.params.pid)
+    res.send({deletedProduct})
 })
 
 export default productosRouter 

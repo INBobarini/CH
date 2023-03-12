@@ -2,21 +2,10 @@
 	{
 		"title": "Cartuchera",
 		"description": "De Dragon Ball",
-		"code": "abc122",
+		"code": "1b445512",
 		"price": 500,
-		"thumbnail": [],
 		"stock": 25,
 		"status": true,
-		"id": "id02d820c73b824"
-	},
-	{
-		"title": "Cartuchera",
-		"description": "De Dragon Ball",
-		"code": "abc123",
-		"price": 500,
-		"thumbnail": [],
-		"stock": 25,
-		"status": true,
-		"id": "id0dd162268f62d"
+		"id": 1
 	}
 ]

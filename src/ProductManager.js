@@ -6,7 +6,6 @@ let productLibrary =  await loadProducts()
 async function loadProducts(){//carga en memoria por primera vez
     return JSON.parse(await fs.promises.readFile(prodLibraryPath,'utf-8')) 
 }
-
 class ProductManager{
     static idCounter = 0;
     constructor(){
@@ -17,16 +16,18 @@ class ProductManager{
     async addProduct(obj){ 
         if(!validProduct(obj)){return {"error":"producto inválido"}}
         if(repeatedCode(obj.code)){return ({"error":`producto ya presente`})}
+        this.products = await loadProducts()
+        let idArray = this.products.map((e)=>e.id)
         class Product{
             constructor(obj){
                 this.title = obj.title;
                 this.description = obj.description;
                 this.code = obj.code;
                 this.price = obj.price;
-                this.thumbnail = obj.thumbnail || [];
+                this.thumbnail = obj.thumbnail;
                 this.stock = obj.stock;
                 this.status = obj.status;
-                this.id = "id" + Math.random().toString(16).slice(2)
+                this.id = 1 + idArray.reduce((acc,cur)=>cur>=acc?cur:acc,0);
                 //el id a asignar es el maximo id encontrado +1, 0 por si no hay productos cargados
             }
         }
@@ -36,7 +37,6 @@ class ProductManager{
         console.table(product)
         let json = JSON.stringify(this.products,null,'\t')
         await fs.promises.writeFile(this.path, json)
-        await loadProducts()
         return product;
     }
     async getProducts(){ //leer el archivo de productos y devolver un arreglo con los productos
@@ -46,23 +46,32 @@ class ProductManager{
     }
     async getProductById(id){//lee el archivo, busca el producto con el id y lo devuelve como objeto
         let products = await this.getProducts()
-        let found = products.find(e=>e.id===id)
+        let found = products.find(e=>e.id==id)
         return found? found : {error:"No encontrado"}
     }
     async updateProduct(id,obj){//recibir el id del producto a actualizar y campo a actualizar/objeto completo, no borrar ID. 
-        let products = await this.getProducts()
-        let i = products.findIndex(e=>{return e.id===id})
-        let updProd = Object.assign(products[i], obj)
-        
+        if (obj.hasOwnProperty("id")){delete obj.id} //eliminamos el key id si viene para ser actualizado
+        this.products = await this.getProducts()
+        let i = this.products.findIndex(e=>{return e.id==id}) //index se pasa como string
+        if(i===-1){return {error:"No encontrado"}}
+        let productToUpdate = this.products[i]
+        let updatedProduct = Object.assign(productToUpdate,obj)
+        this.products[i] = updatedProduct //guardar en el arreglo
+        console.log(`product○ modificado:`)
+        console.table(this.products[i])
+        let json = JSON.stringify(this.products,null,'\t')
+        await fs.promises.writeFile(this.path, json)
+        return this.products[i];
     }
     async deleteProduct(id){//eliminar el producto que tenga ese id de archivo
         let products = await this.getProducts()
-        console.log(products)
-        let i = products.findIndex(e=>{return e.id===id})
-        if (i===-1) return {}
+        let i = products.findIndex(e=>{return e.id==id})
+        if (i===-1) return {error:"No encontrado"}
+        let deletedProduct = products[i]
         products.splice(i, 1)
         let json = JSON.stringify(products, null,'\t')
-        fs.promises.writeFile(this.path, json)
+        await fs.promises.writeFile(this.path, json)
+        return deletedProduct
     }
 }
 function repeatedCode(newCode){//verifica si el codigo se repitió retorna falso si es único, el id si está reptido
