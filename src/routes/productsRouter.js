@@ -19,25 +19,25 @@ productosRouter.get('/', async(req,res)=>{
 productosRouter.get('/:pid', async(req,res)=>{
     console.log("GET: "+ req.params.pid)
     let product = await pManager.getProductById(req.params.pid)
-    res.send({product})
+    res.send(product)
 })
 
 productosRouter.post('/', async(req,res)=>{
     console.log("POST " + req.body)
     let product = await pManager.addProduct(req.body)
-    res.send({product})
+    res.send(product)
 })
 
 productosRouter.put('/:pid', async(req,res)=>{
     console.log("PUT" + [req.params.pid,req.body])
     let updatedProduct = await pManager.updateProduct(req.params.pid,req.body)
-    res.send({updatedProduct})
+    res.send(updatedProduct)
 })
 
 productosRouter.delete('/:pid', async(req,res)=>{
     console.log({"DELETE":req.params.pid})
     let deletedProduct = await pManager.deleteProduct(req.params.pid)
-    res.send({deletedProduct})
+    res.send(deletedProduct)
 })
 
 export default productosRouter 

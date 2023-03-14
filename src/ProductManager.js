@@ -47,6 +47,7 @@ class ProductManager{
     async getProductById(id){//lee el archivo, busca el producto con el id y lo devuelve como objeto
         let products = await this.getProducts()
         let found = products.find(e=>e.id==id)
+        console.log(found)
         return found? found : {error:"No encontrado"}
     }
     async updateProduct(id,obj){//recibir el id del producto a actualizar y campo a actualizar/objeto completo, no borrar ID. 
