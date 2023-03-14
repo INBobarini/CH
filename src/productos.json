@@ -1,0 +1,108 @@
+[
+	{
+		"title": "Cartuchera",
+		"description": "De Dragon Ball",
+		"code": "1b445512",
+		"price": 500,
+		"stock": 25,
+		"status": true,
+		"id": 1,
+		"thumbnail": [
+			"https://example.com/images/cartuchera1.jpg",
+			"https://example.com/images/cartuchera2.jpg"
+		]
+	},
+	{
+		"title": "Camisa",
+		"description": "De manga corta",
+		"code": "2a989232",
+		"price": 1200,
+		"stock": 10,
+		"status": true,
+		"id": 2,
+		"thumbnail": [
+			"https://example.com/images/camisa1.jpg",
+			"https://example.com/images/camisa2.jpg"
+		]
+	},
+	{
+		"title": "Zapatos",
+		"description": "De cuero negro",
+		"code": "3c548753",
+		"price": 2500,
+		"stock": 5,
+		"status": true,
+		"id": 3,
+		"thumbnail": [
+			"https://example.com/images/zapatos1.jpg",
+			"https://example.com/images/zapatos2.jpg"
+		]
+	},
+	{
+		"title": "Pantalones",
+		"description": "De mezclilla",
+		"code": "4d128974",
+		"price": 800,
+		"stock": 15,
+		"status": true,
+		"id": 4,
+		"thumbnail": [
+			"https://example.com/images/pantalones1.jpg",
+			"https://example.com/images/pantalones2.jpg"
+		]
+	},
+	{
+		"title": "Gorra",
+		"description": "De béisbol",
+		"code": "5e678595",
+		"price": 300,
+		"stock": 20,
+		"status": true,
+		"id": 5,
+		"thumbnail": [
+			"https://example.com/images/gorra1.jpg",
+			"https://example.com/images/gorra2.jpg"
+		]
+	},
+	{
+		"title": "Mochila",
+		"description": "De camuflaje",
+		"code": "6f246716",
+		"price": 1500,
+		"stock": 8,
+		"status": true,
+		"id": 6,
+		"thumbnail": [
+			"https://example.com/images/mochila1.jpg",
+			"https://example.com/images/mochila2.jpg"
+		]
+	},
+	{
+		"title": "Reloj",
+		"description": "De pulsera",
+		"code": "7g804837",
+		"price": 2000,
+		"stock": 3,
+		"status": true,
+		"id": 7,
+		"thumbnail": [
+			"https://example.com/images/reloj1.jpg",
+			"https://example.com/images/reloj2.jpg"
+		]
+	},
+	{
+		"title": "Botella de agua",
+		"description": "De acero inoxidable",
+		"code": "8h023904",
+		"price": 2500,
+		"thumbnail": [
+			"c",
+			"exa",
+			"c",
+			"fae"
+		],
+		"stock": 5,
+		"status": false,
+		"id": 8
+	}
+]

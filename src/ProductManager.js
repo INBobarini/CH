@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-let prodLibraryPath = "./src/ProductLibrary.json"
+let prodLibraryPath = "./src/productos.json"
 let productLibrary =  await loadProducts()
 
 async function loadProducts(){//carga en memoria por primera vez
@@ -24,7 +24,7 @@ class ProductManager{
                 this.description = obj.description;
                 this.code = obj.code;
                 this.price = obj.price;
-                this.thumbnail = obj.thumbnail;
+                this.thumbnail = obj.thumbnail||[];
                 this.stock = obj.stock;
                 this.status = obj.status;
                 this.id = 1 + idArray.reduce((acc,cur)=>cur>=acc?cur:acc,0);
@@ -54,6 +54,9 @@ class ProductManager{
         this.products = await this.getProducts()
         let i = this.products.findIndex(e=>{return e.id==id}) //index se pasa como string
         if(i===-1){return {error:"No encontrado"}}
+        if(obj.hasOwnProperty("thumbnail")&&this.products[i].thumbnail.length){
+            obj.thumbnail = this.products[i].thumbnail.concat(obj.thumbnail)
+        }
         let productToUpdate = this.products[i]
         let updatedProduct = Object.assign(productToUpdate,obj)
         this.products[i] = updatedProduct //guardar en el arreglo
