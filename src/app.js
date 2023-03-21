@@ -33,9 +33,9 @@ app.set('view engine','handlebars')
 app.use(express.static(__dirname+'/public'))
 
 //websocket
-export const socketServer = new Server(httpServer)
+const socketServer = new Server(httpServer)
 
-socketServer.on('connection', async clientSocket =>{
+socketServer.on('connection', async clientSocket =>{ //TO DO ver la manera de que arranque esto sólo al entrar en la vista realtime products
     console.log("Nuevo cliente conectado: "+clientSocket.id)
     let productos = await pm.getProducts()
     clientSocket.emit('updateProducts',{products:productos})
