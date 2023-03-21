@@ -1,0 +1,14 @@
+#formsDiv{
+    display:flex
+}
+
+table,th,td{
+    border: 1px solid black 
+}
+label{
+    width: 100px
+}
+
+form{
+    border: 1px dashed black
+}
