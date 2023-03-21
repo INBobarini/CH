@@ -35,7 +35,21 @@ app.use(express.static(__dirname+'/public'))
 //websocket
 export const socketServer = new Server(httpServer)
 
-
+socketServer.on('connection', async clientSocket =>{
+    console.log("Nuevo cliente conectado: "+clientSocket.id)
+    let productos = await pm.getProducts()
+    clientSocket.emit('updateProducts',{products:productos})
+    clientSocket.on('deleteById', async id=>{
+        console.log(await pm.deleteProduct(id))
+        const updatedProducts = await pm.getProducts()
+        clientSocket.emit('updateProducts',{products:updatedProducts})
+    })
+    clientSocket.on('addProduct', async product=>{
+        console.log(await pm.addProduct(product))
+        const updatedProducts = await pm.getProducts()
+        clientSocket.emit('updateProducts',{products:updatedProducts})
+    })
+})
 
 
 

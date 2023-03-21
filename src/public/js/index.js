@@ -9,6 +9,16 @@ deleteBtn.addEventListener('click',(event)=>{
     socket.emit('deleteById',id.value)
 })
 
+const addBtn = document.querySelector("#addBtn")
+const product = {}
+addBtn.addEventListener('click',(event)=>{
+    
+    let keys = ["title","description","code","price","thumbnails","stock","status"]
+    keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
+    console.log(product)
+    socket.emit('addProduct',product)
+})
+
 //plantilla parcial y socket o
 const divProductsTable = document.querySelector("#productsTable") ?? null
 
@@ -48,3 +58,4 @@ socket.on('updateProducts',data=>{
         products:data.products
     })
 })
+

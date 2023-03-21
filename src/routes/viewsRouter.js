@@ -19,13 +19,7 @@ router.get('/',async(req,res)=>{
 
 router.get('/realtimeproducts',async(req,res)=>{
     
-    socketServer.on('connection', async clientSocket =>{
-        console.log("Nuevo cliente conectado: "+clientSocket.id)
-        const productos = await pm.getProducts()
-        clientSocket.emit('updateProducts',{products:productos})
-    })
-
-    let products = await pm.getProducts()
+    const products = await pm.getProducts()
     
     res.render('realTimeProducts',{
         products: products,
