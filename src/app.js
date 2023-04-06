@@ -1,15 +1,12 @@
 import express from 'express'
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js'
-//import {socketHandler} from './middleware/socketHandler.js' 
-
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/carritosRouter.js';
 import viewsRouter from './routes/viewsRouter.js'
 import { Server } from 'socket.io'
 
-import ProductManager from './controllers/ProductManager.js';
-const pm = new ProductManager
+
 
 //express
 const app = express()
@@ -32,8 +29,13 @@ app.set('views','./src/views')
 app.set('view engine','handlebars')
 app.use(express.static(__dirname+'/public'))
 
+
+
 //websocket
 const socketServer = new Server(httpServer)
+
+import ProductManager from './controllers/ProductManager.js';
+const pm = new ProductManager
 
 socketServer.on('connection', async clientSocket =>{ //TO DO ver la manera de que arranque esto sólo al entrar en la vista realtime products
     console.log("Nuevo cliente conectado: "+clientSocket.id)
