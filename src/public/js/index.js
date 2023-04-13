@@ -1,6 +1,5 @@
 const socket = io()
 
-
 const deleteBtn = document.querySelector("#deleteBtn")
 
 deleteBtn.addEventListener('click',(event)=>{
@@ -58,4 +57,16 @@ socket.on('updateProducts',data=>{
         products:data.products
     })
 })
+
+const sendBtn = document.querySelector("#sendBtn")
+const messages = {}
+sendBtn.addEventListener('click',(event)=>{
+    
+    let keys = ["user","message"]
+    keys.forEach((e)=>{messages[e] = document.querySelector(`#${e}`).value})
+    console.log(messages)
+    req.socket.emit('sendMessage', messages)
+})
+
+
 

@@ -1,57 +1,58 @@
 import {Router} from 'express'
 //import ProductManager from '../controllers/ProductManager.js';
-import mongoose from 'mongoose'
-import {productosModel} from '../database/mongoose.js'
+import {pManager} from '../controllers/productManagerDb.js'
 
 const productosRouter = Router()
 
-//const pManager = new ProductManager; 
-
-//const pManager = productosDb
-
 productosRouter.get('/', async(req,res)=>{
-    const result = await productosModel.find()
-    console.log(`GET con limit: ${req.query.limit}`)
-    let limit = req.query.limit
-    if(limit!==undefined){
-        products.splice(limit)
+    let result = await pManager.getAll()
+    if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
+    if(req.query.limit!==undefined){
+        result = await pManager.getFirstN(req.query.limit)
+        
+        return res.status(200).send({status:"success", payload:result})
     }
-    res.send({status:"success", payload:result})
+    else{
+        return res.status(200).send({status:"success", payload:result})
+    }
 })
 
-productosRouter.get('/:pid', async(req,res)=>{
-    console.log("GET: "+ req.params.pid)
-    let result = await pManager.getProductById(req.params.pid)
+productosRouter.get('/:_id', async(req,res)=>{
+    console.log('GET con req.params._id: '+ req.params._id)
+    const result = await pManager.getOneById(req.params._id)
+    if(!result){return res.status(404).send({status:"failure", payload:"product not found"})} 
     res.send({status:"success", payload:result})
 })
 
 productosRouter.post('/', async(req,res)=>{
-    let {title, description, code, price, thumbnail, stock, status} = req.body
-    let result = ""
     try{
-        result = await productosModel.create({
-        title, description, code, price, thumbnail, stock, status,
-    })
-    res.send({status:"success", payload:result})
+        let result = await pManager.createOne(req.body)
+        res.send({status:"success", payload:result})
     }
     catch(error){
         console.log(error)
-        res.send({status:"failure", payload:{}})
+        res.send({status:"failure", payload:"product not added"})
     }
 })
 
-productosRouter.put('/:pid', async(req,res)=>{
-    console.log("PUT" + [req.params.pid,req.body])
-    
-    let {pid}=req.params.pid
-    
-    //res.send(updatedProduct)
+productosRouter.put('/:_id', async(req,res)=>{
+    try{
+        let result = await pManager.updateOne(req.params._id,req.body)
+        res.send({status:"success", payload:result})
+    }
+    catch(err){
+        res.status(404).send({status:"failure", payload:"not found"})
+    }
 })
 
-productosRouter.delete('/:pid', async(req,res)=>{
-    console.log({"DELETE":req.params.pid})
-    let deletedProduct = await pManager.deleteProduct(req.params.pid)
-    res.send(deletedProduct)
+productosRouter.delete('/:_id', async(req,res)=>{
+    try{
+        let result = await pManager.deleteOne(req.params._id)
+        res.send({status:"success", payload:result})
+    }
+    catch(err){
+        res.status(404).send({status:"failure", payload:"not found"})
+    }
 })
 
 export default productosRouter 

@@ -1,7 +1,6 @@
 import express from 'express'
-import ProductManager from '../controllers/ProductManager.js'
-//import ProductManager from '../controllers/productManagerDb.js'
-//import productosDb from '../database/mongoose.js'
+import {pManager, msgManager} from '../controllers/productManagerDb.js'
+
 
 const router = express.Router()
 
@@ -11,24 +10,57 @@ router.use(express.urlencoded({extended:true}))
 router.use(express.json())
 
 router.get('/',async(req,res)=>{
-    const products = await pm.getProducts()
-
-    res.render('home',{
-        products: products,
-        style:'index.css'
-    })
+    try{
+        let products = await pManager.getAllLean()
+        res.render('home',{
+            products: products,
+            style:'index.css'
+        })
+    }
+    catch(err){
+        res.status(500).send({error:err})
+    }
 })
 
 router.get('/realtimeproducts',async(req,res)=>{
-    const products = await pm.getProducts()
-    res.render('realTimeProducts',{
-        products: products,
+    try{
+        let products = await pManager.getAllLean()
+        res.render('realTimeProducts',{
+            products: products,
+            style:'index.css'
+        })
+    }
+    catch(err){
+        res.status(500).send({error:err})
+    }
+})
+
+router.get('/realtimeproducts',async(req,res)=>{
+    try{
+        let products = await pManager.getAllLean()
+        res.render('realTimeProducts',{
+            products: products,
+            style:'index.css'
+        })
+    }
+    catch(err){
+        res.status(500).send({error:err})
+    }
+})
+
+router.get('/chat',async(req,res,next)=>{
+    let messages = await msgManager.getAllLean()
+    res.render('chat',{
+        messages: messages,
         style:'index.css'
     })
 })
 
-router.post('/realtimeproducts',async(req,res,next)=>{
-    
+router.post('/chat',async(req,res,next)=>{
+    let{user, message} = req.body
+    let result = await msgManager.createOne(user,message) 
+    req['io'].sockets.emit('actualizar')
+    res.send(result)
 })
 
 export default router
