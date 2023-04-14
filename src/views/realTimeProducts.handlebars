@@ -10,14 +10,14 @@
   <input type="text" id="code" name="code"><br>
   <label for="price">Price:</label>
   <input type="number" id="price" name="price"><br>
-  <label for="thumbnails">Thumbnails:</label>
-  <input type="text" id="thumbnails" name="thumbnails"><br>
+  <label for="thumbnail">Thumbnail:</label>
+  <input type="text" id="thumbnail" name="thumbnail"><br>
   <label for="stock">Stock:</label>
   <input type="number" id="stock" name="stock"><br>
   <label for "status">Status:</label>
   <select id ="status" name ="status">
-    <option value ="active">Active</option>
-    <option value ="inactive">Inactive</option>
+    <option value ="true">Active</option>
+    <option value ="false">Inactive</option>
     </select><br> 
   
 </form>
@@ -33,14 +33,11 @@
 </div>
 </div>
 
-
- 
 <h2>Products</h2>
 <div id="productsTable">    
- <!--     
+   
 <table>
     <tr>
-        <th>Id</th>
         <th>Title</th>
         <th>Description</th>
         <th>Code</th>
@@ -48,10 +45,10 @@
         <th>Thumbnails</th>
         <th>Stock</th>
         <th>Status</th>
+        <th>_id</th>
     </tr>
   {{#each products}}
     <tr>
-        <td>{{this.id}}</td>
         <td>{{this.title}}</td>
         <td>{{this.description}}</td>
         <td>{{this.code}}</td>
@@ -59,11 +56,12 @@
         <td>{{this.thumbnail}}</td>
         <td>{{this.stock}}</td>
         <td>{{this.status}}</td>
+        <td>{{this._id}}</td>
     </tr>
   {{/each}}
   
 </table>
--->
+
 </div> 
 
 

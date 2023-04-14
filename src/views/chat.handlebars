@@ -1,13 +1,10 @@
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <h2>Mensajes</h2>
 
-<form>
-    <label for="user">User:</label>
-    <input type="text" id="user" name="user"><br>
-    <label for="message">Message:</label>
-     <input type = "textbox" id="message" name="message"></textarea><br>
-</form>
-
+User:<input id="user_input" type="text">
+<br>
+Message:<input id="message_input" type="text">
+<br>
 <button id="sendBtn">Send</button>
 
 
@@ -18,3 +15,7 @@
     {{/each}}
 </div>
 
+<div id = "test"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>

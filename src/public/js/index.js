@@ -1,21 +1,38 @@
 const socket = io()
-
+//DELETE BTN
 const deleteBtn = document.querySelector("#deleteBtn")
 
 deleteBtn.addEventListener('click',(event)=>{
-    const id = document.querySelector("#id") ?? null
-    console.log(id.value)
-    socket.emit('deleteById',id.value)
+    const _id = document.querySelector("#id").value ?? null
+    
+    fetch('/realtimeproducts', {
+        method: "DELETE",
+        body: JSON.stringify({
+          _id
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then(res => res.text()).then(console.log)
 })
 
+//ADD BTN
 const addBtn = document.querySelector("#addBtn")
 const product = {}
 addBtn.addEventListener('click',(event)=>{
     
-    let keys = ["title","description","code","price","thumbnails","stock","status"]
+    let keys = ["title","description","code","price","thumbnail","stock","status"]
     keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
     console.log(product)
-    socket.emit('addProduct',product)
+    fetch('/realtimeproducts', {
+        method: "POST",
+        body: JSON.stringify({
+          product
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then(res => res.text()).then(console.log)
 })
 
 //plantilla parcial y socket o
@@ -25,7 +42,6 @@ const tableTemplate =
 `<table>
 <tbody>
 <tr>
-    <th>Id</th>
     <th>Title</th>
     <th>Description</th>
     <th>Code</th>
@@ -33,10 +49,10 @@ const tableTemplate =
     <th>Thumbnails</th>
     <th>Stock</th>
     <th>Status</th>
+    <th>_id</th>
 </tr>
 {{#each products}}
 <tr>
-    <td>{{this.id}}</td>
     <td>{{this.title}}</td>
     <td>{{this.description}}</td>
     <td>{{this.code}}</td>
@@ -44,6 +60,7 @@ const tableTemplate =
     <td>{{this.thumbnail}}</td>
     <td>{{this.stock}}</td>
     <td>{{this.status}}</td>
+    <td>{{this._id}}</td>
 </tr>
 {{/each}}
 </tbody>
@@ -51,22 +68,9 @@ const tableTemplate =
 
 const compileTemplate = Handlebars.compile(tableTemplate)
 
-socket.on('updateProducts',data=>{
-    
+socket.on('updateProducts', products =>{
+    console.log(products)
     divProductsTable.innerHTML = compileTemplate({
-        products:data.products
+        products:products
     })
 })
-
-const sendBtn = document.querySelector("#sendBtn")
-const messages = {}
-sendBtn.addEventListener('click',(event)=>{
-    
-    let keys = ["user","message"]
-    keys.forEach((e)=>{messages[e] = document.querySelector(`#${e}`).value})
-    console.log(messages)
-    req.socket.emit('sendMessage', messages)
-})
-
-
-

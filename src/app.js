@@ -35,10 +35,6 @@ app.set('views','./src/views')
 app.set('view engine','handlebars')
 app.use(express.static(__dirname+'/public'))
 
-
-import ProductManager from './controllers/ProductManager.js';
-const pm = new ProductManager
-
 io.on('connection', async socket =>{ 
     console.log("Nuevo cliente conectado: "+socket.id)
     socket.on('productos', data => {

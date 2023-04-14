@@ -9,7 +9,6 @@ productosRouter.get('/', async(req,res)=>{
     if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
     if(req.query.limit!==undefined){
         result = await pManager.getFirstN(req.query.limit)
-        
         return res.status(200).send({status:"success", payload:result})
     }
     else{
