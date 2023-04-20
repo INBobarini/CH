@@ -1,6 +1,6 @@
 import express from 'express'
-import {pManager, msgManager} from '../controllers/productManagerDb.js'
-
+import {pManager} from '../controllers/productManagerDb.js' 
+import {msgManager} from '../controllers/chatManagerDb.js'
 
 const router = express.Router()
 

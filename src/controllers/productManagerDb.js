@@ -1,12 +1,17 @@
-import mongoose from 'mongoose'
-import {productosModel,cartsModel, chatModel} from '../models/schemas.js'
+import {productosModel} from '../models/schemas.js'
 
 class productsManager{
     constructor(model){
         this.model = model
     }
-    async getAll(){
-        return await this.model.find() 
+    async getAll(limit,page,query,sort){
+        const sortCriteria = {};
+        sortCriteria["price"] = sort == "asc" ? -1 : 1
+        
+        return await this.model.paginate(
+            {status:query||null}, //no entendí que hacer con el query, ahi va uno de los filtros pedidos
+            {limit:limit||10, page:page||1, sort:sortCriteria}
+        )
     }
     async getAllLean(){
         return await this.model.find().lean()
@@ -28,70 +33,6 @@ class productsManager{
     }
 }
 
-class cartsManager{
-    constructor(model){
-        this.model = model
-    }
-    async createOne(){
-        class Cart{
-            constructor(){
-                this.products = [] //pushear objeto {productID:,quantity}
-            }
-        }
-        return await cartsModel.create(new Cart())
-    }
-    async getOne(cid){
-        return await cartsModel.findById(cid)
-    }
-    async addProduct(cid,pid){
-        try{
-            let foundCart = await cartsModel.findById(cid)
-            
-            let foundProd = await productosModel.findById(pid)
-            
-            let productsInCart = foundCart.products.map((e)=>e.product)
-            
-            let productInCart = productsInCart.find(e=>e==pid)
-            console.log(!productInCart)
-            if(!productInCart){
-                let newProdToCart = {
-                    product:pid,
-                    quantity:1
-                }
-                return await cartsModel.findByIdAndUpdate(
-                    cid, { $push: { products: newProdToCart } }, { new: true }
-                )
-            }
-            else{
-                return await cartsModel.findOneAndUpdate(
-                    {_id:cid, 'products.product': pid}, 
-                    {$inc: { 'products.$.quantity': 1 } },
-                    {new:true}
-                )
-            }
-        }
-        catch(err){
-            return err
-        } 
-    }
-}
-class messagesManager {
-    constructor(model){
-        this.model = model
-    }
-    async getAll(){
-        return await this.model.find() 
-    }
-    async getAllLean(){
-        return await this.model.find().lean()
-    }
-    async createOne(user,message){
-        return await this.model.create({user:user,message:message})//item must be an object
-    }
-}
-
-const cManager = new cartsManager(cartsModel)
 const pManager = new productsManager(productosModel)
-const msgManager = new messagesManager(chatModel)
 
-export {pManager,cManager, msgManager};
+export {pManager};

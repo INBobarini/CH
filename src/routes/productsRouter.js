@@ -1,19 +1,23 @@
 import {Router} from 'express'
 //import ProductManager from '../controllers/ProductManager.js';
 import {pManager} from '../controllers/productManagerDb.js'
+import {responseObj as responseInstance} from '../routes/responseFormatter.js'
 
 const productosRouter = Router()
 
 productosRouter.get('/', async(req,res)=>{
-    let result = await pManager.getAll()
-    if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
-    if(req.query.limit!==undefined){
-        result = await pManager.getFirstN(req.query.limit)
-        return res.status(200).send({status:"success", payload:result})
-    }
-    else{
-        return res.status(200).send({status:"success", payload:result})
-    }
+    //if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
+
+    let limit = req.query.limit 
+    let page = req.query.page
+    let query = req.query.query
+    let sort = req.query.sort
+
+    let result = await pManager.getAll(limit,page,query,sort)
+    let response =  new responseInstance("success", result)  //implementar esto en todos los get
+    
+    res.status(200).send(response)
+
 })
 
 productosRouter.get('/:_id', async(req,res)=>{
@@ -21,6 +25,9 @@ productosRouter.get('/:_id', async(req,res)=>{
     const result = await pManager.getOneById(req.params._id)
     if(!result){return res.status(404).send({status:"failure", payload:"product not found"})} 
     res.send({status:"success", payload:result})
+
+    
+
 })
 
 productosRouter.post('/', async(req,res)=>{
@@ -53,5 +60,8 @@ productosRouter.delete('/:_id', async(req,res)=>{
         res.status(404).send({status:"failure", payload:"not found"})
     }
 })
+
+
+
 
 export default productosRouter 

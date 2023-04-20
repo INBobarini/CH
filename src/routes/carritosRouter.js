@@ -1,18 +1,13 @@
 import {Router} from 'express'
-import CartsManager from "../controllers/cartsManager.js"
-import {productosModel} from '../models/schemas.js'
-import {cartsModel} from '../models/schemas.js'
-import { cManager } from '../controllers/productManagerDb.js'
-
-
+import { cManager } from '../controllers/cartsManagerDb.js'
+import {responseObj as responseInstance} from '../routes/responseFormatter.js'
+import { populateCartProducts } from '../middlewares/populateProductsInCarts.js'
 
 const carritosRouter = Router()
 
-//const cManager = new CartsManager;
-
-carritosRouter.get('/:cid', async(req,res)=>{
-    let result = await cManager.getOne(req.params.cid)
-    console.log(req.params.cid)
+carritosRouter.get('/:cid', populateCartProducts, async(req,res)=>{
+    await cManager.getOne(req.params.cid)
+    let result = req.cart //esto sale del populate
     return res.status(200).send({status:"success", payload:result})
 })
 
@@ -25,5 +20,27 @@ carritosRouter.post('/', async(req,res)=>{
     let result = await cManager.createOne()
     res.status(200).send({status:"success", payload:result})
 })
+
+carritosRouter.put('/:cid', async(req,res)=>{
+    let result = await cManager.addProducts(req.params.cid, req.body) //body es array de {prodId,quant}
+    res.status(200).send({status:"success", payload:result})
+})
+
+carritosRouter.put('/:cid/products/:pid', async(req,res)=>{ //req.body = {"quantity":"9"}
+    let result = await cManager.updateQuantity(req.params.cid, req.params.pid, req.body[0].quantity)
+    return res.status(200).send({status:"success", payload:result})
+})
+
+carritosRouter.delete('/:cid', async(req,res)=>{
+    let result = await cManager.emptyCart(req.params.cid)
+    res.status(200).send({status:"success", payload:result})
+})
+
+carritosRouter.delete('/:cid/product/:pid', async(req,res)=>{
+    let result = await cManager.removeProduct(req.params.cid, req.params.pid)
+    return res.status(200).send({status:"success", payload:result})
+})
+
+
 
 export default carritosRouter 
