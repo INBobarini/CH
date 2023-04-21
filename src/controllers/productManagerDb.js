@@ -9,8 +9,8 @@ class productsManager{
         sortCriteria["price"] = sort == "asc" ? -1 : 1
         
         let result = await this.model.paginate(
-            {status:true||query}, //no entendí que hacer con el query, ahi va uno de los filtros pedidos
-            {limit:limit||3, page:page||1, sort:sortCriteria}
+            {status:true||query}, //no entendí que hacer con el query,  
+            {limit:limit||10, page:page||1, sort:sortCriteria}
         )
         result = JSON.stringify(result, null, '\t')
         result = JSON.parse(result)
