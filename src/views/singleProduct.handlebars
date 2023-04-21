@@ -1,0 +1,58 @@
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Code</th>
+        <th>Price</th>
+        <th>Thumbnails</th>
+        <th>Stock</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>{{product.title}}</td>
+        <td>{{product.description}}</td>
+        <td>{{product.code}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.thumbnail}}</td>
+        <td>{{product.stock}}</td>
+        <td>{{product.status}}</td>
+    </tr>
+</table>
+
+<button class = "add-to-cart">Add to cart</button>
+
+<script>
+    let cartId = ""
+    //buscar el id del carrito más reciente. TO DO: crear carrito si no hay.
+    fetch(window.location.origin + '/api/carts/last')
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(cart) {
+        cartId = cart.payload._id
+        console.log(cartId)
+    })
+    .catch(function(error) {
+        console.error('Error fetching cartId:', error);
+    });
+    //botón para agregar el producto al carrito, 
+    //el id del producto se obtiene de la URL
+    const addToCartBtn = document.querySelector(".add-to-cart")
+
+    addToCartBtn.addEventListener('click', function() {
+    fetch(window.location.origin + '/api/carts/' + cartId + '/product' + window.location.pathname, {
+        method: 'POST'
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(cart) {
+        console.log(cart.payload)
+    })
+    .catch(function(error) {
+        console.error('Error adding product to cart:', error);
+    })
+})
+
+</script>
+

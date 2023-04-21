@@ -14,11 +14,13 @@ class cartsManager{
     }
     async emptyCart(cid){
         let emptyCart = await cartsModel.updateOne({_id:cid},{products:[]}, { new: true })
-        return cartsModel.findById(cid)
+        return await cartsModel.findById(cid)
     }
     async getOne(cid){
         return await cartsModel.findById(cid).populate('products.product')
-    
+    }
+    async getLast(){
+        return await cartsModel.findOne().sort({_id:-1})
     }
     async addProduct(cid,pid){       
         try{

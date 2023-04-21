@@ -1,25 +1,52 @@
 import express from 'express'
 import {pManager} from '../controllers/productManagerDb.js' 
 import {msgManager} from '../controllers/chatManagerDb.js'
+import {cManager} from '../controllers/cartsManagerDb.js'
+import {responseObj} from '../middlewares/responseFormatter.js'
 
 const router = express.Router()
 
 router.use(express.urlencoded({extended:true}))
 router.use(express.json())
 
-//PRODUCTOS
+//PRODUCTS
 
 router.get('/',async(req,res)=>{
     try{
-        let products = await pManager.getAllLean()
-        res.render('home',{
-            products: products,
-            style:'index.css'
-        })
+        let products = await pManager.getAll(
+            req.query.limit,
+            req.query.page,
+            req.query.query,
+            req.query.sort
+        )
+        products =  new responseObj("success", products)  
+        
+        const { payload, limit, totalPages, page, hasPrevPage, 
+            hasNextPage, prevPage, nextPage } = products;
+
+        res.render('home', {
+            products: payload,
+            style: 'index.css',
+            limit, //no se usa
+            totalPages,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevPage, 
+            nextPage,
+        });
     }
     catch(err){
         res.status(500).send({error:err})
     }
+})
+
+router.get('/:pid',async(req,res)=>{
+    let product = await pManager.getOneById(req.params.pid)
+    res.render('singleProduct',{
+        product: product,
+        style: 'index.css'
+    })
 })
 
 router.get('/realtimeproducts',async(req,res)=>{
@@ -47,6 +74,17 @@ router.delete('/realtimeproducts',async(req,res)=>{
     let products = await pManager.getAllLean() 
     req['io'].sockets.emit('updateProducts', products)
     res.send(result)
+})
+
+//CARTS
+
+router.get('/carts/:cid',async(req,res)=>{
+    let cart = await cManager.getOne(req.params.cid)
+    cart = JSON.parse(JSON.stringify(cart,null,'\t'))
+    res.render('cart',{
+        products: cart.products,
+        style: 'index.css'
+    })
 })
 
 //CHAT

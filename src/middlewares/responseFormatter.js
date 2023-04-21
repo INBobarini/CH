@@ -6,8 +6,8 @@ class responseObj {
         this.prevPage = result.prevPage;
         this.nextPage = result.nextPage;
         this.page = result.page; 
-        this.hasprevPage = result.hasPrevPage;
-        this.hasnextPage = result.hasNextPage;
+        this.hasPrevPage = result.hasPrevPage;
+        this.hasNextPage = result.hasNextPage;
         this.prevLink = result.prevLink||null;
         this.nextLink = result.nextLink||null;
         this.limit = result.limit;

@@ -1,20 +1,18 @@
 import {Router} from 'express'
 //import ProductManager from '../controllers/ProductManager.js';
 import {pManager} from '../controllers/productManagerDb.js'
-import {responseObj as responseInstance} from '../routes/responseFormatter.js'
+import {responseObj as responseInstance} from '../middlewares/responseFormatter.js'
 
 const productosRouter = Router()
 
 productosRouter.get('/', async(req,res)=>{
     //if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
 
-    let limit = req.query.limit 
-    let page = req.query.page
-    let query = req.query.query
-    let sort = req.query.sort
+    const{limit,page,query,sort} = req.query
 
     let result = await pManager.getAll(limit,page,query,sort)
-    let response =  new responseInstance("success", result)  //implementar esto en todos los get
+    
+    let response =  new responseInstance("success", result)  
     
     res.status(200).send(response)
 
