@@ -1,3 +1,5 @@
+
+<link rel="icon" type="image/svg+xml" href="https://example.com/image.svg">
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <div id="formsDiv">
 <div id="formAdd">
@@ -37,29 +39,28 @@
 <div id="productsTable">    
    
 <table>
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Code</th>
-        <th>Price</th>
-        <th>Thumbnails</th>
-        <th>Stock</th>
-        <th>Status</th>
-        <th>_id</th>
-    </tr>
+  <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Code</th>
+      <th>Price</th>
+      <th>Thumbnails</th>
+      <th>Stock</th>
+      <th>Status</th>
+      <th>_id</th>
+  </tr>
   {{#each products}}
-    <tr>
-        <td>{{this.title}}</td>
-        <td>{{this.description}}</td>
-        <td>{{this.code}}</td>
-        <td>{{this.price}}</td>
-        <td>{{this.thumbnail}}</td>
-        <td>{{this.stock}}</td>
-        <td>{{this.status}}</td>
-        <td>{{this._id}}</td>
-    </tr>
+  <tr>
+      <td>{{this.title}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.code}}</td>
+      <td>{{this.price}}</td>
+      <td>{{this.thumbnail}}</td>
+      <td>{{this.stock}}</td>
+      <td>{{this.status}}</td>
+
+  </tr>
   {{/each}}
-  
 </table>
 
 </div> 

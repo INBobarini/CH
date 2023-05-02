@@ -1,0 +1,49 @@
+<h3>Log in</h3>
+
+<form method="POST" action="/login/" id="form-login">
+<label for="email">Name:</label>
+<input type="text" id="email" name="email" placeholder="email" required>
+<br>
+<label for="pass">Pass:</label>
+<input type="password" id="password" name="password" placeholder="password" required>
+<br>
+<input type="submit" value="Log in">
+<a href="/api/sessions/register">Sign up</a>
+</form>
+
+<script>
+    const formLogin = document.querySelector('#form-login')
+
+if (formLogin instanceof HTMLFormElement) {
+  formLogin.addEventListener('submit', async function(event) {
+    event.preventDefault()
+
+    const email = document.querySelector('#email')
+    const password = document.querySelector('#password')
+    
+    const userData = {
+        email:email.value,
+        password:password.value
+    }
+    
+    const { status } = await fetch('/api/sessions/', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    })
+    
+    console.log(status)
+    if (status === 201) {
+        window.location.href = '/products'
+      } else {
+        console.log('[login] estado inesperado: ' + status)
+      }
+    
+  })
+}
+ 
+</script>
+

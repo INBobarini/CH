@@ -1,0 +1,29 @@
+<a href="/products">To product view</a>
+<h1>Profile</h1>
+<p>Name: {{user.first_name}} {{user.last_name}}</p>
+<p>Email: {{user.email}}</p>
+<p>Age: {{user.age}}</p>
+<p>Rol: {{user.role}}</p>
+
+
+<form id="formLogout">
+  <button type="submit">Logout</button>
+</form>
+
+<script>
+    const formLogout = document.querySelector('#formLogout')
+
+if (formLogout instanceof HTMLFormElement) {
+  formLogout.addEventListener('submit', async function(event) {
+    event.preventDefault()
+
+    const { status } = await fetch('/api/sessions', {
+      method: 'DELETE'
+    })
+
+    if (status) {
+      window.location.href = '/api/sessions/login'
+    } 
+  })
+}
+</script>

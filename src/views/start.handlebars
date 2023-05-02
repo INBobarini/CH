@@ -1,0 +1,11 @@
+<h1>Bienvenido {{user.first_name}}</h1>
+
+{{#if user}}
+    <a href="/products">Go to products</a>
+    <br>
+    <a href="/api/sessions/profile">Log Out</a>
+    <br>
+    <a href="/api/sessions/logout">Profile</a>
+{{else}}
+    <a href="/api/sessions/login">Log in</a>
+{{/if}}

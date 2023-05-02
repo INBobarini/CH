@@ -9,9 +9,17 @@ const router = express.Router()
 router.use(express.urlencoded({extended:true}))
 router.use(express.json())
 
+const auth = function (req,res,next){ 
+    if(req.cookies.user||req.cookies.admin){
+        console.log(req.SignedCookies)
+        next()
+    }
+    res.redirect('/api/sessions/login')
+}
+
 //PRODUCTS
 
-router.get('/',async(req,res)=>{
+router.get('/products', auth, async(req,res)=>{
     try{
         let products = await pManager.getAll(
             req.query.limit,
@@ -27,6 +35,7 @@ router.get('/',async(req,res)=>{
         res.render('home', {
             products: payload,
             style: 'index.css',
+            user: req.session.user,
             limit, //no se usa
             totalPages,
             page,
@@ -41,8 +50,9 @@ router.get('/',async(req,res)=>{
     }
 })
 
-router.get('/:pid',async(req,res)=>{
+router.get('/product/:pid',async(req,res)=>{//ruta cambiada porque algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)
+    console.log(req.body)
     res.render('singleProduct',{
         product: product,
         style: 'index.css'
@@ -51,7 +61,7 @@ router.get('/:pid',async(req,res)=>{
 
 router.get('/realtimeproducts',async(req,res)=>{
     try{
-        let products = await pManager.getAllLean()
+        let products = await pManager.getAll()
         res.render('realTimeProducts',{
             products: products,
             style:'index.css'
@@ -87,6 +97,7 @@ router.get('/carts/:cid',async(req,res)=>{
     })
 })
 
+
 //CHAT
 router.get('/chat',async(req,res,next)=>{
     let messages = await msgManager.getAllLean()
@@ -96,13 +107,23 @@ router.get('/chat',async(req,res,next)=>{
     })
 })
 
-router.post('/chat',async(req,res,next)=>{
+router.post('/chat',async(req,res)=>{
     console.log(req.body)
-    let{user, message} = req.body.newMessage
+    let{user, message} = req.body
     let result = await msgManager.createOne(user,message)
     let messages = await msgManager.getAllLean() 
     req['io'].sockets.emit('actualizarMensajes', messages)
     res.send(result)
+})
+
+//SESSIONS
+
+router.get('/', async(req,res)=>{
+    console.log(req.session.user)
+    res.render('start',{
+        
+        user:req.session.user
+    })
 })
 
 export default router

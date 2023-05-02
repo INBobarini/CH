@@ -22,6 +22,8 @@
 <button class = "add-to-cart">Add to cart</button>
 
 <script>
+
+    //ADD TO CART 
     let cartId = ""
     //buscar el id del carrito más reciente. TO DO: crear carrito si no hay.
     fetch(window.location.origin + '/api/carts/last')
@@ -30,7 +32,6 @@
     })
     .then(function(cart) {
         cartId = cart.payload._id
-        console.log(cartId)
     })
     .catch(function(error) {
         console.error('Error fetching cartId:', error);
@@ -47,7 +48,6 @@
         return response.json();
     })
     .then(function(cart) {
-        console.log(cart.payload)
     })
     .catch(function(error) {
         console.error('Error adding product to cart:', error);
