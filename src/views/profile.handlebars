@@ -1,4 +1,4 @@
-<a href="/products">To product view</a>
+<a href="/">To product view</a>
 <h1>Profile</h1>
 <p>Name: {{user.first_name}} {{user.last_name}}</p>
 <p>Email: {{user.email}}</p>
@@ -17,7 +17,7 @@ if (formLogout instanceof HTMLFormElement) {
   formLogout.addEventListener('submit', async function(event) {
     event.preventDefault()
 
-    const { status } = await fetch('/api/sessions', {
+    const { status } = await fetch('/api/auth/logout', {
       method: 'DELETE'
     })
 

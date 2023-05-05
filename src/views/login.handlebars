@@ -1,5 +1,11 @@
 <h3>Log in</h3>
 
+<div>
+  <a href="/api/sessions/github"><button>Entrar con Github</button></a>
+</div>
+
+<br>
+
 <form method="POST" action="/login/" id="form-login">
 <label for="email">Name:</label>
 <input type="text" id="email" name="email" placeholder="email" required>
@@ -26,7 +32,7 @@ if (formLogin instanceof HTMLFormElement) {
         password:password.value
     }
     
-    const { status } = await fetch('/api/sessions/', {
+    const { status } = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -34,8 +40,6 @@ if (formLogin instanceof HTMLFormElement) {
         },
         body: JSON.stringify(userData)
     })
-    
-    console.log(status)
     if (status === 201) {
         window.location.href = '/products'
       } else {

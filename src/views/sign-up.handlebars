@@ -48,14 +48,14 @@ if (formRegister instanceof HTMLFormElement) {
         password: input_password.value,
       }
         console.log(datosUsuario)
-      const usuarioCreado = await fetch('/api/sessions/register', {
+      const usuarioCreado = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(datosUsuario)
-      }).then(window.location.href = '/api/sessions/login')
+      })then(window.location.href = '/api/sessions/login') //cambiar a productos
     }
   })
 }

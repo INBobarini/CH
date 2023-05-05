@@ -1,18 +1,33 @@
 import express from 'express'
 import handlebars from 'express-handlebars';
-import __dirname from './utils.js'
+import {__dirname} from './utils.js'
+
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/carritosRouter.js';
 import viewsRouter from './routes/viewsRouter.js'
 import {sessionsRouter} from './routes/sessionsRouter.js'
+import {authRouter} from './routes/authRouter.js'
+
 import { Server as SocketIOServer} from 'socket.io'
+
 import cookieParser from 'cookie-parser';
 import session from 'express-session'
+
 import FileStore from 'session-file-store'//instalarlo con npm i session-file-store
 import MongoStore from 'connect-mongo' //npm i connect-mongo
+
+import {passportInitialize, passportSession} from './config/passport.config.js'
+
 //express
 const app = express()
 const httpServer = app.listen(8080,()=>console.log("servidor en el puerto 8080") )
+
+/*
+-Se deberá contar con un hasheo de contraseña utilizando bcrypt
+Se deberá contar con una implementación de passport, tanto para register como para login.
+Implementar el método de autenticación de GitHub a la vista de login.
+
+*/
 
 //cookie parser
 app.use(cookieParser("passw0rd"))
@@ -29,6 +44,11 @@ app.use(session({
     saveUninitialized:false,
 }))
 
+//passport
+app.use(passportInitialize, passportSession)
+
+//mongo
+
 //express para recibir json
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
@@ -43,12 +63,14 @@ app.set('view engine','handlebars')
 app.use(express.static(__dirname+'/public'))
 
 //routers API
-app.use('/api/products/', productsRouter)
-app.use('/api/carts/', cartsRouter)
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
 //routers vistas
 app.use('/', viewsRouter)
 //router login
-app.use('/api/sessions/', sessionsRouter)
+app.use('/api/sessions', sessionsRouter)
+//router auth
+app.use('/api/auth', authRouter)
 
 
 app.use((req,res,next)=>{//para tener websocket en las peticiones

@@ -1,35 +1,50 @@
-import { usersModel } from "../models/usersSchema.js"
-
+import { usersModel, usersGithubModel } from "../models/schemas.js"
+import {createHash, isValidPassword} from "../utils.js"
 
 class sessionManager{
     constructor(){//puede convenir instanciar la clase con el model
 
     }
+    async registerGithubUser(userGithubLogin, userGithubName){
+        let user = {userLogin:userGithubLogin, first_name:userGithubName}
+        const newUser = await usersGithubModel.create(user)
+        return newUser
+    }
 
-    async registerUser(user){
+    async loginGithubUser(userGithubLogin){
+        const user = await usersGithubModel.findOne({userLogin:userGithubLogin})
+        return user
+    }
+
+
+    async registerUser(user){//create hash to the new password
+        user.password = createHash(user.password)
         const newUser = await usersModel.create(user)
         return newUser
 
     }
-    async logInCheck(email, password) {
-        const existingUser = await usersModel.findOne({ $and: [{ email: email }, { password: password }] });
-        
-        if (existingUser) {
-            return existingUser
-        }
-        
-        //if is not an user, check if it is an admin
+    async logInCheck(email, password) { // hash compare of paswords
+        //check if is an admin
         const admins = [{//move out and gitignore
             email:"adminCoder@coder.com", password:"adminCod3r123",
         }]
         let admin = admins.find(e => e.email === email && e.password === password);
-        
         if(admin){
             admin.role = "admin"
             admin.first_name = "adminCoderHouse"
+            return admin
         }
-        else{ admin = null}
-        return admin
+        
+        let existingUser = await usersModel.findOne({ email: email } );
+        if(!isValidPassword(existingUser, password)){
+            existingUser = null
+        }
+        if (existingUser) {
+            return existingUser
+        }else{
+            return null
+        }
+        
     }
 
     async getUserData(user){

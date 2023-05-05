@@ -9,17 +9,17 @@ const router = express.Router()
 router.use(express.urlencoded({extended:true}))
 router.use(express.json())
 
-const auth = function (req,res,next){ 
+/*const auth = function (req,res,next){ 
     if(req.cookies.user||req.cookies.admin){
         console.log(req.SignedCookies)
         next()
     }
     res.redirect('/api/sessions/login')
-}
+}*/
 
 //PRODUCTS
 
-router.get('/products', auth, async(req,res)=>{
+router.get('/', async(req,res)=>{
     try{
         let products = await pManager.getAll(
             req.query.limit,
@@ -35,7 +35,7 @@ router.get('/products', auth, async(req,res)=>{
         res.render('home', {
             products: payload,
             style: 'index.css',
-            user: req.session.user,
+            user: req.user,
             limit, //no se usa
             totalPages,
             page,
@@ -118,6 +118,11 @@ router.post('/chat',async(req,res)=>{
 
 //SESSIONS
 
+router.get('/login', async(req,res)=>{
+    res.render('login')
+})
+
+/*
 router.get('/', async(req,res)=>{
     console.log(req.session.user)
     res.render('start',{
@@ -125,5 +130,5 @@ router.get('/', async(req,res)=>{
         user:req.session.user
     })
 })
-
+*/
 export default router

@@ -57,5 +57,23 @@ chatSchema.plugin(mongoosePaginate)
 
 const chatModel = mongoose.model('chat', chatSchema)
 
-export {productosModel, cartsModel, chatModel, cartSchema}
+const usersSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  first_name: { type: String, required: true },
+  last_name: { type: String, required: true },
+  age: { type: Number, required: true },
+  role: {type: String, default: "user"},
+}, { versionKey: false })
+
+const usersModel = mongoose.model('usuarios', usersSchema)
+
+const githubUsersSchema = new mongoose.Schema({
+  userLogin:{ type: String, required: true, unique: true },
+  first_name:{ type: String, required: false }, 
+},{ versionKey: false })
+
+ const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)
+
+export {productosModel, cartsModel, chatModel, cartSchema, usersGithubModel, usersModel}
 
