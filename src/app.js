@@ -18,6 +18,8 @@ import MongoStore from 'connect-mongo' //npm i connect-mongo
 
 import {passportInitialize, passportSession} from './config/passport.config.js'
 
+import {ROUTES} from './routes/_routesDictionary.js'
+
 //express
 const app = express()
 const httpServer = app.listen(8080,()=>console.log("servidor en el puerto 8080") )
@@ -63,14 +65,14 @@ app.set('view engine','handlebars')
 app.use(express.static(__dirname+'/public'))
 
 //routers API
-app.use('/api/products', productsRouter)
-app.use('/api/carts', cartsRouter)
+app.use(ROUTES.PRODUCTS, productsRouter)
+app.use(ROUTES.CARTS, cartsRouter)
 //routers vistas
-app.use('/', viewsRouter)
+app.use(ROUTES.VIEWS, viewsRouter)
 //router login
-app.use('/api/sessions', sessionsRouter)
+app.use(ROUTES.SESSIONS, sessionsRouter)
 //router auth
-app.use('/api/auth', authRouter)
+app.use(ROUTES.AUTH, authRouter)
 
 
 app.use((req,res,next)=>{//para tener websocket en las peticiones
@@ -80,7 +82,7 @@ app.use((req,res,next)=>{//para tener websocket en las peticiones
 
 
 io.on('connection', async socket =>{ 
-    console.log("Nuevo cliente conectado: "+socket.id)
+    console.log("Nuevo cliente conectado: "+ socket.id)
     socket.on('productos', data => {
         socket.broadcast.emit('actualizar', data)
     })

@@ -41,7 +41,7 @@ if (formLogin instanceof HTMLFormElement) {
         body: JSON.stringify(userData)
     })
     if (status === 201) {
-        window.location.href = '/products'
+        window.location.href = '/'
       } else {
         console.log('[login] estado inesperado: ' + status)
       }

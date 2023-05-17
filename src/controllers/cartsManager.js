@@ -28,26 +28,12 @@ class CartsManager{
         if (!products.find((e)=>e.id==pid)){return {error:"producto no encontrado"}}
         let carts = await loadCarts()
         if (!carts.find((e)=>e.id==cid)){return {error:"carrito no encontrado"}}
-        
-
-
-
-
-         
 
         let cart = await this.getCart(cid)
         let i = cart.products.findIndex(e=>e.product==pid)//index del array products
         if(i === -1||i === undefined){cart.products.push({product:pid, quantity:1})}
         else {cart.products[i].quantity++}
         
-
-
-
-
-
-
-
-
         console.log(`producto (${pid}) agregado al carrito:${pid}`)
         let json = JSON.stringify(this.carts, null,'\t')
         await fs.promises.writeFile(this.path, json)

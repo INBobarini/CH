@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import mongoosePaginate from 'mongoose-paginate-v2'
-const MONGODB_CNX_STR = 'mongodb://127.0.0.1:27017/ecommerce'
+
+const DBNAME = "ecommerce"
+const MONGODB_CNX_STR = 'mongodb://127.0.0.1:27017/' + DBNAME
 //mongodb+srv://Ivan:<password>@cluster0.8lq7s6v.mongodb.net/?retryWrites=true&w=majority
 //mongodb://127.0.0.1:27017/ecommerce
 
@@ -26,12 +28,7 @@ productosSchema.plugin(mongoosePaginate)
 const productosModel = mongoose.model('productos', productosSchema) 
 
 const cartSchema = new mongoose.Schema({
-    products: /*{
-        type:Array,
-        default:[],
-        ref:"productos"
-    }*/
-    
+    products: 
     [{
         product: {
             type: mongoose.Schema.Types.ObjectId,
@@ -64,6 +61,7 @@ const usersSchema = new mongoose.Schema({
   last_name: { type: String, required: true },
   age: { type: Number, required: true },
   role: {type: String, default: "user"},
+  cart: {type: mongoose.Schema.Types.ObjectId, ref: "carritos" }
 }, { versionKey: false })
 
 const usersModel = mongoose.model('usuarios', usersSchema)

@@ -11,7 +11,7 @@ authRouter.post('/register', autenticationRegister, registroController)
 authRouter.post('/login', autenticationLogin, loginController)
 authRouter.delete('/logout', logoutController)
 authRouter.post('/loginGithub', autenticationLoginGh, loginGhController)
-//todo logout github
+//to do logout github
 
 
 export {authRouter}

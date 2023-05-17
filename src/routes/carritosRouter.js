@@ -1,17 +1,15 @@
 import {Router} from 'express'
 import { cManager } from '../controllers/cartsManagerDb.js'
 import {responseObj as responseInstance} from '../middlewares/responseFormatter.js'
-import { populateCartProducts } from '../middlewares/populateProductsInCarts.js'
+
 
 const carritosRouter = Router()
 
-carritosRouter.get('/last', async(req,res)=>{//temporario para usar el mismo carrito en los test
-    //rutas sin populate van arriba porque si no, el middleware arranca 
-    //y queda colgado esperando un id cuando no hace falta
-    let result = await cManager.getLast()
+carritosRouter.get('/userCart', async(req,res)=>{
+    let result = await cManager.getOne(req.session.passport.user.cart)
     return res.status(200).send({status:"success", payload:result})
 })
-carritosRouter.get('/:cid', populateCartProducts, async(req,res)=>{
+carritosRouter.get('/:cid', async(req,res)=>{
     await cManager.getOne(req.params.cid)
     let result = req.cart //esto sale del populate
     return res.status(200).send({status:"success", payload:result})

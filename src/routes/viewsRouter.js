@@ -20,6 +20,7 @@ router.use(express.json())
 //PRODUCTS
 
 router.get('/', async(req,res)=>{
+    console.log(req.session)
     try{
         let products = await pManager.getAll(
             req.query.limit,
@@ -50,14 +51,14 @@ router.get('/', async(req,res)=>{
     }
 })
 
-router.get('/product/:pid',async(req,res)=>{//ruta cambiada porque algo hace que se confunda el entrypoint del '/'
+/*router.get('/:pid',async(req,res)=>{//ruta cambiada porque algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)
     console.log(req.body)
     res.render('singleProduct',{
         product: product,
         style: 'index.css'
     })
-})
+})*/
 
 router.get('/realtimeproducts',async(req,res)=>{
     try{

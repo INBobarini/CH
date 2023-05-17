@@ -19,7 +19,6 @@ productosRouter.get('/:_id', async(req,res)=>{
     const result = await pManager.getOneById(req.params._id)
     if(!result){return res.status(404).send({status:"failure", payload:"product not found"})} 
     res.send({status:"success", payload:result})
-
 })
 
 productosRouter.post('/', async(req,res)=>{
