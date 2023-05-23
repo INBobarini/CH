@@ -1,21 +1,23 @@
 <h3>Log in</h3>
 
 <div>
+  <!-- GH login/register --->
   <a href="/api/sessions/github"><button>Entrar con Github</button></a>
 </div>
 
 <br>
 
 <form method="POST" action="/login/" id="form-login">
-<label for="email">Name:</label>
-<input type="text" id="email" name="email" placeholder="email" required>
-<br>
-<label for="pass">Pass:</label>
-<input type="password" id="password" name="password" placeholder="password" required>
-<br>
-<input type="submit" value="Log in">
-<a href="/api/sessions/register">Sign up</a>
+  <label for="email">Name:</label>
+  <input type="text" id="email" name="email" placeholder="email" required>
+  <br>
+  <label for="pass">Pass:</label>
+  <input type="password" id="password" name="password" placeholder="password" required>
+  <br>
+  <input type="submit" value="Log in">
 </form>
+<!-- local register --->
+<a href="/api/sessions/register">Sign up</a>
 
 <script>
     const formLogin = document.querySelector('#form-login')
@@ -31,7 +33,7 @@ if (formLogin instanceof HTMLFormElement) {
         email:email.value,
         password:password.value
     }
-    
+    //-------------------Login auth--------------------
     const { status } = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {

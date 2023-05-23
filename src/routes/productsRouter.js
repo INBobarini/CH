@@ -1,58 +1,24 @@
 import {Router} from 'express'
 //import ProductManager from '../controllers/ProductManager.js';
-import {pManager} from '../controllers/productManagerDb.js'
-import {responseObj as responseInstance} from '../middlewares/responseFormatter.js'
+import {pManager} from '../DAO/productManagerDb.js'
+import express from 'express'
+
+import * as productsController from '../controllers/productsController.js'
+import {productsResponseFormatter} from '../middlewares/responseFormatter.js'
 
 const productosRouter = Router()
 
-productosRouter.get('/', async(req,res)=>{
-    //if(!result){return res.status(401).send({status:"failure", payload:"no products"})}  
-    const{limit,page,query,sort} = req.query
-    let result = await pManager.getAll(limit,page,query,sort)
-    let response =  new responseInstance("success", result)  
-    res.status(200).send(response)
+//productosRouter.use(responseFormatter)
 
-})
+productosRouter.route(['/:_id','/'])
+.get(
+    productsController.handleGet, 
+    productsResponseFormatter)
 
-productosRouter.get('/:_id', async(req,res)=>{
-    console.log('GET con req.params._id: '+ req.params._id)
-    const result = await pManager.getOneById(req.params._id)
-    if(!result){return res.status(404).send({status:"failure", payload:"product not found"})} 
-    res.send({status:"success", payload:result})
-})
+productosRouter.route('/').post(productsController.handlePost, productsResponseFormatter)
 
-productosRouter.post('/', async(req,res)=>{
-    try{
-        let result = await pManager.createOne(req.body)
-        res.send({status:"success", payload:result})
-    }
-    catch(error){
-        console.log(error)
-        res.send({status:"failure", payload:"product not added"})
-    }
-})
+productosRouter.route('/:_id').put(productsController.handlePut, productsResponseFormatter)
 
-productosRouter.put('/:_id', async(req,res)=>{
-    try{
-        let result = await pManager.updateOne(req.params._id,req.body)
-        res.send({status:"success", payload:result})
-    }
-    catch(err){
-        res.status(404).send({status:"failure", payload:"not found"})
-    }
-})
-
-productosRouter.delete('/:_id', async(req,res)=>{
-    try{
-        let result = await pManager.deleteOne(req.params._id)
-        res.send({status:"success", payload:result})
-    }
-    catch(err){
-        res.status(404).send({status:"failure", payload:"not found"})
-    }
-})
-
-
-
+productosRouter.route('/:_id').delete(productsController.handleDelete, productsResponseFormatter)
 
 export default productosRouter 

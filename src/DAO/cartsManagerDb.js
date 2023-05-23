@@ -22,6 +22,7 @@ class cartsManager{
     async getLast(){
         return await cartsModel.findOne().sort({_id:-1})
     }
+    j
     async addProduct(cid,pid){       
         try{
             let foundCart = await cartsModel.findById(cid)

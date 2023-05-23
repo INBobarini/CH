@@ -3,7 +3,7 @@ import handlebars from 'express-handlebars';
 import {__dirname} from './utils.js'
 
 import productsRouter from './routes/productsRouter.js';
-import cartsRouter from './routes/carritosRouter.js';
+import cartsRouter from './routes/cartsRouter.js';
 import viewsRouter from './routes/viewsRouter.js'
 import {sessionsRouter} from './routes/sessionsRouter.js'
 import {authRouter} from './routes/authRouter.js'
@@ -17,12 +17,12 @@ import FileStore from 'session-file-store'//instalarlo con npm i session-file-st
 import MongoStore from 'connect-mongo' //npm i connect-mongo
 
 import {passportInitialize, passportSession} from './config/passport.config.js'
-
+import config from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
 
 //express
 const app = express()
-const httpServer = app.listen(8080,()=>console.log("servidor en el puerto 8080") )
+const httpServer = app.listen(config.port,()=>console.log("servidor en el puerto 8080") )
 
 /*
 -Se deberá contar con un hasheo de contraseña utilizando bcrypt
@@ -32,16 +32,16 @@ Implementar el método de autenticación de GitHub a la vista de login.
 */
 
 //cookie parser
-app.use(cookieParser("passw0rd"))
+app.use(cookieParser(config.cookieKey))
 
 //session
 app.use(session({
     store:MongoStore.create({
-        mongoUrl:'mongodb://127.0.0.1:27017/ecommerce',
+        mongoUrl:config.mongoUrl,
         mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
         //ttl:15,
     }),
-    secret:'secretIvan',
+    secret: config.sessionSecret,
     resave:false,
     saveUninitialized:false,
 }))
@@ -56,7 +56,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 
 //websocket
-const io = new SocketIOServer(httpServer)
+export const io = new SocketIOServer(httpServer)
 
 //vistas handlebars
 app.engine('handlebars', handlebars.engine());
@@ -75,16 +75,11 @@ app.use(ROUTES.SESSIONS, sessionsRouter)
 app.use(ROUTES.AUTH, authRouter)
 
 
-app.use((req,res,next)=>{//para tener websocket en las peticiones
-    req['io'] = io
-    next()
-})
 
-
-io.on('connection', async socket =>{ 
+io.on('connection', async socket =>{ //when a socket is initialized clientside this gets called
     console.log("Nuevo cliente conectado: "+ socket.id)
     socket.on('productos', data => {
-        socket.broadcast.emit('actualizar', data)
+        socket.broadcast.emit('updateProducts', data)
     })
 })
 

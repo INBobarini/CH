@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io() //creates a socket whenever this view is rendered
 //DELETE BTN
 const deleteBtn = document.querySelector("#deleteBtn")
 
@@ -23,12 +23,9 @@ addBtn.addEventListener('click',(event)=>{
     
     let keys = ["title","description","code","price","thumbnail","stock","status"]
     keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
-    console.log(product)
     fetch('/realtimeproducts', {
         method: "POST",
-        body: JSON.stringify({
-          product
-        }),
+        body: JSON.stringify(product),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
         }
@@ -69,7 +66,6 @@ const tableTemplate =
 const compileTemplate = Handlebars.compile(tableTemplate)
 
 socket.on('updateProducts', products =>{
-    console.log(products)
     divProductsTable.innerHTML = compileTemplate({
         products:products
     })

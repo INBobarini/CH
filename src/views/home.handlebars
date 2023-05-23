@@ -68,10 +68,11 @@ fetch(window.location.origin + '/api/carts/userCart')
   return response.json()
 })
 .then(function(data) {
+  console.log(data)
   cartId = data.payload._id
 })
 .catch(function(error) {
-  console.error(error)
+  console.log(error)
 });
 
 //GO TO PRODUCT BUTTONS

@@ -4,15 +4,15 @@ class productsManager{
     constructor(model){
         this.model = model
     }
-    async getAll(limit,page,query,sort){
-        const sortCriteria = {};
-        sortCriteria["price"] = sort == "asc" ? -1 : 1
+    async getAll(limit,page,query,sort){//implementar el sort
+        //const sortCriteria = {};
+        //sortCriteria["price"] = sort == "asc" ? -1 : 1
         
         let result = await this.model.paginate(
             {status:true||query}, //no entendí que hacer con el query,  
-            {limit:limit||10, page:page||1, sort:sortCriteria}
+            {limit:limit??10, page:page||1 /*, sort:sortCriteria*/}
         )
-        result = JSON.stringify(result, null, '\t')
+        result = JSON.stringify(result, null, '\t') 
         result = JSON.parse(result)
         return result
     }

@@ -1,6 +1,7 @@
 import { usersModel, usersGithubModel } from "../models/schemas.js"
 import {createHash, isValidPassword} from "../utils.js"
-import {cManager} from "../controllers/cartsManagerDB.js"
+import {cManager} from "./cartsManagerDb.js"
+import config from '../config/config.js'
 
 class sessionManager{
     constructor(){//puede convenir instanciar la clase con el model
@@ -20,14 +21,15 @@ class sessionManager{
     async registerUser(user){//create hash to the new password
         user.password = createHash(user.password)
         let cart = await cManager.createOne()
-        user.cart = cart._id
+        user.cart = cart._id 
+        console.log(user.cart)
         const newUser = await usersModel.create(user)
         return newUser
     }
     async logInCheck(email, password) { // hash compare of paswords
         //check if is an admin
         const admins = [{//move out and gitignore
-            email:"adminCoder@coder.com", password:"adminCod3r123",
+            email:config.adminName, password:config.adminPassword,
         }]
         let admin = admins.find(e => e.email === email && e.password === password);
         if(admin){

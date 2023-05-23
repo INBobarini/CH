@@ -1,60 +1,40 @@
 import {Router} from 'express'
-import {sManager} from '../controllers/sessionsManager.js'
+import {sManager} from '../DAO/sessionsManager.js'
 import passport from 'passport'
 
 
 const sessionsRouter = Router()
 
+sessionsRouter
+.route('/github')
+.get(passport.authenticate('github',{scope:['user:email']}),async (req,res)=>{})
 
 //LOGIN
 
-sessionsRouter.get('/github', passport.authenticate(
+/*sessionsRouter.get('/github', passport.authenticate(
     'github',
     {scope:['user:email']}),
     async (req,res)=>{
     }
-)
+)*/
 
-sessionsRouter.get('/githubcallback', passport.authenticate(
-    'github',
-    {failureRedirect:'/api/sessions/login'}),
-    async (req,res)=>{
-        console.log("github callback")
-        res.redirect('/products')
-    }
-)
+sessionsRouter.
+route('/githubcallback')
+.get(passport.authenticate('github',{failureRedirect:'/api/sessions/login'}),async (req,res)=>{res.redirect('/')})
 
-sessionsRouter.get('/login',(req,res)=>{//mover a views
-    res.render('login', {
-        usuario: "usuario",
-    });
-})
+sessionsRouter.route('/logout')
+.get((req,res)=>{res.redirect('/')})
 
-sessionsRouter.get('/logout',(req,res,next)=>{
-    res.redirect('/')
-})
 
-sessionsRouter.get('/profile', async (req,res)=>{
-    //let user = await sManager.getUserData(req.session.user)
-    res.render('profile', {
-        user: req.user, 
-    });
-})
-
-sessionsRouter.get('/register',(req,res)=>{//mover a views
-    res.render('sign-up', {
-        usuario: "usuario",
-    });
-})
-
-sessionsRouter.delete('/',(req,res)=>{
+sessionsRouter.route('/')
+.delete((req,res)=>{//hacer un metodo destroy con sessionManager
     req.session.destroy()
     res.clearCookie("admin",{signed:true})
     res.clearCookie("usuario",{signed:true})
     res.sendStatus(200)
 })
 
-sessionsRouter.get('/current',(req,res)=>{//mover a views
+sessionsRouter.route('/current').get((req,res)=>{//sacar a session manager
     let userToShow = req.session.passport.user
     userToShow.password = "XXXXXXXX"
     res.send(userToShow)

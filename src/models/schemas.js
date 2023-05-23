@@ -71,7 +71,7 @@ const githubUsersSchema = new mongoose.Schema({
   first_name:{ type: String, required: false }, 
 },{ versionKey: false })
 
- const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)
+const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)
 
 export {productosModel, cartsModel, chatModel, cartSchema, usersGithubModel, usersModel}
 

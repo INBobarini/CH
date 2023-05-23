@@ -1,7 +1,7 @@
 import passport from 'passport'
 import {Strategy as LocalStrategy} from 'passport-local'
 import {Strategy as GithubStrategy} from 'passport-github2'
-import { sManager } from '../controllers/sessionsManager.js'
+import { sManager } from '../DAO/sessionsManager.js'
 import { clientID, clientSecret, githubCallbackUrl } from '../config/githubLogin.js'
 
 passport.use('register', new LocalStrategy(
@@ -14,10 +14,8 @@ passport.use('register', new LocalStrategy(
                 age:age,
                 first_name:first_name,
                 last_name:last_name,
-                age:age
             }
             const user = await sManager.registerUser(newUser)
-            delete user.password
             done(null, user)
         }catch(err){done(err.message)}
 }))

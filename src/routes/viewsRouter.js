@@ -1,57 +1,54 @@
 import express from 'express'
-import {pManager} from '../controllers/productManagerDb.js' 
-import {msgManager} from '../controllers/chatManagerDb.js'
-import {cManager} from '../controllers/cartsManagerDb.js'
-import {responseObj} from '../middlewares/responseFormatter.js'
+import {pManager} from '../DAO/productManagerDb.js' 
+import {msgManager} from '../DAO/chatManagerDb.js'
+import {cManager} from '../DAO/cartsManagerDb.js'
+import {io} from '../app.js'
+import * as pController from '../controllers/productsController.js'
+import * as cController from '../controllers/cartsController.js'
+import { cartsResponseFormatter } from '../middlewares/responseFormatter.js'
+import {auth} from '../middlewares/auth.js'
 
-const router = express.Router()
+const viewsRouter = express.Router()
 
-router.use(express.urlencoded({extended:true}))
-router.use(express.json())
+viewsRouter.use(express.json())
 
-/*const auth = function (req,res,next){ 
-    if(req.cookies.user||req.cookies.admin){
-        console.log(req.SignedCookies)
-        next()
-    }
-    res.redirect('/api/sessions/login')
-}*/
 
-//PRODUCTS
-
-router.get('/', async(req,res)=>{
-    console.log(req.session)
-    try{
-        let products = await pManager.getAll(
-            req.query.limit,
-            req.query.page,
-            req.query.query,
-            req.query.sort
-        )
-        products =  new responseObj("success", products)  
-        
-        const { payload, limit, totalPages, page, hasPrevPage, 
-            hasNextPage, prevPage, nextPage } = products;
-
-        res.render('home', {
-            products: payload,
-            style: 'index.css',
-            user: req.user,
-            limit, //no se usa
-            totalPages,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevPage, 
-            nextPage,
-        });
-    }
-    catch(err){
-        res.status(500).send({error:err})
-    }
+viewsRouter.use((req,res,next)=>{//para tener websocket en las peticiones
+    req['io'] = io
+    next()
 })
 
-/*router.get('/:pid',async(req,res)=>{//ruta cambiada porque algo hace que se confunda el entrypoint del '/'
+
+//PRODUCTS
+viewsRouter.route('/').
+get(
+    auth,
+    pController.handleGet,
+    (req,res)=>{
+    const {
+        docs,
+        totalPages,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevPage,
+        nextPage,
+    } = req.result;
+    
+    res.render('home',{
+        products:docs,
+        style:'index.css',
+        user: req.user||"no logueado",
+        totalPages,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
+        nextPage,
+    })
+})
+//vista singular, no lanzada
+/*router.get('/:pid',async(req,res)=>{//algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)
     console.log(req.body)
     res.render('singleProduct',{
@@ -60,55 +57,53 @@ router.get('/', async(req,res)=>{
     })
 })*/
 
-router.get('/realtimeproducts',async(req,res)=>{
-    try{
-        let products = await pManager.getAll()
+viewsRouter.route('/realtimeproducts')
+.get(
+    (req,res,next)=>{req.query.limit = 20, next()}, //mandarlo desde views
+    pController.handleGet, 
+    async (req,res)=>{
         res.render('realTimeProducts',{
-            products: products,
+            products:req.result.docs,
             style:'index.css'
         })
-    }
-    catch(err){
-        res.status(500).send({error:err})
-    }
 })
 
-router.post('/realtimeproducts',async(req,res)=>{
-    let result = await pManager.createOne(req.body.product)
-    let products = await pManager.getAllLean() 
-    req['io'].sockets.emit('updateProducts', products)
-    res.send(result)
+viewsRouter.route('/realtimeproducts')
+.post(
+    pController.handlePostAndGetAll, 
+    async (req,res)=>{
+        req['io'].sockets.emit('updateProducts', req.result.docs)  
 })
-
-router.delete('/realtimeproducts',async(req,res)=>{
-    let result = await pManager.deleteOne(req.body._id)
-    let products = await pManager.getAllLean() 
-    req['io'].sockets.emit('updateProducts', products)
-    res.send(result)
+viewsRouter.route('/realtimeproducts')
+.delete(
+    async (req,res,next)=>{req.params._id = req.body._id, next()}, //resolver este parche
+    pController.handleDeleteAndGetAll,
+    async(req,res)=>{
+        req['io'].sockets.emit('updateProducts', req.result.docs)
 })
-
 //CARTS
-
-router.get('/carts/:cid',async(req,res)=>{
-    let cart = await cManager.getOne(req.params.cid)
-    cart = JSON.parse(JSON.stringify(cart,null,'\t'))
-    res.render('cart',{
-        products: cart.products,
-        style: 'index.css'
-    })
+viewsRouter.route('/carts/:cid')
+.get(
+    
+    cController.handleGet,
+    async(req,res)=>{
+    try{
+        let cart = JSON.parse(JSON.stringify(req.result, null,'\t'))
+        res.render('cart',{
+            products: cart.products
+        })
+    }
+    catch(err){console.log(err),res.send(err)}
 })
-
-
 //CHAT
-router.get('/chat',async(req,res,next)=>{
+viewsRouter.route('/chat').get(async(req,res,next)=>{
     let messages = await msgManager.getAllLean()
     res.render('chat',{
         messages: messages,
         style:'index.css'
     })
 })
-
-router.post('/chat',async(req,res)=>{
+viewsRouter.route('/chat').post(async(req,res)=>{
     console.log(req.body)
     let{user, message} = req.body
     let result = await msgManager.createOne(user,message)
@@ -116,20 +111,19 @@ router.post('/chat',async(req,res)=>{
     req['io'].sockets.emit('actualizarMensajes', messages)
     res.send(result)
 })
-
 //SESSIONS
-
-router.get('/login', async(req,res)=>{
+viewsRouter.route('/api/sessions/profile').get(async (req,res)=>{ 
+    //let user = await sManager.getUserData(req.session.user)
+    res.render('profile', {
+        user: req.user ?? null, 
+    });
+})
+viewsRouter.route('/api/sessions/register')
+.get(async (req,res)=>{
+    res.render('sign-up')
+})
+viewsRouter.route('/api/sessions/login')
+.get(async (req,res)=>{
     res.render('login')
 })
-
-/*
-router.get('/', async(req,res)=>{
-    console.log(req.session.user)
-    res.render('start',{
-        
-        user:req.session.user
-    })
-})
-*/
-export default router
+export default viewsRouter
