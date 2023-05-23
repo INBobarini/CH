@@ -3,3 +3,4 @@ nodemon.json
 .dependencygraph
 local storage
 githubcred.txt
+.env
