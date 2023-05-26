@@ -1,6 +1,6 @@
 import {Router} from 'express'
 //import ProductManager from '../controllers/ProductManager.js';
-import {pManager} from '../DAO/productManagerDb.js'
+import {pManager} from '../DAO/managers/productManagerDb.js'
 import express from 'express'
 
 import * as productsController from '../controllers/productsController.js'

@@ -1,7 +1,7 @@
 import passport from 'passport'
 import {Strategy as LocalStrategy} from 'passport-local'
 import {Strategy as GithubStrategy} from 'passport-github2'
-import { sManager } from '../DAO/sessionsManager.js'
+import { sManager } from '../DAO/managers/sessionsManager.js'
 import { clientID, clientSecret, githubCallbackUrl } from '../config/githubLogin.js'
 
 passport.use('register', new LocalStrategy(

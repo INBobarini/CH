@@ -1,7 +1,7 @@
-import { usersModel, usersGithubModel } from "../models/schemas.js"
-import {createHash, isValidPassword} from "../utils.js"
+import { usersModel, usersGithubModel } from "../models/usersModel.js"
+import {createHash, isValidPassword} from "../../config/utils.js"
 import {cManager} from "./cartsManagerDb.js"
-import config from '../config/config.js'
+import config from '../../config/config.js'
 
 class sessionManager{
     constructor(){//puede convenir instanciar la clase con el model
@@ -9,6 +9,8 @@ class sessionManager{
     }
     async registerGithubUser(userGithubLogin, userGithubName){
         let user = {userLogin:userGithubLogin, first_name:userGithubName}
+        let cart = await cManager.createOne()
+        user.cart = cart._id 
         const newUser = await usersGithubModel.create(user)
         return newUser
     }
@@ -22,7 +24,6 @@ class sessionManager{
         user.password = createHash(user.password)
         let cart = await cManager.createOne()
         user.cart = cart._id 
-        console.log(user.cart)
         const newUser = await usersModel.create(user)
         return newUser
     }

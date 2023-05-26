@@ -1,4 +1,4 @@
-import {io} from './app.js' //mover a middleware/services?
+import {io} from '../app.js' //mover a middleware/services?
 
 io.on('connection', async socket =>{ 
     console.log("Nuevo cliente conectado: "+ socket.id)

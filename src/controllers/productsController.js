@@ -1,4 +1,4 @@
-import {pManager} from '../DAO/productManagerDb.js'
+import {pManager} from '../DAO/managers/productManagerDb.js'
 
 export async function handleGet(req, res, next) {
     

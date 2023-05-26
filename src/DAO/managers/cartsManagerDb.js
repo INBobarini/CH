@@ -1,5 +1,5 @@
-import {productosModel,cartsModel} from '../models/schemas.js'
-
+import {productosModel} from '../models/productsModel.js'
+import {cartsModel} from '../models/cartsModel.js'
 class cartsManager{
     constructor(model){
         this.model = model
@@ -66,7 +66,7 @@ class cartsManager{
                     {new:true}
                 )
                 updCart = await cartsModel.findOneAndUpdate(
-                    {_id:cid, 'products.product.quantity': 0}, 
+                    {_id:cid, 'products.quantity': { $lte: 0 }}, 
                     {$pull: { products: {product:pid} } },
                     {new:true}
                 )

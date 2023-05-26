@@ -1,6 +1,6 @@
 import express from 'express'
 import handlebars from 'express-handlebars';
-import {__dirname} from './utils.js'
+import {__dirname} from './config/utils.js'
 
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/cartsRouter.js';
@@ -62,7 +62,7 @@ export const io = new SocketIOServer(httpServer)
 app.engine('handlebars', handlebars.engine());
 app.set('views','./src/views')
 app.set('view engine','handlebars')
-app.use(express.static(__dirname+'/public'))
+app.use(express.static(__dirname+'/public/'))
 
 //routers API
 app.use(ROUTES.PRODUCTS, productsRouter)

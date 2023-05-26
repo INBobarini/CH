@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {sManager} from '../DAO/sessionsManager.js'
+import {sManager} from '../DAO/managers/sessionsManager.js'
 import passport from 'passport'
 
 

@@ -1,4 +1,4 @@
-import {chatModel} from '../models/schemas.js'
+import {chatModel} from '../models/chatModel.js'
 
 class messagesManager {
     constructor(model){

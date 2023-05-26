@@ -1,7 +1,7 @@
 import express from 'express'
-import {pManager} from '../DAO/productManagerDb.js' 
-import {msgManager} from '../DAO/chatManagerDb.js'
-import {cManager} from '../DAO/cartsManagerDb.js'
+import {pManager} from '../DAO/managers/productManagerDb.js' 
+import {msgManager} from '../DAO/managers/chatManagerDb.js'
+import {cManager} from '../DAO/managers/cartsManagerDb.js'
 import {io} from '../app.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
@@ -29,6 +29,7 @@ get(
         docs,
         totalPages,
         page,
+        limit,
         hasPrevPage,
         hasNextPage,
         prevPage,
@@ -37,10 +38,11 @@ get(
     
     res.render('home',{
         products:docs,
-        style:'index.css',
+        styles:'css/index.css',
         user: req.user||"no logueado",
         totalPages,
         page,
+        limit,
         hasPrevPage,
         hasNextPage,
         prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
@@ -90,7 +92,9 @@ viewsRouter.route('/carts/:cid')
     try{
         let cart = JSON.parse(JSON.stringify(req.result, null,'\t'))
         res.render('cart',{
-            products: cart.products
+            products: cart.products,
+            cartId: req.params.cid
+            
         })
     }
     catch(err){console.log(err),res.send(err)}
@@ -104,7 +108,6 @@ viewsRouter.route('/chat').get(async(req,res,next)=>{
     })
 })
 viewsRouter.route('/chat').post(async(req,res)=>{
-    console.log(req.body)
     let{user, message} = req.body
     let result = await msgManager.createOne(user,message)
     let messages = await msgManager.getAllLean() 

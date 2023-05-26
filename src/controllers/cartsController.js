@@ -1,7 +1,10 @@
-import { cManager } from '../DAO/cartsManagerDb.js'
+import { cManager } from '../DAO/managers/cartsManagerDb.js'
 
 export async function handleGetUserCart(req,res,next){//descartar y usar get comun
+    
+    
     req.result = await cManager.getOne(req.user.cart)
+    
     req.statusCode = req.result? 200 : 401
     next()
 }

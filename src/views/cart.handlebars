@@ -1,6 +1,52 @@
-<br>
-<h2>Cart: </h2>
+<a href="/">To product view</a>
+<h2>Your cart: </h2>
 {{#each products}}
-    <li>{{this.product.title}}, precio: ${{this.product.price}}. Cantidad: {{this.quantity}}</li>
-   
+    <button id="{{this.product._id}}" class="reduce-quantity">-1</button>
+    
+    <span>{{this.product.title}}, precio: ${{this.product.price}}. Cantidad: {{this.quantity}}</li></span>
+    <br>
+    
 {{/each}}
+<button id="{{cartId}}" class="empty-cart">Empty Cart</button>
+
+<script>
+    // buttons for reducing quantity of products
+    const reduceQuantityButtons = document.querySelectorAll('.reduce-quantity')
+    reduceQuantityButtons.forEach(function(node){
+        node.addEventListener('click', function(){
+            fetch(
+                window.location.origin + '/api/carts/' + "{{cartId}}" + '/product/' + node.id, 
+                {method: 'DELETE'}
+                )
+            .then(function(response) {
+            return response.json();
+            })
+            .then(function() {
+                window.location.reload()
+            })
+            .catch(function(error) {
+                console.error('Error removing product to cart:', error);
+            })
+        })
+    })
+
+    // button for emptying the cart
+    const emptyCartButton = document.querySelector('.empty-cart')
+    emptyCartButton.addEventListener('click',function(){
+        fetch(
+            window.location.origin + '/api/carts/' + "{{cartId}}", 
+            {method: 'DELETE'}
+        )
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error unloading the cart', error);
+        })
+    })
+       
+    
+</script>
