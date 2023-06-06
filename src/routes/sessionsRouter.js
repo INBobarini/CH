@@ -18,13 +18,11 @@ sessionsRouter
     }
 )*/
 
-sessionsRouter.
-route('/githubcallback')
+sessionsRouter.route('/githubcallback')
 .get(passport.authenticate('github',{failureRedirect:'/api/sessions/login'}),async (req,res)=>{res.redirect('/')})
 
 sessionsRouter.route('/logout')
 .get((req,res)=>{res.redirect('/')})
-
 
 sessionsRouter.route('/')
 .delete((req,res)=>{//hacer un metodo destroy con sessionManager

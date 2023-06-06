@@ -1,23 +1,21 @@
 import express from 'express'
-import {pManager} from '../DAO/managers/productManagerDb.js' 
-import {msgManager} from '../DAO/managers/chatManagerDb.js'
-import {cManager} from '../DAO/managers/cartsManagerDb.js'
+import {messagesRepository as chatService} from '../DAO/managers/chatService.js'
 import {io} from '../app.js'
+import { __dirname } from '../config/utils.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
-import { cartsResponseFormatter } from '../middlewares/responseFormatter.js'
 import {auth} from '../middlewares/auth.js'
 
 const viewsRouter = express.Router()
 
 viewsRouter.use(express.json())
 
+viewsRouter.use(express.static('/src/public'))
 
 viewsRouter.use((req,res,next)=>{//para tener websocket en las peticiones
     req['io'] = io
     next()
 })
-
 
 //PRODUCTS
 viewsRouter.route('/').
@@ -25,30 +23,31 @@ get(
     auth,
     pController.handleGet,
     (req,res)=>{
-    const {
-        docs,
-        totalPages,
-        page,
-        limit,
-        hasPrevPage,
-        hasNextPage,
-        prevPage,
-        nextPage,
-    } = req.result;
-    
-    res.render('home',{
-        products:docs,
-        styles:'css/index.css',
-        user: req.user||"no logueado",
-        totalPages,
-        page,
-        limit,
-        hasPrevPage,
-        hasNextPage,
-        prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
-        nextPage,
-    })
-})
+        const {
+            docs,
+            totalPages,
+            page,
+            limit,
+            hasPrevPage,
+            hasNextPage,
+            prevPage,
+            nextPage,
+        } = req.result;
+        
+        res.render('home',{
+            products:docs,
+            styles:'css/index.css',
+            user: req.user||"no logueado",
+            totalPages,
+            page,
+            limit,
+            hasPrevPage,
+            hasNextPage,
+            prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
+            nextPage,
+        })
+    }
+)
 //vista singular, no lanzada
 /*router.get('/:pid',async(req,res)=>{//algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)
@@ -86,33 +85,35 @@ viewsRouter.route('/realtimeproducts')
 //CARTS
 viewsRouter.route('/carts/:cid')
 .get(
-    
-    cController.handleGet,
+    cController.handleGetPopulated,
     async(req,res)=>{
     try{
-        let cart = JSON.parse(JSON.stringify(req.result, null,'\t'))
+        let cart = req.result
         res.render('cart',{
             products: cart.products,
-            cartId: req.params.cid
-            
+            cartId: req.params.cid,
+            hasProducts: Boolean(cart.products.length)
         })
     }
     catch(err){console.log(err),res.send(err)}
 })
 //CHAT
-viewsRouter.route('/chat').get(async(req,res,next)=>{
-    let messages = await msgManager.getAllLean()
+viewsRouter.route('/chat')
+.get(async(req,res,next)=>{
+    let messages = await chatService.getAllLean()
+    console.log(messages)
     res.render('chat',{
         messages: messages,
-        style:'index.css'
     })
 })
-viewsRouter.route('/chat').post(async(req,res)=>{
-    let{user, message} = req.body
-    let result = await msgManager.createOne(user,message)
-    let messages = await msgManager.getAllLean() 
+viewsRouter.route('/chat')
+.post(async(req,res)=>{
+    let{user, message} = req.body.newMessage
+    let result = await chatService.createOne(user, message)
+    let messages = await chatService.getAllLean() 
+    console.log(messages.length)
     req['io'].sockets.emit('actualizarMensajes', messages)
-    res.send(result)
+    //res.send(messages)
 })
 //SESSIONS
 viewsRouter.route('/api/sessions/profile').get(async (req,res)=>{ 

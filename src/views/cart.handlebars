@@ -7,7 +7,14 @@
     <br>
     
 {{/each}}
-<button id="{{cartId}}" class="empty-cart">Empty Cart</button>
+
+{{#if hasProducts}}
+    <button id="{{cartId}}" class="empty-cart">Empty Cart</button>
+{{else}}
+    <p>You have no products in your cart</p>
+{{/if}}
+
+
 
 <script>
     // buttons for reducing quantity of products

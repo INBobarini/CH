@@ -2,13 +2,14 @@ let okStatusMessage = "success"
 let badStatusMessage = "error"
 class responseObj {
     constructor(result){
-        this.payload = result.docs; //mongoose paginate result
-        this.totalPages = result.totalPages;
-        this.prevPage = result.prevPage;
-        this.nextPage = result.nextPage;
-        this.page = result.page; 
-        this.hasPrevPage = result.hasPrevPage;
-        this.hasNextPage = result.hasNextPage;
+        this.status = result.statusCode
+        this.payload = result.docs||[result]; //even if single product, must return an array
+        this.totalPages = result.totalPages||0;
+        this.prevPage = result.prevPage||null;
+        this.nextPage = result.nextPage||null;
+        this.page = result.page||null; 
+        this.hasPrevPage = result.hasPrevPage||null;
+        this.hasNextPage = result.hasNextPage||null;
         this.prevLink = result.prevLink||null;
         this.nextLink = result.nextLink||null;
         this.limit = result.limit;
@@ -25,8 +26,9 @@ function (req,res){
     if(statusMessage===badStatusMessage){
         return res.status(req.statusCode).json({status:statusMessage, payload:"{}"})
     }
+    req.result.statusCode = req.statusCode
     let response = new responseObj(req.result)
-    res.status(req.statusCode).json({status:statusMessage, payload:response})
+    res.status(req.statusCode).json(response)
 }
 
 export const cartsResponseFormatter = 

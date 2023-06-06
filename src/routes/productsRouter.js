@@ -13,12 +13,25 @@ const productosRouter = Router()
 productosRouter.route(['/:_id','/'])
 .get(
     productsController.handleGet, 
-    productsResponseFormatter)
+    productsResponseFormatter
+    )
 
-productosRouter.route('/').post(productsController.handlePost, productsResponseFormatter)
+productosRouter.route('/')
+.post(
+    productsController.handlePost, 
+    productsResponseFormatter
+    )
 
-productosRouter.route('/:_id').put(productsController.handlePut, productsResponseFormatter)
+productosRouter.route('/:_id')
+.put(
+    productsController.handlePut, 
+    productsResponseFormatter
+    )
 
-productosRouter.route('/:_id').delete(productsController.handleDelete, productsResponseFormatter)
+productosRouter.route('/:_id')
+.delete(
+    productsController.handleDelete, 
+    productsResponseFormatter
+    )
 
 export default productosRouter 

@@ -20,6 +20,7 @@ import {passportInitialize, passportSession} from './config/passport.config.js'
 import config from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
 
+
 //express
 const app = express()
 const httpServer = app.listen(config.port,()=>console.log("servidor en el puerto 8080") )
@@ -59,10 +60,11 @@ app.use(express.json())
 export const io = new SocketIOServer(httpServer)
 
 //vistas handlebars
+app.use(express.static('/public'))
 app.engine('handlebars', handlebars.engine());
 app.set('views','./src/views')
 app.set('view engine','handlebars')
-app.use(express.static(__dirname+'/public/'))
+
 
 //routers API
 app.use(ROUTES.PRODUCTS, productsRouter)

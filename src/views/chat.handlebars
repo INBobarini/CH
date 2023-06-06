@@ -1,4 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
 <h2>Mensajes</h2>
 
 User:<input id="user_input" type="text">
@@ -6,17 +7,13 @@ User:<input id="user_input" type="text">
 Message:<input id="message_input" type="text">
 <br>
 <button id="sendBtn">Send</button>
-
+<br>
 
 <div id="chatBox">
-    {{#each messages}}
-        <span>{{this.user}}: {{this.message}}</span>
-        <br>
-    {{/each}}
+    
 </div>
 
-<div id = "test"></div>
-
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/chat.js"></script>
+
+<script src="js/chat.js"></script>
 
