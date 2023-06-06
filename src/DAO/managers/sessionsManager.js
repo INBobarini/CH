@@ -1,5 +1,5 @@
 import { usersModel, usersGithubModel } from "../models/usersModel.js"
-import {createHash, isValidPassword} from "../../config/utils.js"
+import {createHash, isValidPassword} from "../../utils.js"
 import {cManager} from "./cartsManagerDb.js"
 import config from '../../config/config.js'
 

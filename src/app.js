@@ -1,6 +1,6 @@
 import express from 'express'
 import handlebars from 'express-handlebars';
-import {__dirname} from './config/utils.js'
+import {__dirname} from './utils.js'
 
 import productsRouter from './routes/productsRouter.js';
 import cartsRouter from './routes/cartsRouter.js';
@@ -19,7 +19,6 @@ import MongoStore from 'connect-mongo' //npm i connect-mongo
 import {passportInitialize, passportSession} from './config/passport.config.js'
 import config from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
-
 
 //express
 const app = express()
@@ -60,11 +59,11 @@ app.use(express.json())
 export const io = new SocketIOServer(httpServer)
 
 //vistas handlebars
-app.use(express.static('/public'))
 app.engine('handlebars', handlebars.engine());
 app.set('views','./src/views')
 app.set('view engine','handlebars')
-
+console.log(__dirname)
+app.use(express.static(__dirname+'/public'))
 
 //routers API
 app.use(ROUTES.PRODUCTS, productsRouter)

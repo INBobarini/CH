@@ -1,7 +1,7 @@
 import express from 'express'
 import {messagesRepository as chatService} from '../DAO/managers/chatService.js'
 import {io} from '../app.js'
-import { __dirname } from '../config/utils.js'
+import { __dirname } from '../utils.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
 import {auth} from '../middlewares/auth.js'
