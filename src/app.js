@@ -62,7 +62,6 @@ export const io = new SocketIOServer(httpServer)
 app.engine('handlebars', handlebars.engine());
 app.set('views','./src/views')
 app.set('view engine','handlebars')
-console.log(__dirname)
 app.use(express.static(__dirname+'/public'))
 
 //routers API

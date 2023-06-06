@@ -10,7 +10,10 @@ Message:<input id="message_input" type="text">
 <br>
 
 <div id="chatBox">
-    
+    {{#each messages}}
+        <span>{{this.user}}: {{this.message}}</span>
+        <br>
+    {{/each}}
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

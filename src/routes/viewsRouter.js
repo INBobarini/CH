@@ -101,7 +101,6 @@ viewsRouter.route('/carts/:cid')
 viewsRouter.route('/chat')
 .get(async(req,res,next)=>{
     let messages = await chatService.getAllLean()
-    console.log(messages)
     res.render('chat',{
         messages: messages,
     })
@@ -111,13 +110,12 @@ viewsRouter.route('/chat')
     let{user, message} = req.body.newMessage
     let result = await chatService.createOne(user, message)
     let messages = await chatService.getAllLean() 
-    console.log(messages.length)
     req['io'].sockets.emit('actualizarMensajes', messages)
-    //res.send(messages)
+    res.send(result)
 })
 //SESSIONS
 viewsRouter.route('/api/sessions/profile').get(async (req,res)=>{ 
-    //let user = await sManager.getUserData(req.session.user)
+    let user = await sManager.getUserData(req.session.user)
     res.render('profile', {
         user: req.user ?? null, 
     });

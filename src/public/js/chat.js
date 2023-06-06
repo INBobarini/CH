@@ -16,7 +16,7 @@ sendBtn.addEventListener('click', e => {
         headers: {
           "Content-type": "application/json; charset=UTF-8"
         }
-      }).then(res => res.text()).then(console.log)
+      }).then(res => res.text()).then()
 })
 
 const chatTemplate = `{{#each messages}}
