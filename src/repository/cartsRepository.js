@@ -1,4 +1,4 @@
-import { cartsDAOMongoose } from "../DAO/DAOmongoose/cartsDAOmongoose.js";
+import { cartsDAOMongoose } from "../DAO/DaoMongoose/cartsDAOmongoose.js";
 
 class CartsRepository{
     constructor(dao){

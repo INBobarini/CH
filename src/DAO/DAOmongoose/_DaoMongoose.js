@@ -22,17 +22,10 @@ export class DAOMongoose{
         return result
     }    
     async readMany(criteria,options){
-        //CRITERIA/QUERY NOT tested
-        let result =  await this.#model.paginate(
-            criteria,
-            {
-                limit:options.limit??10, 
-                page:options.page??1, 
-                sort:options.sort
-            }
-        )
+        if(!criteria){criteria={}}
+        let result =  await this.#model.paginate(criteria, options
+        ).then({})
         result = cleanObject(result)
-        //let noIdResult = result.map(e=>delete e._id)
         return result
     }
     async updateOne(criteria, newData){
@@ -50,6 +43,17 @@ export class DAOMongoose{
         let result = await this.#model.findByIdAndUpdate(criteria, newData)
         return result
     }
+    async updateManyWithDifferentData(updates) {//[{filter: { _id: _id },update: { key: value }}
+        
+        const bulkOps = updates.map(({ filter, update }) => ({
+          updateOne: {
+            filter,
+            update
+          }
+        }));
+        return await this.#model.bulkWrite(bulkOps);
+      }
+
     async deleteOne(criteria){
         let result = await this.#model.findOneAndDelete(
             criteria, 
@@ -66,4 +70,18 @@ export class DAOMongoose{
 }
 
 
+/*
+// Usage example
+const updates = [
+    {
+      filter: { _id: '60c78d69c8a8d41cdd1a72a1' },
+      update: { price: 10 }
+    },
+    {
+      filter: { _id: '60c78d69c8a8d41cdd1a72a2' },
+      update: { quantity: 5 }
+    }
+  ];
 
+updateMultipleProducts(updates);
+*/

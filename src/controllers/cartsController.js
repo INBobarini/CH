@@ -1,6 +1,6 @@
-import * as cartsService from '../DAO/managers/cartsService.js'
+import * as cartsService from '../services/cartsService.js'
 import { cartsRepository } from '../repository/cartsRepository.js'
-
+import { current } from '../middlewares/auth.js'
 export async function handleGetUserCart(req,res,next){//descartar y usar get comun
     req.result = await cartsRepository.getCart(req.user.cart)
     req.statusCode = req.result? 200 : 401
@@ -28,6 +28,19 @@ export async function handlePostCart(req,res,next){
 export async function handlePostProductInCart(req,res,next){
     req.result = await cartsService.addProductToCart(req.params.cid, req.params.pid)
     req.statusCode = req.result? 201 : 400
+    next()
+}
+
+export async function handleCartPurchase(req,res,next){
+     try{ 
+        let purchaser = current(req.session) //email
+        req.result = await cartsService.purchaseCart(req.params.cid, purchaser.email )
+        req.statusCode = req.result? 201 : 400
+        return res.statusCode(req.statusCode).send(req.result)
+    }
+    catch(err){res.json({error:err})
+    }
+    
     next()
 }
 

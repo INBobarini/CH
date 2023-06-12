@@ -1,4 +1,4 @@
-import mongoose from './_mongoConnect.js'
+import mongoose from '../DAO/DaoMongoose/_mongoConnect.js'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
 export const cartSchema = new mongoose.Schema({

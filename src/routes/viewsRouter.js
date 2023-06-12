@@ -1,10 +1,11 @@
 import express from 'express'
-import {messagesRepository as chatService} from '../DAO/managers/chatService.js'
+import {messagesRepository as chatService} from '../repository/chatRepository.js'
 import {io} from '../app.js'
 import { __dirname } from '../utils.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
-import {auth} from '../middlewares/auth.js'
+import * as sessionsService from '../services/sessionsService.js'
+import {auth, current, hasSession}  from '../middlewares/auth.js'
 
 const viewsRouter = express.Router()
 
@@ -20,20 +21,11 @@ viewsRouter.use((req,res,next)=>{//para tener websocket en las peticiones
 //PRODUCTS
 viewsRouter.route('/').
 get(
-    auth,
+    hasSession,
     pController.handleGet,
     (req,res)=>{
-        const {
-            docs,
-            totalPages,
-            page,
-            limit,
-            hasPrevPage,
-            hasNextPage,
-            prevPage,
-            nextPage,
-        } = req.result;
-        
+        const {docs,totalPages,page,limit,hasPrevPage,
+            hasNextPage,prevPage,nextPage,} = req.result;
         res.render('home',{
             products:docs,
             styles:'css/index.css',
@@ -45,6 +37,7 @@ get(
             hasNextPage,
             prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
             nextPage,
+            isAdmin: false|| (req.user.role==="admin")
         })
     }
 )
@@ -71,16 +64,20 @@ viewsRouter.route('/realtimeproducts')
 
 viewsRouter.route('/realtimeproducts')
 .post(
+    await auth({notUser:true}),
     pController.handlePostAndGetAll, 
     async (req,res)=>{
-        req['io'].sockets.emit('updateProducts', req.result.docs)  
+        req['io'].sockets.emit('updateProducts', req.result.docs)
+        res.send(req.result)  
 })
-viewsRouter.route('/realtimeproducts')
+viewsRouter.route('/realtimeproducts/')
 .delete(
-    async (req,res,next)=>{req.params._id = req.body._id, next()}, //resolver este parche
+    await auth({notUser:true}),
+    (req,res,next)=>{req.params._id = req.body, next()},//fetch brings only from req.body
     pController.handleDeleteAndGetAll,
     async(req,res)=>{
         req['io'].sockets.emit('updateProducts', req.result.docs)
+        res.send(req.result)
 })
 //CARTS
 viewsRouter.route('/carts/:cid')
@@ -99,26 +96,36 @@ viewsRouter.route('/carts/:cid')
 })
 //CHAT
 viewsRouter.route('/chat')
-.get(async(req,res,next)=>{
-    let messages = await chatService.getAllLean()
-    res.render('chat',{
-        messages: messages,
-    })
-})
+.get(
+    async(req,res,next)=>{
+        let messages = await chatService.getAllLean()
+        let fullName = req.user.first_name + " " + req.user.last_name //DTO?
+        res.render('chat',{
+            fullName: fullName,
+            messages: messages,
+        })
+    },
+)
+
 viewsRouter.route('/chat')
-.post(async(req,res)=>{
-    let{user, message} = req.body.newMessage
-    let result = await chatService.createOne(user, message)
-    let messages = await chatService.getAllLean() 
-    req['io'].sockets.emit('actualizarMensajes', messages)
-    res.send(result)
-})
+.post(
+    await auth({notAdmin:true}),
+    async(req,res)=>{
+        let{user, message} = req.body.newMessage
+        let result = await chatService.createOne(user, message)
+        let messages = await chatService.getAllLean() 
+        req['io'].sockets.emit('actualizarMensajes', messages)
+        res.send(result)
+    },
+)
 //SESSIONS
-viewsRouter.route('/api/sessions/profile').get(async (req,res)=>{ 
-    let user = await sManager.getUserData(req.session.user)
+viewsRouter.route('/api/sessions/profile').
+get(async (req,res)=>{ 
+    let user = await sessionsService.getUserData(req.session.passport.user)// ver
     res.render('profile', {
-        user: req.user ?? null, 
+        user: user ?? null, 
     });
+    
 })
 viewsRouter.route('/api/sessions/register')
 .get(async (req,res)=>{

@@ -1,5 +1,4 @@
 import {Router} from 'express'
-import { cManager } from '../DAO/managers/cartsManagerDb.js'
 import * as cartsController from '../controllers/cartsController.js'
 import { cartsResponseFormatter } from '../middlewares/responseFormatter.js'
 
@@ -28,6 +27,11 @@ carritosRouter.route('/:cid/product/:pid')
 .post(
     cartsController.handlePostProductInCart,
     cartsResponseFormatter
+)
+carritosRouter.route('/:cid/purchase')
+.post(
+    cartsController.handleCartPurchase,
+    //cartsResponseFormatter
 )
 carritosRouter.route('/:cid')
 .put(

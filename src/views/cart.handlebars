@@ -10,6 +10,7 @@
 
 {{#if hasProducts}}
     <button id="{{cartId}}" class="empty-cart">Empty Cart</button>
+    <button id="{{cartId}}" class="purchase-cart">Purchase Cart</button>
 {{else}}
     <p>You have no products in your cart</p>
 {{/if}}
@@ -52,6 +53,23 @@
         })
         .catch(function(error) {
             console.error('Error unloading the cart', error);
+        })
+    })
+
+    // button for purchasing the cart
+    const purchaseCartButton = document.querySelector('.purchase-cart')
+    purchaseCartButton.addEventListener('click',function(){
+        fetch(
+            window.location.origin + '/api/carts/' + "{{cartId}}" + "/purchase", 
+            {method: 'POST'})
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error purchasing the cart', error);
         })
     })
        

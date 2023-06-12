@@ -1,5 +1,5 @@
-import mongoose from './_mongoConnect.js'
-//import mongoosePaginate from 'mongoose-paginate-v2'
+import mongoose from '../DAO/DaoMongoose/_mongoConnect.js'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const usersSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
@@ -10,16 +10,16 @@ const usersSchema = new mongoose.Schema({
     role: {type: String, default: "user"},
     cart: {type: mongoose.Schema.Types.ObjectId, ref: "carritos" }
   }, { versionKey: false })
+
+usersSchema.plugin(mongoosePaginate)
+export const usersModel = mongoose.model('usuarios', usersSchema)
   
-   const usersModel = mongoose.model('usuarios', usersSchema)
-  
-  const githubUsersSchema = new mongoose.Schema({
+  const githubUsersSchema = new mongoose.Schema({ //TODO MIX with DTO?
     userLogin:{ type: String, required: true, unique: true },
     first_name:{ type: String, required: false },
     role: {type: String, default: "user"},
     cart: {type: mongoose.Schema.Types.ObjectId, ref: "carritos" } 
   },{ versionKey: false })
 
-  const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)
-
-  export {usersModel, usersGithubModel}
+githubUsersSchema.plugin(mongoosePaginate)
+export const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)

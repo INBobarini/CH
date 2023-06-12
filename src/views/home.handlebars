@@ -2,6 +2,13 @@
 <link rel="icon" type="image/svg+xml" href="https://example.com/image.svg">
 <span>Bienvenido {{user.first_name}}. </span>
 <a href="/api/sessions/profile">Profile</a>
+<a href="/chat">Chat</a>
+{{#if isAdmin}}
+<a href="/realtimeproducts">RealTimeProducts</a>
+{{else}}
+
+{{/if}}
+
 <h2>Products</h2>
 
 <div id="productsTable">    

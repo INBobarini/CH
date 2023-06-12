@@ -1,6 +1,6 @@
 import {chatModel} from '../models/chatModel.js'
 
-class messagesRepository {
+class MessagesRepository {
     constructor(model){
         this.model = model
     }
@@ -15,7 +15,5 @@ class messagesRepository {
     }
 }
 
-const msgManager = new messagesRepository(chatModel)
-
-
-export {msgManager as messagesRepository}
+export const messagesRepository = new MessagesRepository(chatModel)
+//make a DAO??

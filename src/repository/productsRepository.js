@@ -1,4 +1,4 @@
-import { productsDAOMongoose } from "../DAO/DAOmongoose/productsDaoMongoose.js";
+import { productsDAOMongoose } from "../DAO/DaoMongoose/productsDaoMongoose.js";
 
 class ProductsRepository {
     constructor(dao){
@@ -10,20 +10,37 @@ class ProductsRepository {
     async getProduct(pid){
         return await this.dao.readOne({_id:pid})
     }
+    async getManyProductsByIds(pids){
+        return await this.dao.readMany({_id:{$in: pids}})
+    }
     async getProducts(query,limit,page,sort){
         const options = {
-            page:page,
-            limit:limit,
-            sort:sort
+            page:page||1,
+            limit:limit||10,
+            sort:sort||{}
         }
-        return await this.dao.readMany(query, options)
+        let result = await this.dao.readMany(query, options)
+        
+        return result
     }
     async updateProduct(pid,newData){
-        return await this.dao.updateOne({_id:pid}, newData)
+        return await this.dao.updateOne({_id:pid}, newData) //newData = {key:value}
     }
     async updateProducts(criteria,newData){
         return await this.dao.updateMany(criteria, newData)
     }
+    async updateMultipleProducts(arrProducts){
+        let updates = arrProducts.map(((p)=>{
+            
+            let filter = {_id: p._id}
+            let update = {$set: p}
+            
+            return {filter, update}
+        }))
+        return await this.dao.updateManyWithDifferentData(updates)
+    }
+    
+      
     async deleteProduct(pid){
         return await this.dao.deleteOne({_id:pid})
     }
@@ -34,3 +51,16 @@ class ProductsRepository {
 
 export const productsRepository = new ProductsRepository(productsDAOMongoose)
 
+//UPDATE MULTIPLE SETS
+/*
+const upd = [{
+            _id: "6483898895d70999f8d6c1e5",
+            stock: 10
+        },{
+            _id: "6483898895d70999f8d6c1e6",
+            stock: 10
+        }
+    ]
+
+    await productsRepository.updateMultipleProducts(upd)
+*/

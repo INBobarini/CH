@@ -1,6 +1,6 @@
 import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
-import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../config/passport.config.js'
+import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 
 const authRouter = Router()
 
@@ -14,6 +14,7 @@ authRouter.route('/register')
 
 authRouter.route('/login')
 .post(
+    (req,res,next)=>{console.log("login"),next()},
     autenticationLogin, 
     loginController
 )

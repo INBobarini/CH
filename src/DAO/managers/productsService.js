@@ -1,1 +1,0 @@
-import { productsRepository } from "../../repository/productsRepository.js";

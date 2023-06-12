@@ -1,7 +1,7 @@
 import passport from 'passport'
 import {Strategy as LocalStrategy} from 'passport-local'
 import {Strategy as GithubStrategy} from 'passport-github2'
-import { sManager } from '../DAO/managers/sessionsManager.js'
+import * as sessionsService from "../services/sessionsService.js"
 import { clientID, clientSecret, githubCallbackUrl } from '../config/githubLogin.js'
 
 passport.use('register', new LocalStrategy(
@@ -15,7 +15,7 @@ passport.use('register', new LocalStrategy(
                 first_name:first_name,
                 last_name:last_name,
             }
-            const user = await sManager.registerUser(newUser)
+            const user = await sessionsService.registerUser(newUser)
             done(null, user)
         }catch(err){done(err.message)}
 }))
@@ -24,7 +24,7 @@ passport.use('login', new LocalStrategy(
     { passReqToCallback: true , usernameField:'email'}, async (req, _u, _p, done) => {
         let { email, password } = req.body
         try {
-            let user = await sManager.logInCheck(email, password)
+            let user = await sessionsService.logInCheck(email, password)
             password = null
             done(null,user)
         } catch (err) {
@@ -37,9 +37,9 @@ passport.use('github', new GithubStrategy({clientID, clientSecret, callbackURL: 
   }, async (accessToken, refreshToken, profile, done) => {
     let user
     try {
-        user = await sManager.loginGithubUser(profile._json.login)
+        user = await sessionsService.loginGithubUser(profile._json.login)
         if(!user){
-            user = await sManager.registerGithubUser(profile._json.login, profile._json.name)
+            user = await sessionsService.registerGithubUser(profile._json.login, profile._json.name)
         }
     } catch (error) {
         console.log("error: "+error.message)

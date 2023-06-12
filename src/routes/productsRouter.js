@@ -1,10 +1,7 @@
 import {Router} from 'express'
-//import ProductManager from '../controllers/ProductManager.js';
-import {pManager} from '../DAO/managers/productManagerDb.js'
-import express from 'express'
-
 import * as productsController from '../controllers/productsController.js'
 import {productsResponseFormatter} from '../middlewares/responseFormatter.js'
+import {auth} from '../middlewares/auth.js' 
 
 const productosRouter = Router()
 
@@ -18,18 +15,21 @@ productosRouter.route(['/:_id','/'])
 
 productosRouter.route('/')
 .post(
+    await auth({notUser:true}),
     productsController.handlePost, 
     productsResponseFormatter
     )
 
 productosRouter.route('/:_id')
 .put(
+    //await auth({notUser:true}),
     productsController.handlePut, 
     productsResponseFormatter
     )
 
 productosRouter.route('/:_id')
 .delete(
+    await auth({notUser:true}),
     productsController.handleDelete, 
     productsResponseFormatter
     )

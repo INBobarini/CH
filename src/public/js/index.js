@@ -1,35 +1,33 @@
 const socket = io() //creates a socket whenever this view is rendered
+
 //DELETE BTN
 const deleteBtn = document.querySelector("#deleteBtn")
 
 deleteBtn.addEventListener('click',(event)=>{
     const _id = document.querySelector("#id").value ?? null
-    
     fetch('/realtimeproducts', {
         method: "DELETE",
-        body: JSON.stringify({
-          _id
-        }),
+        body: JSON.stringify({_id}),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
         }
-      }).then(res => res.text()).then(console.log)
+      }).then(res => res.text()).then()
 })
 
 //ADD BTN
 const addBtn = document.querySelector("#addBtn")
 const product = {}
 addBtn.addEventListener('click',(event)=>{
-    
-    let keys = ["title","description","code","price","thumbnail","stock","status"]
+    let keys = ["title","description","code","price","thumbnail","stock","status"]//model?
     keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
+    console.log(product)
     fetch('/realtimeproducts', {
         method: "POST",
         body: JSON.stringify(product),
         headers: {
           "Content-type": "application/json; charset=UTF-8"
         }
-      }).then(res => res.text()).then(console.log)
+      }).then(res => res.text()).then()
 })
 
 //plantilla parcial y socket o

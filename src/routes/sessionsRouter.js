@@ -1,13 +1,13 @@
 import {Router} from 'express'
-import {sManager} from '../DAO/managers/sessionsManager.js'
 import passport from 'passport'
+import {current} from '../middlewares/auth.js'
 
 
 const sessionsRouter = Router()
 
 sessionsRouter
-.route('/github')
-.get(passport.authenticate('github',{scope:['user:email']}),async (req,res)=>{})
+.route('/github').get(
+    passport.authenticate('github',{scope:['user:email']}),async (req,res)=>{res.redirect('/')})
 
 //LOGIN
 
@@ -18,8 +18,8 @@ sessionsRouter
     }
 )*/
 
-sessionsRouter.route('/githubcallback')
-.get(passport.authenticate('github',{failureRedirect:'/api/sessions/login'}),async (req,res)=>{res.redirect('/')})
+sessionsRouter.route('/githubcallback').get(
+    passport.authenticate('github', {failureRedirect:'/api/sessions/login'}), async (req,res)=>{res.redirect('/')})
 
 sessionsRouter.route('/logout')
 .get((req,res)=>{res.redirect('/')})
@@ -32,10 +32,15 @@ sessionsRouter.route('/')
     res.sendStatus(200)
 })
 
-sessionsRouter.route('/current').get((req,res)=>{//sacar a session manager
-    let userToShow = req.session.passport.user
-    userToShow.password = "XXXXXXXX"
-    res.send(userToShow)
+sessionsRouter.route('/current').get((req,res)=>{//sacar a session manager, usar en profile view, mandar a un controller de sesiones?
+    try{
+        let currentUser = current(req.session)
+        res.status(200).send(currentUser)
+    }
+    catch(error){
+        res.status(403).json({message:"No logueado", error:error})
+    }
+    
 })
 
 export {sessionsRouter}
