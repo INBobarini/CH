@@ -60,6 +60,7 @@ export class DAOFs{
         result=cleanObject(result)
         //let noIdResult = result.map(e=>delete e._id)
         return result*/
+        //
     }    
     async readMany(criteria,options){
         /*if(!criteria){criteria={}}
