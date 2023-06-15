@@ -1,5 +1,5 @@
 import express from 'express'
-import {messagesRepository as chatService} from '../repository/chatRepository.js'
+import {messagesRepository} from '../repository/chatRepository.js'
 import {io} from '../app.js'
 import { __dirname } from '../utils.js'
 import * as pController from '../controllers/productsController.js'
@@ -98,7 +98,7 @@ viewsRouter.route('/carts/:cid')
 viewsRouter.route('/chat')
 .get(
     async(req,res,next)=>{
-        let messages = await chatService.getAllLean()
+        let messages = await messagesRepository.getAllLean()
         let fullName = req.user.first_name + " " + req.user.last_name //DTO?
         res.render('chat',{
             fullName: fullName,
@@ -112,8 +112,8 @@ viewsRouter.route('/chat')
     await auth({notAdmin:true}),
     async(req,res)=>{
         let{user, message} = req.body.newMessage
-        let result = await chatService.createOne(user, message)
-        let messages = await chatService.getAllLean() 
+        let result = await messagesRepository.createOne(user, message)
+        let messages = await messagesRepository.getAllLean() 
         req['io'].sockets.emit('actualizarMensajes', messages)
         res.send(result)
     },

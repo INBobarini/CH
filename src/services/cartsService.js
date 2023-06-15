@@ -99,8 +99,9 @@ export async function purchaseCart(cid, purchaserEmail){
         subtotal = p[i].quantity * prodPrice
         return acc + subtotal
     },0)
-    let result = await ticketsRepository.createTicket(amount,purchaserEmail)
-    return result
+    await ticketsRepository.createTicket(amount,purchaserEmail)
+    //RETURN THE CART WITH THE REMAINDER ITEMS
+    return remainderCart
 }
 
     

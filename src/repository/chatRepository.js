@@ -16,4 +16,4 @@ class MessagesRepository {
 }
 
 export const messagesRepository = new MessagesRepository(chatModel)
-//make a DAO??
+//make a DAO for chat??

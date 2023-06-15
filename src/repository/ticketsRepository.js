@@ -1,4 +1,4 @@
-import { ticketsDAOMongoose } from "../DAO/DaoMongoose/ticketsDaoMongoose.js";
+import { dao } from "../DAO/daosFactory.js";
 
 class TicketsRepository {
     constructor(dao){
@@ -10,4 +10,4 @@ class TicketsRepository {
     }
 }
 
-export const ticketsRepository = new TicketsRepository(ticketsDAOMongoose)
+export const ticketsRepository = new TicketsRepository(dao.tickets)

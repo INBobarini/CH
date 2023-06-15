@@ -17,7 +17,7 @@ import FileStore from 'session-file-store'//instalarlo con npm i session-file-st
 import MongoStore from 'connect-mongo' //npm i connect-mongo
 
 import {passportInitialize, passportSession} from './middlewares/passport.config.js'
-import config from './config/config.js'
+import {config} from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
 
 //express

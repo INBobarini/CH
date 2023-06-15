@@ -1,4 +1,4 @@
-import { cartsDAOMongoose } from "../DAO/DaoMongoose/cartsDAOmongoose.js";
+import { dao } from "../DAO/daosFactory.js";
 
 class CartsRepository{
     constructor(dao){
@@ -32,7 +32,7 @@ class CartsRepository{
         return await this.dao.deleteOne({_id:cid})
     }
 }
-export const cartsRepository = new CartsRepository(cartsDAOMongoose)
+export const cartsRepository = new CartsRepository(dao.carts)
 
 //TESTS
 

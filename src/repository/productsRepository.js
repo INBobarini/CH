@@ -1,4 +1,4 @@
-import { productsDAOMongoose } from "../DAO/DaoMongoose/productsDaoMongoose.js";
+import { dao } from "../DAO/daosFactory.js";
 
 class ProductsRepository {
     constructor(dao){
@@ -49,7 +49,7 @@ class ProductsRepository {
     }
 }
 
-export const productsRepository = new ProductsRepository(productsDAOMongoose)
+export const productsRepository = new ProductsRepository(dao.products)
 
 //UPDATE MULTIPLE SETS
 /*
