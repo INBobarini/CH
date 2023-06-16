@@ -46,69 +46,55 @@ export class DAOFs{
     }
 
     //get model() { return this.#model }
-    
-    async create (element){
+    async loadData(){
         let fileContent = await fs.promises.readFile(this.path,'utf-8')
-        let info = JSON.parse(fileContent)
+        return JSON.parse(fileContent)
+    }
+    async saveData(info){
+        return await fs.promises.writeFile(this.path,JSON.stringify(info,null,'\t'))
+    }
+    async create (element){
+        let info = await this.loadData()
         info.push(new this.Entity(element))
-        let updatedInfo = await fs.promises.writeFile(this.path,JSON.stringify(info,null,'\t'))
-        return updatedInfo 
+        return await this.saveData(info)
     }
     async readOne(criteria){
-        /*let result = await this.#model.findOne(criteria).lean()
-        if(!result) throw new Error ('NOT FOUND TO READ')
-        result=cleanObject(result)
-        //let noIdResult = result.map(e=>delete e._id)
-        return result*/
-        //
+        //criteria={_id:id}
+        let info = await this.loadData()
+        return info.find((e)=>{e._id == criteria._id})
     }    
     async readMany(criteria,options){
-        /*if(!criteria){criteria={}}
-        let result =  await this.#model.paginate(criteria, options
-        ).then({})
-        result = cleanObject(result)
-        return result*/
+        let info = await this.loadData()
+        return info.filter((e)=>{e._id == criteria._id})
     }
     async updateOne(criteria, newData){
-        /*let result= await this.#model.findByIdAndUpdate(
-            criteria, 
-            newData,
-            { new: true, projection: { _id: 0 } }
-            )
-        .lean()
-        if(!result) throw new Error ('NOT FOUND TO UPDATE')
-        delete result._id
-        return result*/
+        //criteria={_id:id}
+        let info = this.loadData()
+        let i = info.findIndex((e)=>{e._id==criteria._id})
+        info[i]=newData
+        await this.saveData(info)
+        return info[i]
     }
     async updateMany(criteria, newData){
-        /*let result = await this.#model.findByIdAndUpdate(criteria, newData)
-        return result*/
+        let info = await this.loadData()
+        //this is a deletemany
+        let infoToUpdate = info.map((e)=>{
+            if(e._id==criteria._id){
+                return null
+            }
+        })
+        let updatedInfo = infoToUpdate.filter(e=>e!==null)
+        //
+        updatedInfo = updatedInfo.concat(newData)
+        return await this.saveData(updatedInfo)
     }
     async updateManyWithDifferentData(updates) {//[{filter: { _id: _id },update: { key: value }}
-        /*
-        const bulkOps = updates.map(({ filter, update }) => ({
-          updateOne: {
-            filter,
-            update
-          }
-        }));
-        return await this.#model.bulkWrite(bulkOps);
-        */
-      }
-
+        return new Error("not implemented for FS")
+    }
     async deleteOne(criteria){
-        /*
-        let result = await this.#model.findOneAndDelete(
-            criteria, 
-            { projection: { _id: 0 } }
-            )
-        .lean()
-        if (!result) throw new Error('NOT FOUND TO DELETE')
-        delete result._id
-        return result
-    }   
-    async deleteMany(criteria) {
-        await this.#model.deleteMany(criteria)
-        */
+        let info = await this.loadData()
+        let i = info.findIndex((e)=>{e._id==criteria._id})
+        info.splice(i,1)
+        return await this.saveData()
     }
 }
