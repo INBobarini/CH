@@ -1,45 +1,9 @@
 import * as fs from 'fs'
-import { v4 as uuid } from 'uuid';
 
 export function cleanObject(obj){
     return JSON.parse(JSON.stringify(obj,null,'\t'))
 }
-
-
-class productEntity {
-    constructor(product){
-        this._id = uuid(),
-        this.title = product.title,
-        this.description = product.description,
-        this.price = product.price,
-        this.thumbnail = product.thumbnail,
-        this.code = product.code,
-        this.stock = product.stock
-    }
-    #types = {
-        _id: String,
-        title: String,
-        description: String, 
-        price: Number,
-        thumbnail: String,
-        code: String,
-        stock: Number
-    }
-    #required = {
-        _id: false,
-        title: true,
-        description: true, 
-        price: true,
-        thumbnail: true,
-        code: true,
-        stock: true
-    }
-
-    checkTypes(){
-        if (this.#types){}
-    }
-}
-export class DAOFs{
+export class DAOFS{
     constructor(Entity, pathToFile){
         this.Entity = Entity
         this.path = pathToFile
