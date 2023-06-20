@@ -24,7 +24,7 @@ export async function registerUser(user){//create hash to the new password
 }
 export async function logInCheck(email, password) { // hash compare of paswords
     //check if is an admin
-    let admin = checkAdmin(email, password)
+    let admin = await checkAdmin(email, password)
     if (admin) {return admin}
     let existingUser = await usersModel.findOne({ email: email } );
     if(!isValidPassword(existingUser, password)){

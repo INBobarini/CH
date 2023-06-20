@@ -3,4 +3,4 @@ import ProductEntity from '../../models/productsEntity.js'
 
 let path = '../database/products.json'
 
-export default productsDAOFS = new DAOFS(ProductEntity, path)
+export const productsDAOFS = new DAOFS(ProductEntity, path)

@@ -2,7 +2,6 @@ import fs from 'fs'
 import { productosModel } from '../models/schemas.js'
 
 
-
 let docsInProductsCollection = await productosModel.estimatedDocumentCount()
 
 if (docsInProductsCollection == 0){

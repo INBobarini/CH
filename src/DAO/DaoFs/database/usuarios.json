@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "646d145455d64802b6918033"
+  },
+  "email": "inbobarini@gmail.com",
+  "password": "$2b$10$8tiBVxa2n6simFou6Jdiz.kfk4fmUCXj/KrOHEjQD9p3t1YuZxoA2",
+  "first_name": "Ivan",
+  "last_name": "Bobarini",
+  "age": 32,
+  "role": "user",
+  "cart": {
+    "$oid": "647e3eb165e4e94bd72913f9"
+  }
+},{
+  "_id": {
+    "$oid": "6480f905a1688af886866d62"
+  },
+  "email": "jgomez@gmail.com",
+  "password": "$2b$10$0dT/cuxqs5KI41bUmLvy7eb1YOURxC57gb.uCxBpNpbt52eBoV3pa",
+  "first_name": "Juan",
+  "last_name": "Gomez",
+  "age": 23,
+  "role": "user",
+  "cart": {
+    "$oid": "6480f905a1688af886866d60"
+  }
+},{
+  "_id": {
+    "$oid": "6490d12849ad8470dbc14541"
+  },
+  "email": "mflores@gmail.com",
+  "password": "$2b$10$WS/GYaQNN3OOdI3CXjjdKevPORQgCPer6hJM7OdmH3FaitW4XS3j.",
+  "first_name": "Marta",
+  "last_name": "Flores",
+  "age": 18,
+  "role": "user",
+  "cart": {
+    "$oid": "6490d12849ad8470dbc1453f"
+  }
+}]

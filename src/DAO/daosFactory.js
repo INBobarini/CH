@@ -4,14 +4,15 @@ import { ticketsDAOMongoose } from './DaoMongoose/ticketsDaoMongoose.js'
 import { usersDAOMongoose } from './DaoMongoose/usersDaomongoose.js'
 //import { DAOFs} from "./DaoMongoose/_DaoFs.js"; 
 //
-import cartsDAOFs from './DaoFs/cartsDaoFs.js'
-import productsDAOFs from './DaoFs/productsDaoFs.js'
-import ticketsDaoFs from './DaoFs/ticketsDaoFs.js'
-import usersDaoFs from './DaoFs/usersDaoFs.js'
+import {cartsDAOFS} from './DaoFs/cartsDaoFs.js'
+import {productsDAOFS} from './DaoFs/productsDaoFs.js'
+import {ticketsDAOFS} from './DaoFs/ticketsDaoFs.js'
+import {usersDAOFS} from './DaoFs/usersDaoFs.js'
 
 import {config} from '../config/config.js'
 
 let dao = {}
+
 if (config.persistence === 'MONGOOSE'){
     dao.carts = cartsDAOMongoose,
     dao.products = productsDAOMongoose,
@@ -20,10 +21,10 @@ if (config.persistence === 'MONGOOSE'){
 }
 
 if (config.persistence === 'FS'){
-    dao.carts = cartsDAOFs,
-    dao.products = productsDAOFs,
-    dao.tickets = ticketsDaoFs,
-    dao.users = usersDaoFs
+    dao.carts = cartsDAOFS,
+    dao.products = productsDAOFS,
+    dao.tickets = ticketsDAOFS,
+    dao.users = usersDAOFS
 }
 
 export {dao}

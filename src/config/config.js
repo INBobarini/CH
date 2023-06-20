@@ -4,10 +4,12 @@ import {Command} from 'commander'
 const program = new Command()
 
 program
-    .option('-db','--daomongoose', "persistence type choice", false)
+    .option('-db','--daomongoose', false)
+    .option('-fs','--daofs', false)
     .parse()
 
 const persistence = program.opts()
+console.log(persistence)
 
 dotenv.config()
 
@@ -18,5 +20,5 @@ export const config = {
     sessionSecret: process.env.SESSION_SECRET,
     adminName: process.env.ADMIN_NAME,
     adminPassword: process.env.ADMIN_PASSWORD,
-    persistence: persistence.Db ? "MONGOOSE" : "FS" //"MONGOOSE" or "FS"
+    persistence: persistence.Fs ? "FS" : "MONGOOSE" //"MONGOOSE" or "FS"
 }

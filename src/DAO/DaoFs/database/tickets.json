@@ -1,1 +1,66 @@
-[]
+[{
+  "_id": {
+    "$oid": "6484c8a44dc86087ad9aab9e"
+  },
+  "code": "b38c1327-8e15-40e3-a07e-5423f0f917b1",
+  "amount": 5,
+  "purchaser": "inbobarini@gmail.com",
+  "purchase_datetime": {
+    "$date": "2023-06-10T19:01:56.324Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-10T19:01:56.324Z"
+  }
+},{
+  "_id": {
+    "$oid": "648786705d06420fa7d89ac6"
+  },
+  "code": "fde852a1-d828-4b31-8856-48fdbcf97c33",
+  "amount": 4000,
+  "purchaser": "inbobarini@gmail.com",
+  "purchase_datetime": {
+    "$date": "2023-06-12T20:56:16.702Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-12T20:56:16.702Z"
+  }
+},{
+  "_id": {
+    "$oid": "64878e6c410c4886b2f560cf"
+  },
+  "code": "b0801b8c-2029-4677-9233-6278f5d7524d",
+  "amount": 4000,
+  "purchaser": "inbobarini@gmail.com",
+  "purchase_datetime": {
+    "$date": "2023-06-12T21:30:20.508Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-12T21:30:20.508Z"
+  }
+},{
+  "_id": {
+    "$oid": "64878ebd2bb1133a8d1d9375"
+  },
+  "code": "bf746a3c-cf9c-46f8-bc0c-7f4cefe04342",
+  "amount": 34000,
+  "purchaser": "inbobarini@gmail.com",
+  "purchase_datetime": {
+    "$date": "2023-06-12T21:31:41.241Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-12T21:31:41.241Z"
+  }
+},{
+  "_id": {
+    "$oid": "64878f2d9b6aac50ea2d4bb5"
+  },
+  "code": "c1d46693-5b4d-4515-a5d5-0af4176fe230",
+  "amount": 1000,
+  "purchaser": "inbobarini@gmail.com",
+  "purchase_datetime": {
+    "$date": "2023-06-12T21:33:33.012Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-12T21:33:33.012Z"
+  }
+}]
