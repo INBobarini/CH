@@ -9,7 +9,6 @@ export class DAOMongoose{
     }
 
     get model() { return this.#model }
-
     
     async create (element){
         return cleanObject(await this.#model.create(element))

@@ -9,7 +9,6 @@ program
     .parse()
 
 const persistence = program.opts()
-console.log(persistence)
 
 dotenv.config()
 
@@ -20,5 +19,7 @@ export const config = {
     sessionSecret: process.env.SESSION_SECRET,
     adminName: process.env.ADMIN_NAME,
     adminPassword: process.env.ADMIN_PASSWORD,
-    persistence: persistence.Fs ? "FS" : "MONGOOSE" //"MONGOOSE" or "FS"
+    persistence: persistence.Fs ? "FS" : "MONGOOSE", //"MONGOOSE" or "FS"
+    NODE_ENV : process.env.NODE_ENV || 'development',
+    LOG_LEVEL: parseInt(process.env.LOG_LEVEL||'10')
 }

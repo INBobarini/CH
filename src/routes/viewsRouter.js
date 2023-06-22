@@ -6,6 +6,7 @@ import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
 import * as sessionsService from '../services/sessionsService.js'
 import {auth, current, hasSession}  from '../middlewares/auth.js'
+import { createMockProduct } from '../mocks/mocks.js'
 
 const viewsRouter = express.Router()
 
@@ -41,6 +42,10 @@ get(
         })
     }
 )
+
+viewsRouter.route('/mockingproducts')
+.get((req,res,next)=>{res.send(createMockProduct(100))}
+    )
 //vista singular, no lanzada
 /*router.get('/:pid',async(req,res)=>{//algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)

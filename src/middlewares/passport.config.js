@@ -8,7 +8,6 @@ passport.use('register', new LocalStrategy(
     { passReqToCallback: true, usernameField:'email' }, async (req, _u, _p, done) => {
         try{
             const { email, password, age, first_name, last_name } = req.body
-            console.log("hola")
             const newUser = {
                 email:email,
                 password:password,

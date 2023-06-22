@@ -1,4 +1,6 @@
 import { productsRepository } from '../repository/productsRepository.js'
+import { customError } from '../models/errors/errorsDictionary.js'
+
 
 export async function handleGet(req, res, next) {
     try{
@@ -18,7 +20,8 @@ export async function handleGet(req, res, next) {
         } 
     }
     catch(error){
-        res.status(req.statusCode).send({status:"failure", payload:"not found"})
+        //res.status(req.statusCode).send({status:"failure", payload:"not found"})
+        next(error)
     }
 }
 

@@ -1,5 +1,5 @@
 import {DAOFS} from './_DaoFs.js'
-import CartEntity from '../../models/cartsEntity.js'
+import CartEntity from '../../models/entities/cartsEntity.js'
 import { __dirname } from '../../utils.js'
 
 

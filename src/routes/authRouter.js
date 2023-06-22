@@ -14,7 +14,6 @@ authRouter.route('/register')
 
 authRouter.route('/login')
 .post(
-    (req,res,next)=>{console.log("login"),next()},
     autenticationLogin, 
     loginController
 )

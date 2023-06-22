@@ -2,10 +2,11 @@ import {Router} from 'express'
 import * as productsController from '../controllers/productsController.js'
 import {productsResponseFormatter} from '../middlewares/responseFormatter.js'
 import {auth} from '../middlewares/auth.js' 
+import { errorHandler } from '../middlewares/errorHandler.js'
+
+
 
 const productosRouter = Router()
-
-//productosRouter.use(responseFormatter)
 
 productosRouter.route(['/:_id','/'])
 .get(
@@ -33,5 +34,8 @@ productosRouter.route('/:_id')
     productsController.handleDelete, 
     productsResponseFormatter
     )
+
+//productosRouter.use(responseFormatter)
+productosRouter.use(errorHandler)
 
 export default productosRouter 

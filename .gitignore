@@ -4,3 +4,4 @@ nodemon.json
 local storage
 githubcred.txt
 .env
+.vscode

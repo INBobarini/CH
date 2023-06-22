@@ -9,20 +9,24 @@ import {sessionsRouter} from './routes/sessionsRouter.js'
 import {authRouter} from './routes/authRouter.js'
 
 import { Server as SocketIOServer} from 'socket.io'
-
 import cookieParser from 'cookie-parser';
 import session from 'express-session'
-
-import FileStore from 'session-file-store'//instalarlo con npm i session-file-store
-import MongoStore from 'connect-mongo' //npm i connect-mongo
+import FileStore from 'session-file-store'
+import MongoStore from 'connect-mongo' 
 
 import {passportInitialize, passportSession} from './middlewares/passport.config.js'
+
 import {config} from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
+
+import { logger } from '../src/middlewares/logger.js';
 
 //express
 const app = express()
 const httpServer = app.listen(config.port,()=>console.log("servidor en el puerto 8080") )
+
+//winston logger
+app.use(logger)
 
 //cookie parser
 app.use(cookieParser(config.cookieKey))

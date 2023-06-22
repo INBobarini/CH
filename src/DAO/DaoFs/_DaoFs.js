@@ -24,9 +24,9 @@ export class DAOFS{
     }
     async readOne(criteria){
         //criteria={_id:id}
-        console.log(criteria)
+        
         let info = await this.loadData()
-        console.log(info)
+        
         return info.find((e)=>{e._id == criteria._id})
     }    
     async readMany(criteria,options){

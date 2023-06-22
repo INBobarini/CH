@@ -1,6 +1,6 @@
 import mongoose from '../DAO/DaoMongoose/_mongoConnect.js'
 import mongoosePaginate from 'mongoose-paginate-v2'
-import { Uuid } from '../utils.js'
+import { Uuid } from '../utils/uuid.js'
 
 const ticketsSchema = new mongoose.Schema({
     //_id:{type:mongoose.Schema.Types.ObjectId},
