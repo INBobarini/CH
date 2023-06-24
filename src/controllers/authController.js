@@ -1,18 +1,19 @@
 export async function registroController(req, res, next) {
-    console.log("registrado: " + req.user)
+    req.logger.info("registrado: " + req.user)
     res.status(201).json(req.user)
 }
 export async function loginController(req, res, next) {
-    console.log("logueado: " + req.user)
+    req.logger.info("logueado: " + req.user)
     res.sendStatus(201)
 }
 
 export async function logoutController(req, res, next) {
+    req.logger.info("logout " + req.user)
     req.logout(err => { //req.logout agregado por passport
         res.sendStatus(200)
     })
 }
 export async function loginGhController(req, res, next) {
-    console.log("logueado GH: " + req.user)
+    reg.logger.info("logueado GH: " + req.user)
     res.sendStatus(201)
 }

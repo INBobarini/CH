@@ -1,7 +1,6 @@
-import {customError} from '../../src/models/errors/errorsDictionary.js'
+import {CustomError} from '../models/errors/customError.js'
+import { winstonLogger as logger } from '../utils/winstonLogger.js'
 
-export function errorHandler(error, req, res, next){
-    if(error){
-        res.status(error.status).json(error, error.type,error.description)
-    }
+export const errorHandler = function (err, req, res, next){
+    return res.status(err.code).send(`${err.name}: ${err.message}.\n${err.stack} `)
 }

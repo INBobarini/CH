@@ -45,5 +45,5 @@ let product =
         thumbnail: "dining_table.jpeg"
     }
 let result = new ProductEntity(product)
-console.log(result)
+//console.log(result)
 */

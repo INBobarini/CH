@@ -4,18 +4,23 @@ import { cartsModel } from "../models/cartsModel.js"
 import { cleanObject } from "../DAO/DaoMongoose/_DaoMongoose.js"//fix:service is using a DAO function
 import { ticketsRepository } from "../repository/ticketsRepository.js"
 import { current } from "../middlewares/auth.js"
+import {winstonLogger as logger} from "../utils/winstonLogger.js"
+
+import { CustomError } from "../models/errors/customError.js"
+
+
 //returns cart objects
 //TODO assign cart
 async function getCartAndValidateProdInCart(cid,pid){
     let foundCart = await cartsRepository.getCart(cid)
     
     if(!foundCart){
-        console.log("Cart does not exist")
+        logger.warning("Cart does not exist")
         return null //it is not defined what should be returned as error in a service
     }
     let foundProd = await productsRepository.getProduct(pid)
     if(!foundProd){
-        console.log("Product does not exist")
+        logger.warning("Product does not exist")
         return null //it is not defined what should be returned as error in a service
     }
     return foundCart

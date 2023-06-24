@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import * as cartsController from '../controllers/cartsController.js'
 import { cartsResponseFormatter } from '../middlewares/responseFormatter.js'
+import {errorHandler} from '../middlewares/errorHandler.js'
 
 //consider getting multiple routes for every method, using arrays, adjust controller accordingly
 

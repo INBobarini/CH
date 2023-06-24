@@ -1,7 +1,8 @@
 import {io} from '../app.js' //mover a middleware/services?
+import { winstonLogger as logger } from '../utils/winstonLogger.js'
 
 io.on('connection', async socket =>{ 
-    console.log("Nuevo cliente conectado: "+ socket.id)
+    logger.info("Nuevo cliente conectado: "+ socket.id)
     socket.on('productos', data => {
         socket.broadcast.emit('actualizar', data)
     })

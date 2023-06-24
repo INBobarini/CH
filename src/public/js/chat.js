@@ -5,7 +5,7 @@ const sendBtn = document.querySelector("#sendBtn")
 sendBtn.addEventListener('click', e => {
     
     const user = document.querySelector('#user_input').value
-    console.log(user)
+  
     const message = document.querySelector('#message_input').value
     const newMessage = {user:user, message:message}
 

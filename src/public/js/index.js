@@ -20,7 +20,6 @@ const product = {}
 addBtn.addEventListener('click',(event)=>{
     let keys = ["title","description","code","price","thumbnail","stock","status"]//model?
     keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
-    console.log(product)
     fetch('/realtimeproducts', {
         method: "POST",
         body: JSON.stringify(product),

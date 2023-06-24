@@ -1,46 +1,47 @@
 import { config } from '../config/config.js'
 import winston from 'winston'
 
-const customLevels = {
-  levels: {
-    fatal: 0,
-    error: 1,
-    warning: 2,
-    info: 3,
-    http: 4,
-    debug: 5,
-  },
-  colors: {
-    fatal: 'bold red whiteBG',
-    error: 'red',
-    warning: 'orange',
-    info: 'blue',
-    http: 'cyan',
-    debug: 'green italic',
-  }
+const levels = {
+  fatal: 0,
+  error: 1,
+  warning: 2,
+  info: 3,
+  http: 4,
+  debug: 5,
+}
+const colors = {
+  fatal: 'red',
+  error: 'red',
+  warning: 'yellow',
+  info: 'blue',
+  http: 'cyan',
+  debug: 'green italic'
 }
 
 const winstonLoggerDev = winston.createLogger({
-  levels: customLevels.levels,
+  levels: levels,
   transports: [
     new winston.transports.Console({
       level: "debug",
       format: winston.format.combine(
-        winston.format.colorize({colors: customLevels.colors}),
+        winston.format.colorize({colors: colors}),
         winston.format.simple()
       )
     })
-  ]
+  ],
 })
 
 const winstonLoggerProd = winston.createLogger({
-  levels: customLevels.levels,
+  levels: levels,
   transports: [
     new winston.transports.File({
-      level: "info",
+      level: "error",
       filename: './errors.log',
       format: winston.format.simple()
     })
+  ],
+  exceptionHandlers: [
+    new winston.transports.File({ filename: 'exceptions.log' })
   ]
 })
 
@@ -51,7 +52,7 @@ if (config.NODE_ENV === 'production') {
   winstonLogger = winstonLoggerDev
 }
 
-export default winstonLogger
+export {winstonLogger}
 
 
 

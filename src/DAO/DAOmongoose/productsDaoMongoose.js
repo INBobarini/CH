@@ -21,7 +21,7 @@ let newProd = await productsDAOMongoose.create(
         "thumbnail": "caja.jpeg"
       }
 )
-console.log(newProd)
+//console.log(newProd)
 */
 
 //let foundProd = await productsDAOMongoose.readOne({_id:"647e0f9362fe03146f5a8147"})

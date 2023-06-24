@@ -3,5 +3,7 @@ nodemon.json
 .dependencygraph
 local storage
 githubcred.txt
+.env.production
+.env.development
 .env
 .vscode

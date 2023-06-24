@@ -2,13 +2,17 @@ import dotenv from 'dotenv'
 import {Command} from 'commander'
 
 const program = new Command()
-
 program
     .option('-db','--daomongoose', false)
     .option('-fs','--daofs', false)
     .parse()
-
 const persistence = program.opts()
+
+/*
+const environment = new Command()
+environment.option('-prod', '--production', 'production',)
+const NODE_ENV = environment.opts()
+*/
 
 dotenv.config()
 

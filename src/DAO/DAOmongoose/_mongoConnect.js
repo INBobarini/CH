@@ -9,7 +9,6 @@ const environment = async ()=> {
     await mongoose.connect(MONGODB_CNX_STR)
     console.log(`BD conectada a ${MONGODB_CNX_STR}`)
     //let response = await productosModel.find().explain('executionStats')
-    //console.log(response)
 }
 environment()
 

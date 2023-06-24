@@ -11,14 +11,16 @@ const productosRouter = Router()
 productosRouter.route(['/:_id','/'])
 .get(
     productsController.handleGet, 
-    productsResponseFormatter
+    productsResponseFormatter,
+    errorHandler
     )
 
 productosRouter.route('/')
 .post(
     await auth({notUser:true}),
     productsController.handlePost, 
-    productsResponseFormatter
+    productsResponseFormatter,
+    errorHandler
     )
 
 productosRouter.route('/:_id')

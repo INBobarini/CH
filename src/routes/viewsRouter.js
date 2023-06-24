@@ -49,7 +49,7 @@ viewsRouter.route('/mockingproducts')
 //vista singular, no lanzada
 /*router.get('/:pid',async(req,res)=>{//algo hace que se confunda el entrypoint del '/'
     let product = await pManager.getOneById(req.params.pid)
-    console.log(req.body)
+    //console.log(req.body)
     res.render('singleProduct',{
         product: product,
         style: 'index.css'
@@ -97,7 +97,7 @@ viewsRouter.route('/carts/:cid')
             hasProducts: Boolean(cart.products.length)
         })
     }
-    catch(err){console.log(err),res.send(err)}
+    catch(err){req.logger(err),res.send(err)}
 })
 //CHAT
 viewsRouter.route('/chat')
