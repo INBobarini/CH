@@ -7,6 +7,8 @@ import * as cController from '../controllers/cartsController.js'
 import * as sessionsService from '../services/sessionsService.js'
 import {auth, current, hasSession}  from '../middlewares/auth.js'
 import { createMockProduct } from '../mocks/mocks.js'
+import { winstonLogger as logger } from '../utils/winstonLogger.js'
+import { CustomError } from '../models/errors/customError.js'
 
 const viewsRouter = express.Router()
 
@@ -141,3 +143,20 @@ viewsRouter.route('/api/sessions/login')
     res.render('login')
 })
 export default viewsRouter
+
+//LOGGER
+
+let logs = []
+
+viewsRouter.route('/loggerTest')
+.post(async(req,res)=>{
+    logs.push(req.body)
+    if(!req.body) throw new CustomError("No se generó log", 404)
+    else res.status(201)
+    //no error handler defined
+})
+
+viewsRouter.route('/loggerTest')
+.get(async(req,res)=>{
+    res.json(logs)
+})

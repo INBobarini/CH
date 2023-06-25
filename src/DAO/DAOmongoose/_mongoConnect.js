@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
+import {config} from '../../config/config.js'
 
-const DBNAME = "ecommerce"
-const MONGODB_CNX_STR = 'mongodb://127.0.0.1:27017/' + DBNAME
+
+const MONGODB_CNX_STR = config.mongoUrl
 //mongodb+srv://Ivan:<password>@cluster0.8lq7s6v.mongodb.net/?retryWrites=true&w=majority
 //mongodb://127.0.0.1:27017/ecommerce
 

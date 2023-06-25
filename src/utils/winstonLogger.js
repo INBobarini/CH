@@ -20,15 +20,22 @@ const colors = {
 
 const winstonLoggerDev = winston.createLogger({
   levels: levels,
-  transports: [
+  transports: [ 
     new winston.transports.Console({
       level: "debug",
       format: winston.format.combine(
         winston.format.colorize({colors: colors}),
         winston.format.simple()
       )
+    }),
+    new winston.transports.Http({
+      level: 'debug',
+      format: winston.format.json(),
+      port: 8080, //env port
+      path: 'loggerTest',
+      headers: {'Content-Type': 'application/json'}
     })
-  ],
+  ]
 })
 
 const winstonLoggerProd = winston.createLogger({

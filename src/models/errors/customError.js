@@ -1,7 +1,5 @@
 import {winstonLogger as logger} from "../../utils/winstonLogger.js"
 
-//add an argument to call a single class with description + code
-
 export class CustomError extends Error {
     constructor(error, code){
         super(error)
