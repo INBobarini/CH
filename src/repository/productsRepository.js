@@ -1,17 +1,27 @@
 import { dao } from "../DAO/daosFactory.js";
+import { logDebug, winstonLogger as logger } from "../utils/winstonLogger.js";
 
-class ProductsRepository {
+
+class ProductsRepository { //create a generic repo integrating the logs, then extend it
+    #stage = "Products_Repo"
     constructor(dao){
         this.dao=dao
     }
     async createProduct(product){
-        return await this.dao.create(product)
+        let result = await this.dao.create(product)
+        logDebug(logger, [product], [result], this.#stage)
+        return result
     }
     async getProduct(pid){
-        return await this.dao.readOne({_id:pid})
+        console.log(pid)
+        let result = await this.dao.readOne({_id:pid})
+        logDebug(logger, [pid], [result], this.#stage)
+        return result
     }
     async getManyProductsByIds(pids){
-        return await this.dao.readMany({_id:{$in: pids}})
+        let result = await this.dao.readMany({_id:{$in: pids}})
+        logDebug(logger, [pids], [result],this.#stage)
+        return result
     }
     async getProducts(query,limit,page,sort){
         const options = {
@@ -20,32 +30,39 @@ class ProductsRepository {
             sort:sort||{}
         }
         let result = await this.dao.readMany(query, options)
-        
+        logDebug(logger, [query,limit,page,sort], [result], this.#stage)
         return result
     }
     async updateProduct(pid,newData){
-        return await this.dao.updateOne({_id:pid}, newData) //newData = {key:value}
+        let result = await this.dao.updateOne({_id:pid}, newData) //newData = {key:value}
+        logDebug(logger, [pid,newData], [result], this.#stage)
+        return result
     }
     async updateProducts(criteria,newData){
-        return await this.dao.updateMany(criteria, newData)
+        let result = await this.dao.updateMany(criteria, newData)
+        logDebug(logger, [criteria,newData], [result], this.#stage)
+        return result
     }
     async updateMultipleProducts(arrProducts){
         let updates = arrProducts.map(((p)=>{
-            
             let filter = {_id: p._id}
             let update = {$set: p}
-            
             return {filter, update}
         }))
-        return await this.dao.updateManyWithDifferentData(updates)
+        let result = await this.dao.updateManyWithDifferentData(updates)
+        logDebug(logger, [arrProducts], [result], this.#stage)
+        return result
     }
-    
-      
+       
     async deleteProduct(pid){
-        return await this.dao.deleteOne({_id:pid})
+        let result =  await this.dao.deleteOne({_id:pid})
+        logDebug(logger, [pid], [result], this.#stage)
+        return result
     }
     async deleteProducts(criteria){
-        return await this.dao.deleteMany(criteria)
+        let result = await this.dao.deleteMany(criteria)
+        logDebug(logger, [criteria], [result], this.#stage)
+        return result
     }
 }
 

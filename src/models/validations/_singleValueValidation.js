@@ -1,19 +1,21 @@
+import {CustomError} from '../errors/customError.js'
+
 export function positiveInteger(value, fieldName){
     if(typeof value!=="number"){
-        //throw new customError.ArgumentError(`${fieldName} is not a number`)
+        throw new CustomError(`${fieldName} is not a number`,400)
     }
     if(!Number.isInteger(value)){
-        //throw new customError.ArgumentError(`${fieldName} is not a whole number`)
+        throw new CustomError(`${fieldName} is not a whole number`),400
     }
     if(value<=0){
-        //throw new customError.ArgumentError(`${fieldName} is negative or zero`)
+        throw new CustomError(`${fieldName} is negative or zero`,400)
     }
     return value
 }
 
-export function isBoolean(value,fieldName){
+function isBoolean(value,fieldName){
     if(typeof value!=="boolean"){
-        //throw new customError.ArgumentError(`${fieldName} is not a boolean`)
+        throw new CustomError(`${fieldName} is not a boolean`)
     }
     return value
 }

@@ -1,22 +1,31 @@
 import { dao } from "../DAO/daosFactory.js";
+import { logDebug, winstonLogger as logger } from "../utils/winstonLogger.js";
 
 class CartsRepository{
+    #stage = "Carts_Repo"
     constructor(dao){
         this.dao=dao
     }
-    async createCart(){//require user in arg?
+    async createCart(){
         let element = {}
-        return await this.dao.create(element)
+        let result = await this.dao.create(element)
+        logDebug(logger, [element], [result], this.#stage)
+        return result
     }
+    
     async getCart(cid){
-        return await this.dao.readOne({_id:cid})
-    }
-    async getCarts(query,paginationOpts){
-        return await this.dao.readMany(query,paginationOpts)
+        let result = await this.dao.readOne({_id:cid})
+        logDebug(logger, [cid], [result], this.#stage)
+        return result
     }
 
-    async updateCart(cid,prodsArrayInCart){//empties
-        //if(this.dao="mongoose"||"fs")
+    async getCarts(query, paginationOpts){
+        let result = await this.dao.readMany(query,paginationOpts)
+        logDebug(logger, [query,paginationOpts], [result], this.#stage)
+        return result
+    }
+
+    async updateCart(cid, prodsArrayInCart){
         let result = await this.dao.updateOne(
             {_id:cid},
             {$pull:{products:{}}}
@@ -26,10 +35,13 @@ class CartsRepository{
             {_id:cid},
             {$push:{products:prodsArrayInCart}}
         )
+        logDebug(logger, [cid, prodsArrayInCart], [result], this.#stage)
         return result
     }
     async deleteCart(cid){
-        return await this.dao.deleteOne({_id:cid})
+        let result =  await this.dao.deleteOne({_id:cid})
+        logDebug(logger, [cid], [result], this.#stage)
+        return result
     }
 }
 export const cartsRepository = new CartsRepository(dao.carts)

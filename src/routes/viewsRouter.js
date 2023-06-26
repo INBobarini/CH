@@ -157,6 +157,7 @@ viewsRouter.route('/loggerTest')
 })
 
 viewsRouter.route('/loggerTest')
-.get(async(req,res)=>{
-    res.json(logs)
-})
+.get(async (req, res) => {
+    const separatedLogs = logs.map(log => JSON.stringify(log, null, 2)).join('\n');
+    res.type('json').send(`[${separatedLogs}]`);
+});
