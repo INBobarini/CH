@@ -9,7 +9,7 @@ export class CustomError extends Error {
         this.stack = error.stack || error
         this.log()
     }
-    resolveErrorName(code){
+    resolveError(code){
         const errorTypes = {
             400: "Invalid argument",
             401: "Unauthorized",

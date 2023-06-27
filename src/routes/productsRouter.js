@@ -12,7 +12,6 @@ productosRouter.route(['/:_id','/'])
 .get(
     productsController.handleGet, 
     productsResponseFormatter,
-    errorHandler
     )
 
 productosRouter.route('/')
@@ -20,21 +19,20 @@ productosRouter.route('/')
     await auth({notUser:true}),
     productsController.handlePost, 
     productsResponseFormatter,
-    errorHandler
     )
 
 productosRouter.route('/:_id')
 .put(
     //await auth({notUser:true}),
     productsController.handlePut, 
-    productsResponseFormatter
+    productsResponseFormatter,
     )
 
 productosRouter.route('/:_id')
 .delete(
     await auth({notUser:true}),
     productsController.handleDelete, 
-    productsResponseFormatter
+    productsResponseFormatter,
     )
 
 //productosRouter.use(responseFormatter)

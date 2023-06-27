@@ -5,59 +5,61 @@ import {errorHandler} from '../middlewares/errorHandler.js'
 
 //consider getting multiple routes for every method, using arrays, adjust controller accordingly
 
-const carritosRouter = Router()
+const cartsRouter = Router()
 
-carritosRouter.route('/usercart')
+cartsRouter.route('/userCart')
 .get(
     cartsController.handleGetUserCart,
-    cartsResponseFormatter
+    cartsResponseFormatter,
+
 )
-carritosRouter.route('/:cid')
+cartsRouter.route('/:cid')
 .get(
     cartsController.handleGet,
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
-carritosRouter.route('/')
+cartsRouter.route('/')
 .post(
     cartsController.handlePostCart,
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
-carritosRouter.route('/:cid/product/:pid')
+cartsRouter.route('/:cid/product/:pid')
 .post(
     cartsController.handlePostProductInCart,
-    cartsResponseFormatter
+    cartsResponseFormatter,
+
 )
-carritosRouter.route('/:cid/purchase')
+cartsRouter.route('/:cid/purchase')
 .post(
     cartsController.handleCartPurchase,
-    //cartsResponseFormatter
+    //cartsResponseFormatter,
 )
-carritosRouter.route('/:cid')
+cartsRouter.route('/:cid')
 .put(
     cartsController.handlePutProductsInCart,
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
-carritosRouter.route('/:cid/products/:pid')
+cartsRouter.route('/:cid/products/:pid')
 .put(
     cartsController.handlePutUpdateQuantity,
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
-carritosRouter.route('/:cid')
+cartsRouter.route('/:cid')
 .delete(
     cartsController.handleDeleteCart, 
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
-carritosRouter.route('/:cid/product/:pid')
+cartsRouter.route('/:cid/product/:pid')
 .delete(
     cartsController.handleDeleteProductInCart,
-    cartsResponseFormatter
+    cartsResponseFormatter,
 )
 
+cartsRouter.use(errorHandler)
 
-
-export default carritosRouter 
+export default cartsRouter 

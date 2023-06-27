@@ -2,40 +2,63 @@ import * as cartsService from '../services/cartsService.js'
 import { cartsRepository } from '../repository/cartsRepository.js'
 import { current } from '../middlewares/auth.js'
 
+import { checkReqResult } from './utils/checkNotEmptyResult.js'
+
+
 
 export async function handleGetUserCart(req,res,next){
-    req.result = await cartsRepository.getCart(req.user.cart)
-    req.statusCode = req.result? 200 : 401
-    req.logger.debug(`HandleGetUserCart recibió ${req.user.cart} y devolvió ${JSON.stringify(req.result)}`)
-    next()
+    try{
+        req.result = await cartsRepository.getCart(req.user.cart)
+        req.statusCode = checkReqResult(req.result, 200)
+        next()
+    }
+    catch(err){
+        next(err)
+    }
 }
 
 export async function handleGet(req,res,next){
-    req.result = await cartsRepository.getCart(req.params.cid)
-    req.statusCode = req.result? 200 : 404
-    req.logger.debug(`HandleGet recibió ${JSON.stringify(req.params)} y devolvió ${JSON.stringify(req.result)}`)
-    next()
+    try{
+        req.result = await cartsRepository.getCart(req.params.cid)
+        req.statusCode = checkReqResult(req.result, 200)
+        next()
+    }
+    catch(err){
+        next(err)
+    }
 }
 
 export async function handleGetPopulated(req,res,next){
-    req.result = await cartsService.getCartwithPopulatedProducts(req.params.cid)
-    req.statusCode = req.result? 200 : 404
-    req.logger.debug(`HandleGetPopulated recibió ${JSON.stringify(req.params)} y devolvió ${JSON.stringify(req.result)}`)
-    next()
+    try{
+        req.result = await cartsService.getCartwithPopulatedProducts(req.params.cid)
+        req.statusCode = checkReqResult(req.result, 200)
+        next()
+    }
+    catch(err){
+        next (err)
+    }
 }
 
 export async function handlePostCart(req,res,next){
-    req.result = await cartsRepository.createCart()
-    req.statusCode = req.result? 201 : 400
-    req.logger.debug(`HandlePostCart recibió ${JSON.stringify(req.params)} y devolvió ${JSON.stringify(req.result)}`)
-    next()
+    try{
+        req.result = await cartsRepository.createCart()
+        req.statusCode = checkReqResult(req.result, 201)
+        next()
+    }
+    catch(err){
+        next (err)
+    }
 }
 
 export async function handlePostProductInCart(req,res,next){
-    req.result = await cartsService.addProductToCart(req.params.cid, req.params.pid)
-    req.statusCode = req.result? 201 : 400
-    req.logger.debug(`HandlePostProductInCart recibió ${JSON.stringify(req.params)} y devolvió ${JSON.stringify(req.result)}`)
-    next()
+    try {
+        req.result = await cartsService.addProductToCart(req.params.cid, req.params.pid)
+        req.statusCode = checkReqResult(req.result, 201)
+        next()
+    } 
+    catch (err) {
+        next (err)
+    }
 }
 
 export async function handleCartPurchase(req,res,next){
@@ -43,14 +66,14 @@ export async function handleCartPurchase(req,res,next){
         let purchaser = current(req.session) //email
         req.result = await cartsService.purchaseCart(req.params.cid, purchaser.email )
         req.statusCode = req.result? 201 : 400
-        return res.statusCode(req.statusCode).send(req.result)
+        return res.status(req.statusCode).send(req.result)//fix this
+        next()
     }
-    catch(err){res.json({error:err})
+    catch(err){
+        next(err)
     }
-    
-    next()
 }
-
+//continue here
 export async function handlePutProductsInCart(req,res,next){//req.body es un arreglo [{product_Id:,quantity:x}]
     req.result = await cartsService.fillCart(req.params.cid, req.body)
     req.statusCode = req.result? 201 : 400

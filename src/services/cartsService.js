@@ -96,7 +96,7 @@ export async function purchaseCart(cid, purchaserEmail){
     
     //UPDATE THE CART WITH THE REMAINDER PRODUCTS
     const remainderCart = cartToPurchase.products.filter(e => !confirmedCart.includes(e));
-    await cartsRepository.updateCart(cid,remainderCart)
+    await cartsRepository.updateCart(cid, remainderCart)
 
     //CREATE THE TICKET FROM THE CONFIRMED CART
     const amount = confirmedCart.reduce((acc,subtotal,i,p)=>{
