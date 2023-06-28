@@ -9,19 +9,19 @@ class CartsRepository{
     async createCart(){
         let element = {}
         let result = await this.dao.create(element)
-        logDebug(logger, [element], [result], this.#stage)
+        logDebug(logger, [element], this.#stage)
         return result
     }
     
     async getCart(cid){
         let result = await this.dao.readOne({_id:cid})
-        logDebug(logger, [cid], [result], this.#stage)
+        logDebug(logger, [cid], this.#stage)
         return result
     }
 
     async getCarts(query, paginationOpts){
         let result = await this.dao.readMany(query,paginationOpts)
-        logDebug(logger, [query,paginationOpts], [result], this.#stage)
+        logDebug(logger, [query,paginationOpts], this.#stage)
         return result
     }
 
@@ -35,12 +35,12 @@ class CartsRepository{
             {_id:cid},
             {$push:{products:prodsArrayInCart}}
         )
-        logDebug(logger, [cid, prodsArrayInCart], [result], this.#stage)
+        logDebug(logger, [cid, prodsArrayInCart], this.#stage)
         return result
     }
     async deleteCart(cid){
         let result =  await this.dao.deleteOne({_id:cid})
-        logDebug(logger, [cid], [result], this.#stage)
+        logDebug(logger, [cid], this.#stage)
         return result
     }
 }

@@ -3,7 +3,7 @@ import {winstonLogger as logger} from "../../utils/winstonLogger.js"
 export class CustomError extends Error {
     constructor(error, code){
         super(error)
-        this.name = this.resolveErrorName(code)
+        this.name = this.resolveError(code)
         this.code = code || 500
         this.message = error.message? error.message : error
         this.stack = error.stack || error

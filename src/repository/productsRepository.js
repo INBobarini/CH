@@ -9,18 +9,18 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
     }
     async createProduct(product){
         let result = await this.dao.create(product)
-        logDebug(logger, [product], [result], this.#stage)
+        logDebug(logger, [product], this.#stage)
         return result
     }
     async getProduct(pid){
         console.log(pid)
         let result = await this.dao.readOne({_id:pid})
-        logDebug(logger, [pid], [result], this.#stage)
+        logDebug(logger, [pid], this.#stage)
         return result
     }
     async getManyProductsByIds(pids){
         let result = await this.dao.readMany({_id:{$in: pids}})
-        logDebug(logger, [pids], [result],this.#stage)
+        logDebug(logger, [pids], this.#stage)
         return result
     }
     async getProducts(query,limit,page,sort){
@@ -30,17 +30,17 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
             sort:sort||{}
         }
         let result = await this.dao.readMany(query, options)
-        logDebug(logger, [query,limit,page,sort], [result], this.#stage)
+        logDebug(logger, [query,limit,page,sort], this.#stage)
         return result
     }
     async updateProduct(pid,newData){
         let result = await this.dao.updateOne({_id:pid}, newData) //newData = {key:value}
-        logDebug(logger, [pid,newData], [result], this.#stage)
+        logDebug(logger, [pid,newData], this.#stage)
         return result
     }
     async updateProducts(criteria,newData){
         let result = await this.dao.updateMany(criteria, newData)
-        logDebug(logger, [criteria,newData], [result], this.#stage)
+        logDebug(logger, [criteria,newData], this.#stage)
         return result
     }
     async updateMultipleProducts(arrProducts){
@@ -50,18 +50,18 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
             return {filter, update}
         }))
         let result = await this.dao.updateManyWithDifferentData(updates)
-        logDebug(logger, [arrProducts], [result], this.#stage)
+        logDebug(logger, [arrProducts], this.#stage)
         return result
     }
        
     async deleteProduct(pid){
         let result =  await this.dao.deleteOne({_id:pid})
-        logDebug(logger, [pid], [result], this.#stage)
+        logDebug(logger, [pid], this.#stage)
         return result
     }
     async deleteProducts(criteria){
         let result = await this.dao.deleteMany(criteria)
-        logDebug(logger, [criteria], [result], this.#stage)
+        logDebug(logger, [criteria], this.#stage)
         return result
     }
 }

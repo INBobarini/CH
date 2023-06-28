@@ -3,11 +3,13 @@ import { cartsRepository } from '../repository/cartsRepository.js'
 import { current } from '../middlewares/auth.js'
 
 import { checkReqResult } from './utils/checkNotEmptyResult.js'
+import { logDebug } from '../utils/winstonLogger.js'
 
 
 
 export async function handleGetUserCart(req,res,next){
     try{
+        logDebug
         req.result = await cartsRepository.getCart(req.user.cart)
         req.statusCode = checkReqResult(req.result, 200)
         next()

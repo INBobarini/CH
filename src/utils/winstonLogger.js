@@ -59,12 +59,10 @@ if (config.NODE_ENV === 'production') {
   winstonLogger = winstonLoggerDev
 }
 
-function logDebug(winstonLogger,inputsArr,outputsArr, stage){
+function logDebug(winstonLogger,inputsArr, stage){
   let inputsJson = inputsArr.map(e=>JSON.stringify(e,null,2))
-  let outputsJson = outputsArr.map(e=>JSON.stringify(e,null,2))
   winstonLogger.debug(
-    "In " + stage + ", the inputs were: " + inputsJson.join(", ") + "\n"
-    + "and the outputs were: " + outputsJson.join(", ")
+    "In " + stage + ", the inputs were: " + inputsJson.join(", ")
   )  
 }
 
