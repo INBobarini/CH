@@ -1,6 +1,6 @@
 import { CustomError } from '../models/errors/customError.js'
 import * as DTOs from '../services/DTOs.js'
-import { winstonLogger as logger } from '../utils/winstonLogger.js'
+import { logDebug, winstonLogger as logger } from '../utils/winstonLogger.js'
 
 
 export const current = function (session){//req.session
@@ -25,6 +25,7 @@ export async function auth(permission){
     //permission puede ser: {notUser:true} or {notAdmin:true}
     return async (req, res, next) => {
         try{
+            logDebug(logger, [permission])
             let user = current(req.session);
             if(!user){
                 throw new CustomError("!user", 401)
@@ -35,6 +36,7 @@ export async function auth(permission){
             if (user.role === "user" && permission.notUser) {
                 throw new CustomError(`Forbidden for ${user.role} role, ${user.email}`, 403)
             }
+            next()
         }
         catch(err){
             next(err);

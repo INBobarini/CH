@@ -9,6 +9,7 @@ import {auth, current, hasSession}  from '../middlewares/auth.js'
 import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
+import { errorHandler } from '../middlewares/errorHandler.js'
 
 const viewsRouter = express.Router()
 
@@ -124,6 +125,7 @@ viewsRouter.route('/chat')
         req['io'].sockets.emit('actualizarMensajes', messages)
         res.send(result)
     },
+    errorHandler
 )
 //SESSIONS
 viewsRouter.route('/api/sessions/profile').

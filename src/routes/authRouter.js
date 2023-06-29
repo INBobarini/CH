@@ -2,6 +2,7 @@ import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler} from '../middlewares/errorHandler.js'
+import { handlePostPassRecovery } from '../controllers/mailerController.js'
 
 const authRouter = Router()
 
@@ -33,5 +34,10 @@ authRouter.route('/logout')
     loginGhController
 )*/
 //to do logout github
+
+authRouter.route('/recovery').post(
+  handlePostPassRecovery,
+  errorHandler,
+)
 
 export {authRouter}
