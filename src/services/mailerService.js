@@ -1,6 +1,7 @@
 import { createTransport } from 'nodemailer'
 import { logDebug, winstonLogger } from '../utils/winstonLogger.js'
-import { CustomError } from '../models/errors/customError.js'
+import { Uuid } from '../utils/uuid.js'
+import { config } from '../config/config.js'
 
 class EmailService {
     #clienteNodemailer
@@ -8,24 +9,32 @@ class EmailService {
         this.#clienteNodemailer = createTransport({
         service: 'gmail',
         port: 587,
-        auth: credencialesMail
+        auth: {
+            user:"inbobarini@gmail.com",
+            pass: credencialesMail}
         })
     }
-    async send(destinatario, mensaje) {
-        logDebug(winstonLogger,[{destinatario},{mensaje}],"emailService,sendMethod")
+    async sendRestorePasswordLink(destinatario) {
+        const restoreLink = config.baseUrl + "api/auth/restore/" + new Uuid() //prolly better use the routerdictionary
+        //change so it creates a schema, restorePassLinks.create(uuid,email,date, used)
+        //localhost:8080/api/sessions/restore/53803b9a-cd3b-4ba5-a5e6-0113751085a1
+        let htmlString = `<html><body><a href="${restoreLink}">${restoreLink}</a></body></html>`
+       
+        // const newToken = restorePassRequests.create(destinatario, uniqueLink)
         const mailOptions = {
-            from: 'Enviador de mails molesto',
+            from: 'ecommerce CH',
             to: destinatario,
-            subject: 'Mail molesto!',
-            text: mensaje,
+            subject: 'Password restore',
+            html: htmlString,
+            attachments:[]
         }
         try {
             const info = await this.#clienteNodemailer.sendMail(mailOptions)
-            logDebug(winstonLogger, info) 
             return info
         } catch (error) {
-            throw new CustomError(error, 500)
+            return error
         }
+            
     }
 }
 const passMailApp = 'gltlwwcfywjflsqd'
