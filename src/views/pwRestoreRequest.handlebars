@@ -1,0 +1,27 @@
+<h3>Password restoration</h3>
+
+</div>
+    <div id="restore-password-request">
+        <form>
+            <label for="email">email:</label>
+            <input name="email" type="email" id="email" required >
+            <br>
+        </form>
+    <button id="sendBtn">Send mail to restore password</button>
+    </div>
+</div>
+
+<script>
+    const sendBtn = document.querySelector("#sendBtn")
+
+    sendBtn.addEventListener('click',(event)=>{
+        const email = document.querySelector("#email").value ?? null
+        fetch('/api/auth/restore', {
+            method: "POST",
+            body: JSON.stringify({email}),
+            headers: {
+            "Content-type": "application/json; charset=UTF-8"
+            }
+        }).then(res => res.text()).then()
+    })
+</script>

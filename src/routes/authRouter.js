@@ -2,7 +2,7 @@ import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler} from '../middlewares/errorHandler.js'
-import { handleGetPassRestore, handlePostPassRecovery, handlePostPassRestore } from '../controllers/mailerController.js'
+import { handleGetPassRestore, handlePostPassRestore } from '../controllers/mailerController.js'
 
 const authRouter = Router()
 
@@ -44,5 +44,10 @@ authRouter.route('/restore/:uuid').get(
     handleGetPassRestore,
     errorHandler
 )
+
+authRouter.route('/restore').put(
+    handlePutPassRestore,
+    errorHandler
+  )
 
 export {authRouter}

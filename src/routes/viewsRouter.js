@@ -146,6 +146,19 @@ viewsRouter.route('/api/sessions/login')
 })
 export default viewsRouter
 
+//AUTH
+viewsRouter.route('/api/auth/pwRestoreRequest')
+.get(async(req,res)=>{
+    res.render('pwRestoreRequest')
+})
+viewsRouter.route('/api/auth/restore/:uuid')
+.get(async(req,res)=>{
+    //validate UUID and get email
+    res.render('restorePassword',{
+        email:"inbobarini@gmail.com"
+    })
+})
+
 //LOGGER
 
 let logs = []

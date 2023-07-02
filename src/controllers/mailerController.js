@@ -13,12 +13,23 @@ export async function handleGetPassRestore(req, res, next) {
         next( new CustomError(error, 500) )
     }
 }
-    export async function handlePostPassRestore(req, res, next) {
+
+export async function handlePostPassRestore(req, res, next) {
     const { email } = req.body
     //TODO verify if the mail exists in the userdb
-    logDebug(winstonLogger, [email], "handleMailRecovery")
     try {
         const info = await emailService.sendRestorePasswordLink(email)
+        res.json(info)
+        next()
+    } catch (error) {
+        next( new CustomError(error, 500) )
+    }
+}
+
+export async function handlePutPassRestore(req, res, next) {
+    const { email } = req.body
+    try {
+        const info = await users
         res.json(info)
         next()
     } catch (error) {
