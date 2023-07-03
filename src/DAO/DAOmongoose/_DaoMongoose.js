@@ -1,5 +1,5 @@
 import { CustomError } from "../../models/errors/customError.js"
-
+import { winstonLogger as logger } from "../../utils/winstonLogger.js"
 export function cleanObject(obj){
     return JSON.parse(JSON.stringify(obj,null,'\t'))
 }
@@ -19,6 +19,7 @@ export class DAOMongoose{
     }
     
     async readOne(criteria){
+        logger.debug(`DAO readOne, criteria: ${JSON.stringify(criteria)}`)
         let result = await this.#model.findOne(criteria).lean()
         if(!result) throw new CustomError ('NOT FOUND TO READ', 404)
         result=cleanObject(result)

@@ -1,13 +1,14 @@
 import {winstonLogger as logger} from "../../utils/winstonLogger.js"
 
 export class CustomError extends Error {
-    constructor(error, code){
+    constructor(error, code, scope){
         super(error)
         this.name = this.resolveError(code)
         this.code = code || 500
         this.message = error.message? error.message : error
         this.stack = error.stack || error
-        this.log()
+        this.scope = scope || undefined
+        this.logError()
     }
     resolveError(code){
         const errorTypes = {
@@ -15,12 +16,18 @@ export class CustomError extends Error {
             401: "Unauthorized",
             403: "Forbidden",
             404: "Not found",
+            409: "Conflict",
+            498: "Expired or invalid token",
             500: "Internal error"
         }
         if(!code){return errorTypes[500]}
         return errorTypes[code]? errorTypes[code] : errorTypes[500]
     }
-    log(){logger.error(`${this.name}: ${this.message}`)}
+    logError(){
+        logger.error(
+            `${this.code}. ${this.name}. ${this.message}. Scope: ${this.scope}`
+            )
+    }
 }
 /*
 function test(){

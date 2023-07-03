@@ -9,7 +9,8 @@ import {auth, current, hasSession}  from '../middlewares/auth.js'
 import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
-import { errorHandler } from '../middlewares/errorHandler.js'
+import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
+import * as uController from '../controllers/userController.js'
 
 const viewsRouter = express.Router()
 
@@ -151,13 +152,36 @@ viewsRouter.route('/api/auth/pwRestoreRequest')
 .get(async(req,res)=>{
     res.render('pwRestoreRequest')
 })
-viewsRouter.route('/api/auth/restore/:uuid')
-.get(async(req,res)=>{
-    //validate UUID and get email
+viewsRouter.route('/api/auth/restore/:code')
+.get(
+    //if verifycode render, else res.json
+    uController.handleGetEmail,//validates code and gets email
+    async(req,res)=>{
     res.render('restorePassword',{
-        email:"inbobarini@gmail.com"
-    })
+        email: req.email,
+    }),
+    errorHandlerJson
 })
+.post(
+    async (req, res) => {
+        try {
+            // Logic to check if the new password and old password match
+            // If they don't match, set req.error with the appropriate message
+
+            if (req.error) {
+                res.render('restorePassword', {
+                    email: req.email,
+                    error: req.error
+                });
+            } else {
+                // Logic to update the password and complete the request
+                res.render('passwordResetSuccess');//change for a redirect to login
+            }
+        } catch (err) {
+            next(err);
+        }
+    }
+);
 
 //LOGGER
 

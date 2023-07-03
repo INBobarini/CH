@@ -1,9 +1,10 @@
 import { DAOMongoose } from "./_DaoMongoose.js";
-import { usersModel } from "../../models/usersModel.js";
-
+import { usersModel, resetRequestsModel } from "../../models/usersModel.js";
 
 class UsersDAOMongoose extends DAOMongoose{
-    constructor (model) {super(model)}
+    constructor (model) {
+        super(model)
+    }
 }
 
 export const usersDAOMongoose = new UsersDAOMongoose(usersModel)

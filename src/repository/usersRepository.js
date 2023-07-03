@@ -1,69 +1,77 @@
 import { dao } from "../DAO/daosFactory.js";
-import { logDebug, winstonLogger as logger } from "../utils/winstonLogger.js";
+import { logDebug, winstonLogger as logger, winstonLogger } from "../utils/winstonLogger.js";
+import { createHash, isValidPassword } from "../utils.js";
+import { Uuid } from "../utils/uuid.js";
+import { config } from "../config/config.js";
+import { CustomError } from "../models/errors/customError.js";
 
-
-class ProductsRepository { //create a generic repo integrating the logs, then extend it
-    #stage = "Products_Repo"
+class UsersRepository { //TODO: create a generic repo integrating the logs, then extend it
+    #stage = "Users_Repo"
+    #resetPasswordRequests = []
     constructor(dao){
-        this.dao=dao
+        this.dao = dao
     }
-    async createProduct(product){
-        let result = await this.dao.create(product)
-        logDebug(logger, [product], this.#stage)
+    async createUser(user){
+        let result = await this.dao.create(user)
         return result
     }
-    async getProduct(pid){
-        console.log(pid)
-        let result = await this.dao.readOne({_id:pid})
-        logDebug(logger, [pid], this.#stage)
+    async getUser(criteria){
+        logger.debug(`In user repo criteria was: ${JSON.stringify(criteria)}`)
+        let result = await this.dao.readOne(criteria)
         return result
     }
-    async getManyProductsByIds(pids){
-        let result = await this.dao.readMany({_id:{$in: pids}})
-        logDebug(logger, [pids], this.#stage)
+    async updateUser(criteria,newData){
+        //TODO: verify that password is not modified this way
+        let result = await this.dao.updateOne({criteria}, newData) //newData = {key:value}
         return result
     }
-    async getProducts(query,limit,page,sort){
-        const options = {
-            page:page||1,
-            limit:limit||10,
-            sort:sort||{}
+    async updateUserPassword(criteria, newPassword){
+        let user = await this.dao.readOne(criteria)
+        if(!user) {
+            logger.warning("User not found for resetting password")
+            return null
         }
-        let result = await this.dao.readMany(query, options)
-        logDebug(logger, [query,limit,page,sort], this.#stage)
+        let newEncryptedPass = createHash(newPassword)
+        if(isValidPassword(user, newPassword)){//valid means that pw match
+            throw new CustomError("New and old passwords match",400,"updateUserPassword")
+        }
+        let result = await this.dao.updateOne(user._id, {password:newEncryptedPass})
         return result
     }
-    async updateProduct(pid,newData){
-        let result = await this.dao.updateOne({_id:pid}, newData) //newData = {key:value}
-        logDebug(logger, [pid,newData], this.#stage)
-        return result
+    async createResetPasswordLink(email){
+        let code = new Uuid().toString()
+        let resetPasswordlink = config.baseUrl + "api/auth/restore/" + code
+        let resetRequest = {   //this could be a schema/model if used again
+            code: code,
+            email: email,
+            expireDate: new Date(Date.now() + 3600000),
+            used: false
+        }
+        this.#resetPasswordRequests.unshift(resetRequest) //using unshift instead of push allows later to find the newest request first
+        console.log(this.#resetPasswordRequests)
+        return resetPasswordlink
     }
-    async updateProducts(criteria,newData){
-        let result = await this.dao.updateMany(criteria, newData)
-        logDebug(logger, [criteria,newData], this.#stage)
-        return result
+    async verifyResetPasswordRequest(code){
+        let i = this.#resetPasswordRequests.findIndex(e=>e.code===code)
+        if (i===-1) {
+            throw new CustomError(`Reset request not found`, 404, "verifyResetPasswordRequest")
+        }
+        let foundResetRequest = this.#resetPasswordRequests[i]
+        let remainingTime = foundResetRequest.expireDate - new Date()
+        if (remainingTime < 0) {
+            throw new CustomError(`Reset request expired`, 498)
+        }
+        if (foundResetRequest.used)
+            throw new CustomError(`Reset request was used`, 409)
+        
+        this.#resetPasswordRequests[i].used = true
+        return foundResetRequest.email
     }
-    async updateMultipleProducts(arrProducts){
-        let updates = arrProducts.map(((p)=>{
-            let filter = {_id: p._id}
-            let update = {$set: p}
-            return {filter, update}
-        }))
-        let result = await this.dao.updateManyWithDifferentData(updates)
-        logDebug(logger, [arrProducts], this.#stage)
-        return result
-    }
-       
-    async deleteProduct(pid){
-        let result =  await this.dao.deleteOne({_id:pid})
-        logDebug(logger, [pid], this.#stage)
-        return result
-    }
-    async deleteProducts(criteria){
-        let result = await this.dao.deleteMany(criteria)
-        logDebug(logger, [criteria], this.#stage)
-        return result
+    async getResetPassRequestFromCode(code){
+        
+        let foundResetRequest = this.#resetPasswordRequests.find(e=>e.code===code)
+        return foundResetRequest
     }
 }
 
-export const productsRepository = new ProductsRepository(dao.products)
+export const usersRepository = new UsersRepository(dao.users)

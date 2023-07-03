@@ -2,7 +2,7 @@ import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler} from '../middlewares/errorHandler.js'
-import { handleGetPassRestore, handlePostPassRestore } from '../controllers/mailerController.js'
+import { handleGetPassRestore, handlePostPassRestore, handleUpdatePassword } from '../controllers/mailerController.js'
 
 const authRouter = Router()
 
@@ -36,18 +36,30 @@ authRouter.route('/logout')
 //to do logout github
 
 authRouter.route('/restore').post(
-  handlePostPassRestore,
-  errorHandler
+    handlePostPassRestore,
+    errorHandler
 )
 
-authRouter.route('/restore/:uuid').get(
+authRouter.route('/restore/:code').get(
     handleGetPassRestore,
     errorHandler
 )
 
 authRouter.route('/restore').put(
-    handlePutPassRestore,
+    handleUpdatePassword,
+    (req,res, next)=>{
+        try{
+            if(req.updatedUser){//pasword updated
+                res.redirect('../api/sessions/login')
+            }
+            else{//password didn't update
+                res.redirect('../api/auth/pwRestoreRequest')
+            }
+        }catch(error){
+            next(error)
+        }
+    },
     errorHandler
-  )
+)
 
 export {authRouter}

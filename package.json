@@ -1,14 +1,14 @@
 {
-  "name": "des3",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ecommerce-ch",
+  "version": "0.3.0",
+  "description": "Entregables CoderHouse",
   "main": "./src/app.js",
   "scripts": {
-    "test": "nodemon",
+    "test": "node ./src/app.js",
     "start": "SET NODE_ENV=production & node ./src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Iván Bobarini",
   "license": "ISC",
   "type": "module",
   "dependencies": {
