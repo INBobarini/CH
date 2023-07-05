@@ -16,10 +16,10 @@ export async function handleGetPassRestore(req, res, next) { //unused
     }
 }
 
-export async function handlePostPassRestore(req, res, next) {
+export async function handleNewPassRestoreRequest(req, res, next) {
     const { email } = req.body
     let foundUser = await usersRepository.getUser({email})
-    if(!foundUser) throw new CustomError ("User not found", 404, "handlePostPassRestore")
+    if(!foundUser) throw new CustomError ("User not found", 404, "handleNewPassRestoreRequest")
     try {
         const info = await emailService.sendRestorePasswordLink(email)
         res.json(info)
@@ -29,16 +29,3 @@ export async function handlePostPassRestore(req, res, next) {
     }
 }
 
-export async function handleUpdatePassword(req, res, next) {//better for userController
-    const { code, password } = req.body
-    try {
-        //---link verification---
-        let email = await usersRepository.verifyResetPasswordRequest(code)
-        //---password update---
-        const updatedUser = await usersRepository.updateUserPassword({email},password)
-        req.updatedUser = updatedUser
-        return updatedUser
-    } catch (error) {
-        next( new CustomError(error,500,"handleUpdatePassword"))
-    }
-}

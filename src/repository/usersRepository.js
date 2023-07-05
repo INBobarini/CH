@@ -32,15 +32,19 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
             return null
         }
         let newEncryptedPass = createHash(newPassword)
-        if(isValidPassword(user, newPassword)){//valid means that pw match
-            throw new CustomError("New and old passwords match",400,"updateUserPassword")
+        if(isValidPassword(user, newPassword)){//valid means that pws match
+            return new CustomError("Passwords match", 400)
         }
         let result = await this.dao.updateOne(user._id, {password:newEncryptedPass})
-        return result
+        if (result){
+            return "Password changed succesfully" //maybe better a response object?
+        }
+        else return new CustomError("Error updating password", 500)
+        
     }
     async createResetPasswordLink(email){
         let code = new Uuid().toString()
-        let resetPasswordlink = config.baseUrl + "api/auth/restore/" + code
+        let resetPasswordlink = config.baseUrl + "restore/" + code
         let resetRequest = {   //this could be a schema/model if used again
             code: code,
             email: email,
@@ -54,23 +58,24 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
     async verifyResetPasswordRequest(code){
         let i = this.#resetPasswordRequests.findIndex(e=>e.code===code)
         if (i===-1) {
-            throw new CustomError(`Reset request not found`, 404, "verifyResetPasswordRequest")
+            return new CustomError(`Reset request not found`, 404, "verifyResetPasswordRequest")
         }
         let foundResetRequest = this.#resetPasswordRequests[i]
         let remainingTime = foundResetRequest.expireDate - new Date()
         if (remainingTime < 0) {
-            throw new CustomError(`Reset request expired`, 498)
+            return new CustomError(`Reset request expired`, 498)
         }
         if (foundResetRequest.used)
-            throw new CustomError(`Reset request was used`, 409)
-        
-        this.#resetPasswordRequests[i].used = true
+            return new CustomError(`Reset request was used`, 409)
         return foundResetRequest.email
     }
-    async getResetPassRequestFromCode(code){
-        
+    async getEmailFromCode(code){
         let foundResetRequest = this.#resetPasswordRequests.find(e=>e.code===code)
-        return foundResetRequest
+        return foundResetRequest.email
+    }
+    async markLinkasUsed(code){
+        let i = this.#resetPasswordRequests.findIndex(e=>e.code===code)
+        this.#resetPasswordRequests[i].used = true
     }
 }
 

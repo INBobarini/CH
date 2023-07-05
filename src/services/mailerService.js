@@ -35,8 +35,7 @@ class EmailService {
         }
     }
 }
-const passMailApp = 'gltlwwcfywjflsqd'//TODO: move out
-export const emailService = new EmailService("inbobarini@gmail.com", passMailApp)
+export const emailService = new EmailService(config.SMTP_EMAIL,config.SMTP_CREDENTIALS)
 
         
 

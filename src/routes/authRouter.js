@@ -1,8 +1,11 @@
 import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
-import {errorHandler} from '../middlewares/errorHandler.js'
-import { handleGetPassRestore, handlePostPassRestore, handleUpdatePassword } from '../controllers/mailerController.js'
+import {errorHandler, errorHandlerJson} from '../middlewares/errorHandler.js'
+import { handleGetPassRestore, handleNewPassRestoreRequest } from '../controllers/mailerController.js'
+import { changeUserPassword } from '../controllers/userController.js'
+import { config } from '../config/config.js'
+
 
 const authRouter = Router()
 
@@ -36,7 +39,7 @@ authRouter.route('/logout')
 //to do logout github
 
 authRouter.route('/restore').post(
-    handlePostPassRestore,
+    handleNewPassRestoreRequest,
     errorHandler
 )
 
@@ -45,21 +48,18 @@ authRouter.route('/restore/:code').get(
     errorHandler
 )
 
-authRouter.route('/restore').put(
-    handleUpdatePassword,
+authRouter.route('/restorePass').put(
+    changeUserPassword,
     (req,res, next)=>{
-        try{
-            if(req.updatedUser){//pasword updated
-                res.redirect('../api/sessions/login')
-            }
-            else{//password didn't update
-                res.redirect('../api/auth/pwRestoreRequest')
-            }
-        }catch(error){
-            next(error)
+        if(req.error){
+            return res.json(JSON.stringify(req.error.message))
+        }   
+        if(req.updatedUser){//pasword updated
+            return res.json(JSON.stringify(req.updatedUser))
         }
+        else next()
     },
-    errorHandler
+    errorHandlerJson
 )
 
 export {authRouter}

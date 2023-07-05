@@ -11,6 +11,7 @@ import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
 import * as uController from '../controllers/userController.js'
+import { usersRepository } from '../repository/usersRepository.js'
 
 const viewsRouter = express.Router()
 
@@ -148,40 +149,19 @@ viewsRouter.route('/api/sessions/login')
 export default viewsRouter
 
 //AUTH
-viewsRouter.route('/api/auth/pwRestoreRequest')
+viewsRouter.route('/pwRestoreRequest')
 .get(async(req,res)=>{
     res.render('pwRestoreRequest')
 })
-viewsRouter.route('/api/auth/restore/:code')
+viewsRouter.route('/restore/:code')
 .get(
     //if verifycode render, else res.json
     uController.handleGetEmail,//validates code and gets email
     async(req,res)=>{
-    res.render('restorePassword',{
-        email: req.email,
-    }),
+        res.render('restorePassword',{})
+    },
     errorHandlerJson
-})
-.post(
-    async (req, res) => {
-        try {
-            // Logic to check if the new password and old password match
-            // If they don't match, set req.error with the appropriate message
-
-            if (req.error) {
-                res.render('restorePassword', {
-                    email: req.email,
-                    error: req.error
-                });
-            } else {
-                // Logic to update the password and complete the request
-                res.render('passwordResetSuccess');//change for a redirect to login
-            }
-        } catch (err) {
-            next(err);
-        }
-    }
-);
+)
 
 //LOGGER
 

@@ -26,5 +26,7 @@ export const config = {
     persistence: persistence.Fs ? "FS" : "MONGOOSE", //"MONGOOSE" or "FS"
     NODE_ENV : process.env.NODE_ENV || 'development',
     LOG_LEVEL: parseInt(process.env.LOG_LEVEL||'10'),
-    baseUrl: process.env.DOMAIN + ":" + process.env.PORT+"/"
+    baseUrl: process.env.DOMAIN + ":" + process.env.PORT+"/",
+    SMTP_EMAIL: process.env.SMTP_EMAIL, 
+    SMTP_CREDENTIALS: process.env.SMTP_CREDENTIALS
 }

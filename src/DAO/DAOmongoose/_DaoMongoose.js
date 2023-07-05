@@ -19,7 +19,6 @@ export class DAOMongoose{
     }
     
     async readOne(criteria){
-        logger.debug(`DAO readOne, criteria: ${JSON.stringify(criteria)}`)
         let result = await this.#model.findOne(criteria).lean()
         if(!result) throw new CustomError ('NOT FOUND TO READ', 404)
         result=cleanObject(result)
