@@ -1,6 +1,7 @@
 import { productsRepository } from '../repository/productsRepository.js'
 import { CustomError } from '../models/errors/customError.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
+import { current } from '../middlewares/auth.js'
 
 
 export async function handleGet(req, res, next) {
@@ -27,6 +28,7 @@ export async function handleGet(req, res, next) {
 
 export async function handlePost(req, res, next) {
     try{
+        let userPP = current(req.session)
         if(!req.body){
             throw new CustomError("!req.body", 400)
         }
@@ -41,9 +43,11 @@ export async function handlePost(req, res, next) {
 
 export async function handlePostAndGetAll(req, res, next) {
     try{
+        let userPP = current(req.session)
         if(!req.body){
             throw new CustomError("!req.body", 400)
         }
+        req.body.owner = userPP.email
         req.result = await productsRepository.createProduct(req.body)
         req.statusCode = req.result? 201 : 400
         const{query,limit,page,sort} = req.query

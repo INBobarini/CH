@@ -1,9 +1,10 @@
 import { createTransport } from 'nodemailer'
-import { logDebug, winstonLogger } from '../utils/winstonLogger.js'
-import { Uuid } from '../utils/uuid.js'
 import { config } from '../config/config.js'
 import { usersRepository } from '../repository/usersRepository.js'
-import { CustomError } from '../models/errors/customError.js'
+import { resetPwRequestsRepository } from '../repository/resetPWrequestsRepository.js'
+import { winstonLogger as logger} from '../utils/winstonLogger.js'
+
+
 
 class EmailService {
     #clienteNodemailer
@@ -18,9 +19,9 @@ class EmailService {
     }
     async sendRestorePasswordLink(email) {//TODO check if there is an active request
         try {
-            const restoreLink = await usersRepository.createResetPasswordLink(email) //prolly better use the routerdictionary
+            logger.debug(`In mailerService, sendRestorePasswordLink, email was: ${email}`)
+            const htmlString = await resetPwRequestsRepository.createResetPasswordLink(email) //prolly better use the routerdictionary
             //localhost:8080/api/sessions/restore/53803b9a-cd3b-4ba5-a5e6-0113751085a1
-            let htmlString = `<html><body><a href="${restoreLink}">${restoreLink}</a></body></html>`
             const mailOptions = {
                 from: 'ecommerce CH',
                 to: email,

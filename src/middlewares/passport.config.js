@@ -3,6 +3,8 @@ import {Strategy as LocalStrategy} from 'passport-local'
 import {Strategy as GithubStrategy} from 'passport-github2'
 import * as sessionsService from "../services/sessionsService.js"
 import { clientID, clientSecret, githubCallbackUrl } from '../config/githubLogin.js'
+import { winstonLogger as logger } from '../utils/winstonLogger.js'
+import { CustomError } from '../models/errors/customError.js'
 
 passport.use('register', new LocalStrategy(
     { passReqToCallback: true, usernameField:'email' }, async (req, _u, _p, done) => {
@@ -29,6 +31,7 @@ passport.use('login', new LocalStrategy(
             password = null
             done(null,user)
         } catch (err) {
+            new CustomError("Regular login failed", 401, "loginPS")
             return done(err.message)
         }
     })
@@ -43,7 +46,7 @@ passport.use('github', new GithubStrategy({clientID, clientSecret, callbackURL: 
             user = await sessionsService.registerGithubUser(profile._json.login, profile._json.name)
         }
     } catch (error) {
-        console.log("error: "+error.message)
+        console.log("error Passport: "+ error.message)
     }
     done(null, user)
   }))

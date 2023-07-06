@@ -3,6 +3,7 @@ import {createHash, isValidPassword} from "../utils.js"
 import { cartsRepository } from "../repository/cartsRepository.js"
 import {config} from '../config/config.js'
 import * as DTOs from "./DTOs.js"
+import { winstonLogger as logger} from '../utils/winstonLogger.js'
 
 export async function registerGithubUser(userGithubLogin, userGithubName){
     let user = {userLogin:userGithubLogin, first_name:userGithubName}
@@ -28,6 +29,7 @@ export async function logInCheck(email, password) { // hash compare of paswords
     if (admin) {return admin}
     let existingUser = await usersModel.findOne({ email: email } );
     if(!isValidPassword(existingUser, password)){
+        logger.warning(`password is incorrect for ${email}`)
         existingUser = null
     }
     return existingUser? existingUser : null

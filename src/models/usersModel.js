@@ -7,8 +7,8 @@ const usersSchema = new mongoose.Schema({
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     age: { type: Number, required: true },
-    role: {type: String, default: "user"},
-    cart: {type: mongoose.Schema.Types.ObjectId, ref: "carritos" }
+    role: { type: String, default: "user" },
+    cart: { type: mongoose.Schema.Types.ObjectId, ref: "carritos" },
 }, { versionKey: false })
 
 usersSchema.plugin(mongoosePaginate)
@@ -23,13 +23,3 @@ const githubUsersSchema = new mongoose.Schema({ //TODO MIX with DTO?
 
 githubUsersSchema.plugin(mongoosePaginate)
 export const usersGithubModel = mongoose.model('usuariosGithub', githubUsersSchema)
-
-const resetRequestsSchema = new mongoose.Schema({
-    code:{type: String, required: true},
-    email:{type: String, required: true, index:true},
-    expireDate:{type: Date, default : new Date(Date.now() + 3600000)},
-    used: {type: Boolean, default: false}
-    
-},{versionKey:false})
-
-export const resetRequestsModel = mongoose.model('resetRequests', resetRequestsSchema) 

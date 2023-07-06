@@ -5,13 +5,13 @@ import { __dirname } from '../utils.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
 import * as sessionsService from '../services/sessionsService.js'
-import {auth, current, hasSession}  from '../middlewares/auth.js'
+import {auth, current, hasSession, checkAuthorizations }  from '../middlewares/auth.js'
 import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
 import * as uController from '../controllers/userController.js'
-import { usersRepository } from '../repository/usersRepository.js'
+
 
 const viewsRouter = express.Router()
 
@@ -74,21 +74,25 @@ viewsRouter.route('/realtimeproducts')
 
 viewsRouter.route('/realtimeproducts')
 .post(
-    await auth({notUser:true}),
+    await checkAuthorizations("isAdmin","isPremium"),
     pController.handlePostAndGetAll, 
     async (req,res)=>{
         req['io'].sockets.emit('updateProducts', req.result.docs)
         res.send(req.result)  
-})
+    },
+    errorHandlerJson
+)
 viewsRouter.route('/realtimeproducts/')
 .delete(
-    await auth({notUser:true}),
     (req,res,next)=>{req.params._id = req.body, next()},//fetch brings only from req.body
+    await checkAuthorizations("isAdmin","isPremiumAndOwner"),
     pController.handleDeleteAndGetAll,
     async(req,res)=>{
         req['io'].sockets.emit('updateProducts', req.result.docs)
         res.send(req.result)
-})
+    },
+    errorHandlerJson
+)
 //CARTS
 viewsRouter.route('/carts/:cid')
 .get(
@@ -158,7 +162,13 @@ viewsRouter.route('/restore/:code')
     //if verifycode render, else res.json
     uController.handleGetEmail,//validates code and gets email
     async(req,res)=>{
-        res.render('restorePassword',{})
+        let message = ""
+        if (req.error) {
+            message = req.error.message
+        }
+        return res.render('restorePassword',{
+            expiredMessage:message}
+            )
     },
     errorHandlerJson
 )

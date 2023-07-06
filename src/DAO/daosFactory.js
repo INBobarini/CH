@@ -2,6 +2,7 @@ import { cartsDAOMongoose } from './DaoMongoose/cartsDaoMongoose.js'
 import { productsDAOMongoose } from './DaoMongoose/productsDaoMongoose.js'
 import { ticketsDAOMongoose } from './DaoMongoose/ticketsDaoMongoose.js'
 import { usersDAOMongoose } from './DaoMongoose/usersDaomongoose.js'
+import { resetPWRequestsDAOMongoose } from './DaoMongoose/resetPWrequestsDaoMongoose.js'
 //import { DAOFs} from "./DaoMongoose/_DaoFs.js"; 
 //
 import {cartsDAOFS} from './DaoFs/cartsDaoFs.js'
@@ -18,6 +19,7 @@ if (config.persistence === 'MONGOOSE'){
     dao.products = productsDAOMongoose,
     dao.tickets = ticketsDAOMongoose,
     dao.users = usersDAOMongoose
+    dao.resetPWRequests = resetPWRequestsDAOMongoose
 }
 
 if (config.persistence === 'FS'){
@@ -25,6 +27,7 @@ if (config.persistence === 'FS'){
     dao.products = productsDAOFS,
     dao.tickets = ticketsDAOFS,
     dao.users = usersDAOFS
+    //dao.resetPWRequests
 }
 
 export {dao}

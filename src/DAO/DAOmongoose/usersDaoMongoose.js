@@ -1,5 +1,5 @@
 import { DAOMongoose } from "./_DaoMongoose.js";
-import { usersModel, resetRequestsModel } from "../../models/usersModel.js";
+import { usersModel } from "../../models/usersModel.js";
 
 class UsersDAOMongoose extends DAOMongoose{
     constructor (model) {

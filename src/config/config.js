@@ -30,3 +30,4 @@ export const config = {
     SMTP_EMAIL: process.env.SMTP_EMAIL, 
     SMTP_CREDENTIALS: process.env.SMTP_CREDENTIALS
 }
+console.log(config.mongoUrl)

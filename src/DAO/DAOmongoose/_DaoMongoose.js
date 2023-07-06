@@ -14,7 +14,6 @@ export class DAOMongoose{
     
     async create (element){
         let result = cleanObject(await this.#model.create(element))
-        
         return result
     }
     
@@ -31,7 +30,11 @@ export class DAOMongoose{
         if(!criteria) criteria={}
         let result =  await this.#model.paginate(criteria, options)
         result = cleanObject(result)
-        
+        return result
+    }
+    async readAllRaw(){
+        let result =  await this.#model.find({})
+        result = cleanObject(result)
         return result
     }
 
@@ -46,6 +49,8 @@ export class DAOMongoose{
         delete result._id
         return result
     }
+
+    
 
     async updateMany(criteria, newData){
         let result = await this.#model.findByIdAndUpdate(criteria, newData)

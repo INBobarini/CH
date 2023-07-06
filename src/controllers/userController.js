@@ -1,4 +1,5 @@
 import { CustomError } from "../models/errors/customError.js"
+import { resetPwRequestsRepository } from "../repository/resetPWrequestsRepository.js"
 import { usersRepository } from "../repository/usersRepository.js"
 import { winstonLogger as logger, winstonLogger} from "../utils/winstonLogger.js"
 
@@ -6,9 +7,10 @@ import { winstonLogger as logger, winstonLogger} from "../utils/winstonLogger.js
 export async function handleGetEmail(req,res,next){//gets a code, returns an email
     try{
         let code = req.params.code 
-        let result = usersRepository.verifyResetPasswordRequest(code)
+        let result = await resetPwRequestsRepository.verifyResetPasswordRequest(code)
         if(result instanceof Error){
-            throw result
+            req.error = result
+            return next()
         }
         req.email = result
         next()
@@ -22,26 +24,27 @@ export async function changeUserPassword(req,res,next){//gets a code, returns an
     try{
         if(!req.body.code) throw new CustomError("Undefined code", 400)
         let code = req.body.code 
+        logger.debug(`Code:${code}`)
         if(!req.body.password) throw new CustomError("Undefined pass", 400)
         let password = req.body.password
-        let email = await usersRepository.getEmailFromCode(code)
+        let email = await resetPwRequestsRepository.getEmailFromCode(code)
         if(!email) throw new CustomError("Email not found", 404)
         req.email = email
         req.updatedUser = await usersRepository.updateUserPassword({email},password)
         if(req.updatedUser instanceof Error ){
             logger.warning("password update unsuccesful")
             req.error = req.updatedUser
-            next()
+            return next()
         }
         if(req.updatedUser){
-            usersRepository.markLinkasUsed(code)
+            resetPwRequestsRepository.markLinkasUsed(code)
             req.message = req.updatedUser
-            next()
+            return next()
         }
         else{
             throw new CustomError("User's pass was not updated", 500)
         }
-        next()
+        
     }
     catch(err){
         next(err)

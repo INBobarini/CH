@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import * as productsController from '../controllers/productsController.js'
 import {productsResponseFormatter} from '../middlewares/responseFormatter.js'
-import {auth} from '../middlewares/auth.js' 
+import {auth, checkAuthorizations} from '../middlewares/auth.js' 
 import { errorHandler } from '../middlewares/errorHandler.js'
 
 
@@ -16,24 +16,24 @@ productosRouter.route(['/:_id','/'])
 
 productosRouter.route('/')
 .post(
-    await auth({notUser:true}),
+    await checkAuthorizations("isAdmin", "isPremium"),
     productsController.handlePost, 
     productsResponseFormatter,
     )
 
 productosRouter.route('/:_id')
 .put(
-    //await auth({notUser:true}),
+    await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
     productsController.handlePut, 
     productsResponseFormatter,
     )
 
 productosRouter.route('/:_id')
 .delete(
-    await auth({notUser:true}),
+    await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
     productsController.handleDelete, 
     productsResponseFormatter,
-    )
+)
 
 //productosRouter.use(responseFormatter)
 productosRouter.use(errorHandler)

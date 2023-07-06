@@ -2,7 +2,7 @@ import express,{ Router } from 'express'
 import { loginController, logoutController, registroController, loginGhController } from '../controllers/authController.js'
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler, errorHandlerJson} from '../middlewares/errorHandler.js'
-import { handleGetPassRestore, handleNewPassRestoreRequest } from '../controllers/mailerController.js'
+import { handleNewPassRestoreRequest } from '../controllers/mailerController.js'
 import { changeUserPassword } from '../controllers/userController.js'
 import { config } from '../config/config.js'
 
@@ -43,21 +43,18 @@ authRouter.route('/restore').post(
     errorHandler
 )
 
-authRouter.route('/restore/:code').get(
-    handleGetPassRestore,
-    errorHandler
-)
-
 authRouter.route('/restorePass').put(
     changeUserPassword,
     (req,res, next)=>{
         if(req.error){
-            return res.json(JSON.stringify(req.error.message))
+            return res.status(req.error.code).json(JSON.stringify(req.error.message))
         }   
         if(req.updatedUser){//pasword updated
-            return res.json(JSON.stringify(req.updatedUser))
+            return res.status(200).json("Password cambiada")
         }
-        else next()
+        else {
+            next()
+        }
     },
     errorHandlerJson
 )
