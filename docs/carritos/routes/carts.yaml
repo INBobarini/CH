@@ -1,0 +1,163 @@
+paths:
+  /api/carts/:
+    post:
+      summary: Creates a new cart
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: The empty cart.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "500":
+          description: "Error del servidor"
+  /api/carts/{cid}:
+    get:
+      summary: Gets a single cart given its cid
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart to get
+      responses:
+        "200":
+          description: Brings the cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "404":
+          description: Not found.
+    put:
+      summary: replaces the content of a cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart to get
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/Cart'
+      responses:
+        "200":
+          description: Returns the cart updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "404":
+          description: Not found.
+    delete:
+      summary: empties the cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart
+      responses:
+        "200":
+          description: Returns the emptied cart 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "404":
+          description: Not found.
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Adds a product to a cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart 
+      - name: pid
+        in: path
+        required: true
+        description: id of the product
+      responses:
+        "200":
+          description: Brings the updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "500":
+          description: Not found.
+    put:
+      summary: Changes the quantity of a product in a cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart 
+      - name: pid
+        in: path
+        required: true
+        description: id of the product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuantityObj'
+      responses:
+        "201":
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "400":
+          description: Bad request.
+    delete:
+      summary: Deletes a product from a cart
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart 
+      - name: pid
+        in: path
+        required: true
+        description: id of the product
+      responses:
+        "200":
+          description: Brings the updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "404":
+          description: Not found.
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Purchases a cart, updates the content of the cart with the products that were not bought
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: id of the cart 
+
+
+    

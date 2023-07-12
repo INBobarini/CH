@@ -1,0 +1,6 @@
+tags:
+  - name: Products
+    description: API para administrar productos.
+
+  - name: Carts
+    description: API para administrar carritos.

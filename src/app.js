@@ -20,13 +20,16 @@ import {config} from './config/config.js'
 import {ROUTES} from './routes/_routesDictionary.js'
 
 import { logger } from '../src/middlewares/logger.js';
-import { errorHandler } from './middlewares/errorHandler.js';
+
+import { specs } from '../docs/swaggerOptions.js';
+import swaggerUiExpress from 'swagger-ui-express'
 
 //express
 const app = express()
 const httpServer = app.listen(config.port,()=>console.log(`servidor en el puerto ${config.port} `) )
 
-
+//swagger
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 //winston logger
 app.use(logger)

@@ -34,6 +34,7 @@ export async function handlePost(req, res, next) {
         }
         req.result = await productsRepository.createProduct(req.body)//DTO?
         req.statusCode = req.result? 201 : 400
+        
         next()
     }
     catch(error){

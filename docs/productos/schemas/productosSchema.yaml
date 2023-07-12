@@ -1,0 +1,129 @@
+components:
+  #---Schemas---
+  schemas:
+  
+    Response: 
+      status: 201
+      payload: 
+        schema: 
+          $ref: '#/components/schemas/Product'
+      content:
+        application/json:
+      properties:
+        status: 
+          description: http code, 201 / 500
+        payload:
+          description: the product or an error description
+      example: 
+        status: 201
+        payload: 
+          _id: 64ad9a3567990070f35d3ad0
+          title: Silla de madera
+          description: Guatambú
+          code: 587fe69ge
+          price: 5000
+          thumbnail": chair.jpeg
+          stock: 10
+          status: true
+          owner: inbobarini@gmail.com
+        totalPages: 0
+        prevPage: null
+        nextPage: null
+        page: null
+        hasPrevPage: null
+        hasNextPage: null
+        prevLink: null
+        nextLink: null
+
+    Product:
+      type: object
+      required:
+        - title
+        - description
+        - code
+        - price
+        - stock
+        - status
+        - thumbnail
+      properties:
+        title:
+          type: string
+          description: Titulo del artículo.
+        description:
+          type: string
+          description: Descripción del artículo.
+        code: 
+          type: string
+          description: identificación única (física) del articulo
+        price:
+          type: number
+        stock:
+          type: number
+        status: 
+          type: boolean
+        thumbnail:
+          type: string
+          description: url de la imagen del producto
+        owner:
+          type: string
+          description: the email of the user that has the product as its property
+      example:
+        title: Silla de madera
+        description: Guatambú
+        code: 587fe69ge
+        price: 5000
+        stock": 10
+        status: true
+        thumbnail: chair.jpeg
+  
+  #---Reqbodies---
+  requestBodies:
+    NewProduct:
+      type: object
+      required:
+        - title
+        - description
+        - price
+        - stock
+        - thumbnail
+      properties:
+        title:
+          type: string
+          description: Titulo del artículo.
+        description:
+          type: string
+          description: Descripción del artículo.
+        code: 
+          type: string
+          description: identificación única (física) del articulo
+        price:
+          type: number
+        stock:
+          type: number
+        status: 
+          type: boolean
+          description: default -> true
+        thumbnail:
+          type: string
+          description: url de la imagen del producto
+        owner: 
+          type: string
+          description: email del dueño, default -> admin
+      example:
+        title: Silla de madera
+        description: Guatambú
+        code: 587fe69ge
+        price: 5000
+        stock: 10
+        status: true
+        thumbnail: chair.jpeg
+    productUpdate:
+      type: object   
+      example:
+        price: 20000
+        stock: 5
+      
+      
+      
+      
+      

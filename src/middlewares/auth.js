@@ -49,16 +49,18 @@ export async function auth(permission){
 
 export async function checkAuthorizations(...authorizationNames) { //pass the functions as strings
     return async (req, res, next) => {
-        //--- Reference data ---
+        //--- Gathering reference data ---
+        
         let user = current(req.session)
         if(!user) return new CustomError("User not found for authentication", 401)
         logger.info(`${user.email} requests authorization`) 
+        
         let product
         if(req.params._id){
             product = await productsRepository.getProduct(req.params._id)
         }
         
-        //--- Current authorizations ---
+        //--- Available authorization methods ---
         let authorizations = {}
         authorizations.isAdmin = async function () {
             let user = current(req.session)
@@ -93,7 +95,7 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
             }
             return false
         }
-        //--- Executing the authorizations ---
+        //--- Evaluating the authorizations ---
         for (let f of authorizationNames){
             if (await authorizations[f]()){
                 logger.info(`Authorizated by ${f}`)
@@ -104,7 +106,7 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
         next()
   }  
 }
-//checkAuthorizations("isAdmin")
+
 
 
 

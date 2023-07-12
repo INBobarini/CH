@@ -16,21 +16,21 @@ productosRouter.route(['/:_id','/'])
 
 productosRouter.route('/')
 .post(
-    await checkAuthorizations("isAdmin", "isPremium"),
+    //await checkAuthorizations("isAdmin", "isPremium"),
     productsController.handlePost, 
     productsResponseFormatter,
     )
 
 productosRouter.route('/:_id')
 .put(
-    await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
+    //await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
     productsController.handlePut, 
     productsResponseFormatter,
     )
 
 productosRouter.route('/:_id')
 .delete(
-    await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
+    //await checkAuthorizations("isAdmin", "isPremiumAndOwner"),
     productsController.handleDelete, 
     productsResponseFormatter,
 )

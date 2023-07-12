@@ -1,0 +1,100 @@
+paths:
+  /api/products/:
+    post:
+      summary: Creates a new product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/NewProduct'
+      responses:
+        "201":
+          description: El producto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "500":
+          description: "Error del servidor"
+    get:
+      summary: Gets every product 
+      tags:
+        - Products
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "404":
+          description: Not found.
+  /api/products/{_id}:
+    get:
+      summary: Gets a single product by _id
+      tags:
+        - Products
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: id of the product to get
+        schema:
+          $type: String
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "404":
+          description: Not found.
+    put:
+      summary: Updates a single product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/productUpdate'
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: id of the product for update
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: The product, updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "404":
+          description: Not found.
+    delete:
+      summary: Deletes a single product
+      tags:
+        - Products
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: id of the product for deletion
+        schema:
+          $type: ObjectId
+      responses:
+        "200":
+          description: The product that was deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        "404":
+          description: Not found.
+    

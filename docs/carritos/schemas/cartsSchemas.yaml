@@ -1,0 +1,31 @@
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        products:
+          type: array
+          product:
+            description: the_id of the product
+          quantity:
+            type: number
+          required:
+            - product
+            - quantity
+      example:
+        _id: 649a2af9cd5bd10b8a714c30
+        products: 
+          - product: 6483898895d70999f8d6c1ed 
+            quantity: 3
+          - product: 6483898895d70999f8d6c1ee
+            quantity: 1
+    QuantityObj:  
+      type: object  
+      properties:  
+        quantity: 
+          type: number  
+          required:
+            quantity
+      example:
+        quantity: 9    
+            
