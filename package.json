@@ -4,8 +4,9 @@
   "description": "Entregables CoderHouse",
   "main": "./src/app.js",
   "scripts": {
-    "test": "node ./src/app.js",
-    "start": "SET NODE_ENV=production & node ./src/app.js"
+    "start": "SET NODE_ENV=production & node ./src/app.js",
+    "start:dev": "node ./src/app.js",
+    "test":"mocha test/**/*.test.js"
   },
   "keywords": [],
   "author": "Iván Bobarini",
@@ -36,6 +37,9 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@types/mocha": "^10.0.1",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22"
-  }
+  },
+  "mocha": {"timeout":"20000"}
 }
