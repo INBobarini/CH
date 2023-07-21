@@ -16,7 +16,7 @@ export default class ProductEntity {
         title: "string",
         description:  "string", 
         price: "number",
-        thumbnail:  "string",
+        thumbnail:"string",
         code:  "string",
         stock: "number"
     }

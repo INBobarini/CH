@@ -29,8 +29,4 @@ export default class UserEntity {
         role: true,
         cart: true
     }
-
-    checkTypes(){//incomplete, move to a parent class
-        if (this.#types){}
-    }
 }

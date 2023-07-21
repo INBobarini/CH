@@ -1,4 +1,4 @@
-import mongoose from '../DAO/DaoMongoose/_mongoConnect.js'
+import mongoose from 'mongoose'//'../DAO/DaoMongoose/_mongoConnect.js'
 import mongoosePaginate from 'mongoose-paginate-v2'
 
 const productsSchema = new mongoose.Schema({
@@ -7,7 +7,7 @@ const productsSchema = new mongoose.Schema({
     description:{type: String, required: true},
     code:{type: String, required: true},
     price:{type: Number, required: true},
-    thumbnail:{type: String, required: true},
+    thumbnail:{type: [String], required: true},
     stock:{type: Number, required: true},
     status:{type: Boolean, required: false},
     owner: {type: String, default: "admin", ref: "usuarios" }
