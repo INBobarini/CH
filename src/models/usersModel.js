@@ -9,6 +9,11 @@ const usersSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     role: { type: String, default: "user" },
     cart: { type: mongoose.Schema.Types.ObjectId, ref: "carritos" },
+    documents: [{
+        name:{type:String},
+        reference:{type:String}
+    }],
+    last_connection:{type:Date, default:Date.now}
 }, { versionKey: false })
 
 usersSchema.plugin(mongoosePaginate)

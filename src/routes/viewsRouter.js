@@ -10,7 +10,7 @@ import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
-import * as uController from '../controllers/userController.js'
+import * as uController from '../controllers/usersController.js'
 
 
 const viewsRouter = express.Router()

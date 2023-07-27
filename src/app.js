@@ -23,6 +23,7 @@ import { logger } from '../src/middlewares/logger.js';
 
 import { specs } from '../docs/swaggerOptions.js';
 import swaggerUiExpress from 'swagger-ui-express'
+import { usersRouter } from './routes/usersRouter.js';
 
 //express
 const app = express()
@@ -75,6 +76,8 @@ app.use(ROUTES.VIEWS, viewsRouter)
 app.use(ROUTES.SESSIONS, sessionsRouter)
 //router auth
 app.use(ROUTES.AUTH, authRouter)
+//router users
+app.use(ROUTES.USERS, usersRouter)
 
 
 

@@ -1,8 +1,5 @@
 import mongoose from 'mongoose'
-import {productosModel} from '../../../src/models/productsModel.js'
 import Assert from 'assert'
-import {DAOMongoose} from '../../../src/DAO/DaoMongoose/_DaoMongoose.js'
-import ProductEntity from '../../../src/models/entities/productsEntity.js'
 import { productsDAOMongoose } from '../../../src/DAO/DaoMongoose/productsDaoMongoose.js'
 
 //mongodb+srv://Ivan:<password>@cluster0.8lq7s6v.mongodb.net/?retryWrites=true&w=majority

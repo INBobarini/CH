@@ -3,7 +3,7 @@ import { loginController, logoutController, registroController, loginGhControlle
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler, errorHandlerJson} from '../middlewares/errorHandler.js'
 import { handleNewPassRestoreRequest } from '../controllers/mailerController.js'
-import { changeUserPassword } from '../controllers/userController.js'
+import { changeUserPassword } from '../controllers/usersController.js'
 import { config } from '../config/config.js'
 
 

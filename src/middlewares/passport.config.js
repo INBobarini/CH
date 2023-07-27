@@ -51,6 +51,7 @@ passport.use('github', new GithubStrategy({clientID, clientSecret, callbackURL: 
     done(null, user)
   }))
 
+//TO DO LOGOUT STRATEGY  
 passport.serializeUser((user, next) => { next(null, user) }) 
 passport.deserializeUser((user, next) => { next(null, user) })
 
