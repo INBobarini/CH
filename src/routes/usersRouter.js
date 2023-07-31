@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import { upload } from '../utils.js'
+import { uploads } from '../utils.js'
 
 const usersRouter = Router()
 
@@ -9,25 +9,34 @@ usersRouter.route('/premium/:uid').get(
     //if not return an error, only if going from user to premium
 )
 
-usersRouter.route('/premium/:uid').post(
-    upload.single('file'),
+usersRouter.route('/:uid/documents').post(
+    uploads,
     (req,res,next)=>{
-        if(!req.file){
+        if(!req.files || !req.files[req.body.field_name]){
             return res.status(400).send("error multer")
         }
-        let image = req.file.path
-        console.log(image)
-        res.status(201).json(req.file)
+        let image = req.files[req.body.field_name][0].path
+        
+        //update user status
+        /*
+        await usersService.updateUserDocuments(req.body.field_name)
+            await usersRepo.update({status:})
+
+        */
+
+
+        res.status(201).json(req.files)
     }
 )
 
-usersRouter.route('/:uid/documents').post(
-    upload.array('files') //check this
-    //profile picture goes to profiles folder
-    //product picture to products folder
-    //document to documents folder
-    //if all 3 uploaded -> continue
-    //usersRepoUpdateStatus //to check if the documents were used
+usersRouter.route('/premium/:uid').post(
+    /*
+        await usersService.checkDocumentsAndUpgradeToPremium(req.body.field_name)
+            await usersRepo.update({status:})
+            //documents: id,comprobante,comprobante
+        if not all documents return error
+
+    */
 )
 
 export {usersRouter}

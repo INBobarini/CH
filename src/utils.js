@@ -17,12 +17,43 @@ export {__dirname, createHash, isValidPassword}
 
 import multer from 'multer'
 
-const storage = multer.diskStorage({
-    destination: function(req,file,cb){
-        cb(null,'./src/public/images')
-    },
-    filename: function(req,file,cb){
-        cb(null,`${Date.now()}-${file.originalname}`)
+function setMulterStorage(path){
+    return multer.diskStorage({
+        destination: function(req,file,cb){
+            cb(null, path)
+        },
+        filename: function(req,file,cb){
+            cb(null,`${Date.now()}-${file.originalname}`)
+        }
+    })
+}
+
+export const uploader = {
+    profilePicture: setMulterStorage('./src/public/profile'),
+    productPicture: setMulterStorage('./src/public/products'),
+    document: setMulterStorage('./src/public/documents')
+} 
+const maxFiles = {
+    profilePicture: 1,
+    productPicture: 8,
+    document: 3,
+    identification: 1,
+    addressVoucher: 1,
+    accountVoucherStatement:1,
+}
+
+export function uploads (req,res,next){
+    if (req.body.field_name){
+        let uploadType = req.body.field_name
+        let document = uploader[uploadType].fields([
+          {name: uploadType, maxCount : maxFiles[uploadType]}
+      ])
+        
+        return document
     }
-})
-export const upload = multer({storage})
+    else {
+      next(); // If no field_name provided, move to the next middleware
+    }
+}
+
+

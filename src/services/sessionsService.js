@@ -48,6 +48,10 @@ export async function getUserData(user){
     let userDTO = new DTOs.User(result) 
     return userDTO 
 }
+
+export async function updateUserDocuments(documentName){
+    
+}
 export async function logOutUser(email){
     if (email){
         return await updateLastConnection(email)
