@@ -17,43 +17,27 @@ export {__dirname, createHash, isValidPassword}
 
 import multer from 'multer'
 
-function setMulterStorage(path){
-    return multer.diskStorage({
-        destination: function(req,file,cb){
-            cb(null, path)
-        },
-        filename: function(req,file,cb){
-            cb(null,`${Date.now()}-${file.originalname}`)
-        }
-    })
-}
+const folderNames = {}
+folderNames.profilePicture = './src/public/profiles'
+folderNames.productPicture = './src/public/products'
+folderNames.document = './src/public/documents'
 
-export const uploader = {
-    profilePicture: setMulterStorage('./src/public/profile'),
-    productPicture: setMulterStorage('./src/public/products'),
-    document: setMulterStorage('./src/public/documents')
-} 
-const maxFiles = {
-    profilePicture: 1,
-    productPicture: 8,
-    document: 3,
-    identification: 1,
-    addressVoucher: 1,
-    accountVoucherStatement:1,
-}
+const storage = multer.diskStorage({
+  destination: function(req,file,cb){
+      cb(null, folderNames[file.fieldname]??'./src/public/others')
+  },
+  filename: function(req,file,cb){
+      cb(null,`${Date.now()}-${file.originalname}`)
+  }
+})
 
-export function uploads (req,res,next){
-    if (req.body.field_name){
-        let uploadType = req.body.field_name
-        let document = uploader[uploadType].fields([
-          {name: uploadType, maxCount : maxFiles[uploadType]}
-      ])
-        
-        return document
-    }
-    else {
-      next(); // If no field_name provided, move to the next middleware
-    }
-}
+export const customUploader = multer ({storage})
+.fields([{
+  name:'profilePicture',
+  name:'productPicture',
+  name:'document'
+}])
+
+
 
 
