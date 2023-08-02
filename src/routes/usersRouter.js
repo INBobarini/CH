@@ -1,5 +1,7 @@
 import {Router} from 'express'
-import { customUploader } from '../utils.js'
+import { customUploader } from '../middlewares/multer.js'
+import  * as usersService from '../services/sessionsService.js'
+import { current } from '../middlewares/auth.js'
 
 const usersRouter = Router()
 
@@ -11,10 +13,23 @@ usersRouter.route('/premium/:uid').get(
 
 usersRouter.route('/:uid/documents').post(
     customUploader,
-    (req,res,next)=>{
-        console.log("paso el mw")
-        res.json(req.files)
+    async (req,res,next) => {
+        let user = current(req.session)
+        if(req.files) {
+            let newDocs = []
+            Object.keys(req.files).forEach(key => {
+                req.files[key].forEach(e=>{
+                    newDocs.push({
+                        name: e.fieldname,
+                        reference: e.path
+                    })
+                })
+            });
+            console.log(newDocs)
 
+            await usersService.updateUserDocuments('inbobarini@gmail.com', newDocs)
+        }
+        res.json(req.files)
     }
 )
 

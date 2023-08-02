@@ -49,8 +49,8 @@ export async function getUserData(user){
     return userDTO 
 }
 
-export async function updateUserDocuments(documentName){
-    
+export async function updateUserDocuments(email, newDocs){
+    await usersRepository.updateUserDocuments({email:email}, newDocs)
 }
 export async function logOutUser(email){
     if (email){

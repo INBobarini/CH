@@ -47,9 +47,13 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
         if (result){
             return "Password changed succesfully" //maybe better a response object?
         }
-        else return new CustomError("Error updating password", 500)
-        
-    }   
+        else return new CustomError("Error updating password", 500)  
+    }
+    async updateUserDocuments(email, newDocs){
+        let user = await usersRepository.getUser({email:email})
+        let updatedDocs = newDocs.concat(user.documents) 
+        let result = await this.dao.updateOne(user._id,{documents:updatedDocs})
+    }
 }  
 
 export const usersRepository = new UsersRepository(dao.users)
