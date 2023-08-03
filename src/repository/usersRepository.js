@@ -4,7 +4,7 @@ import { createHash, isValidPassword } from "../utils.js";
 import { Uuid } from "../utils/uuid.js";
 import { config } from "../config/config.js";
 import { CustomError } from "../models/errors/customError.js";
-
+import { User } from "../services/DTOs.js";
 
 
 class UsersRepository { //TODO: create a generic repo integrating the logs, then extend it
@@ -27,6 +27,12 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
         logger.debug(`In user repo criteria was: ${JSON.stringify(criteria)}`)
         let result = await this.dao.readOne(criteria)
         return result
+    }
+
+    async getUsers(){
+        let result = await this.dao.read()
+        const DTOUsers = result.map(e =>  new User(e))
+        return DTOUsers
     }
     async updateUser(criteria,newData){
         //TODO: verify that password is not modified this way

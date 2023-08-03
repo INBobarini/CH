@@ -26,7 +26,7 @@ usersRouter.route('/:uid/documents').post(
                 })
             });
             console.log(newDocs)
-
+            //TO DO, TEST WITH user variable
             await usersService.updateUserDocuments('inbobarini@gmail.com', newDocs)
         }
         res.json(req.files)
@@ -49,6 +49,21 @@ usersRouter.route('/premium/:uid').post(
         if not all documents return error
 
     */
+)
+
+usersRouter.route('/').get(
+    async(req,res, next)=>{
+        req.result = await usersService.getUserData()
+        next()
+    }   
+)
+usersRouter.route('/').delete(
+    async(req,res, next)=>{
+        let time = undefined
+        req.result = await usersService.deleteInactiveUsers(time)
+        //mail sender
+        next()
+    }   
 )
 
 export {usersRouter}

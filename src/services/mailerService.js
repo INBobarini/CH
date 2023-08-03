@@ -3,6 +3,7 @@ import { config } from '../config/config.js'
 import { usersRepository } from '../repository/usersRepository.js'
 import { resetPwRequestsRepository } from '../repository/resetPWrequestsRepository.js'
 import { winstonLogger as logger} from '../utils/winstonLogger.js'
+import { CustomError } from '../models/errors/customError.js'
 
 
 
@@ -10,8 +11,8 @@ class EmailService {
     #clienteNodemailer
     constructor(senderEmail, emailCredentials) {
         this.#clienteNodemailer = createTransport({
-        service: 'gmail',
-        port: 587,
+        service: 'gmail',//TODO ENV THIS
+        port: 587, //TODO ENV THIS
         auth: {
             user: senderEmail,
             pass: emailCredentials}
@@ -35,7 +36,41 @@ class EmailService {
             return error
         }
     }
+    async sendAccountDeletionNotice(email){
+        try {
+            const message = `${email}, your account was deleted for inactivity. Greetings`
+            const mailOptions = {
+                from: 'ecommerce CH',
+                to: email,
+                subject: 'Account deletion notice',
+                text: message,
+                attachments:[]
+            }
+            const info = await this.#clienteNodemailer.sendMail(mailOptions)
+            return info
+        } catch (error) {
+            return new CustomError(`Nodemailer ${error}`, 500)
+        }
+    }
+    async sendProductRemotionNotice(email, productName){
+        //call this when deleting a premium user's product
+        try {
+            const message = `${email}, your ${productName} was deleted.`
+            const mailOptions = {
+                from: 'ecommerce CH',
+                to: email,
+                subject: 'Your product was deleted',
+                text: message,
+                attachments:[]
+            }
+            const info = await this.#clienteNodemailer.sendMail(mailOptions)
+            return info
+        } catch (error) {
+            return new CustomError(`Nodemailer ${error}`, 500)
+        }
+    }
 }
+
 export const emailService = new EmailService(config.SMTP_EMAIL,config.SMTP_CREDENTIALS)
 
         

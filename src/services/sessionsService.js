@@ -7,6 +7,7 @@ import { winstonLogger as logger} from '../utils/winstonLogger.js'
 import { usersDAOMongoose } from "../DAO/DaoMongoose/usersDaomongoose.js"
 import { usersRepository } from "../repository/usersRepository.js"
 import { CustomError } from "../models/errors/customError.js"
+import { emailService } from "./mailerService.js"
 
 export async function registerGithubUser(userGithubLogin, userGithubName){
     let user = {userLogin:userGithubLogin, first_name:userGithubName}
@@ -43,14 +44,18 @@ export async function logInCheck(email, password) { // hash compare of paswords
     return existingUser? existingUser : null //careful with this null
 }
 
-export async function getUserData(user){
+export async function getUserData(user){//userServices
     let result = await usersRepository.getUser({email:user.email})
     let userDTO = new DTOs.User(result) 
     return userDTO 
 }
 
-export async function updateUserDocuments(email, newDocs){
-    await usersRepository.updateUserDocuments({email:email}, newDocs)
+export async function updateUserDocuments(email, newDocs){ //userServices
+    return await usersRepository.updateUserDocuments({email:email}, newDocs)
+}
+
+export async function getAllUsers(){
+    return await usersRepository.getUsers()
 }
 export async function logOutUser(email){
     if (email){
@@ -58,6 +63,19 @@ export async function logOutUser(email){
     } 
     return new CustomError(`logout unsuccesful for email: ${email} `, 400)
 }
+
+export async function deleteInactiveUsers(timeLimitLimit){
+    if(!timeLimit) timeLimit = 24*3600*1000 
+    let users = await usersRepository.getUsers()
+    let inactiveUsers = users.filter(e=>{
+        Date.now() - e.last_connection > timeLimit
+    })
+    inactiveUsers.forEach(async(iu)=>{
+        await emailService.sendAccountDeletionNotice(iu.email)
+    })
+    //send mail to the deleted users
+}
+
 async function checkAdmin(email, password){
     const admins = [{
         email:config.adminName, password:config.adminPassword,
