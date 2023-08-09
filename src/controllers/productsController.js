@@ -79,6 +79,7 @@ export async function handlePut(req, res, next) {
 }
 
 export async function handleDelete(req, res, next) {
+    
     try{
         if(!req.params._id){
             throw new CustomError("!req.params._id", 400)

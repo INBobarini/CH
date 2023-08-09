@@ -10,12 +10,12 @@ const levels = {
   debug: 5,
 }
 const colors = {
-  fatal: 'red',
+  fatal: 'bold red cyanBG',
   error: 'red',
   warning: 'yellow',
   info: 'blue',
   http: 'cyan',
-  debug: 'green italic'
+  debug: 'italic green'
 }
 
 const winstonLoggerDev = winston.createLogger({

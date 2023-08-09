@@ -1,6 +1,7 @@
 import { CustomError } from "../models/errors/customError.js"
 import { resetPwRequestsRepository } from "../repository/resetPWrequestsRepository.js"
 import { usersRepository } from "../repository/usersRepository.js"
+import * as usersService from "../services/sessionsService.js"
 import { winstonLogger as logger, winstonLogger} from "../utils/winstonLogger.js"
 
 
@@ -48,6 +49,20 @@ export async function changeUserPassword(req,res,next){//gets a code, returns an
     }
     catch(err){
         next(err)
+    }
+}
+
+export async function handlePremiumUpgrade(req,res,next){
+    try{
+        if(!req.params.uid){
+            logger.warning("No req.params.uid in handlePremiumUpgrade")
+        }
+        else{
+            req.result = await usersService.checkDocumentsAndUpgradeToPremium(req.params.uid) 
+        } 
+    }
+    catch(error){
+        next(error)
     }
 }
 

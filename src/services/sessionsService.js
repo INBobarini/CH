@@ -8,6 +8,7 @@ import { usersDAOMongoose } from "../DAO/DaoMongoose/usersDaomongoose.js"
 import { usersRepository } from "../repository/usersRepository.js"
 import { CustomError } from "../models/errors/customError.js"
 import { emailService } from "./mailerService.js"
+import { productsRepository } from "../repository/productsRepository.js"
 
 export async function registerGithubUser(userGithubLogin, userGithubName){
     let user = {userLogin:userGithubLogin, first_name:userGithubName}
@@ -64,16 +65,29 @@ export async function logOutUser(email){
     return new CustomError(`logout unsuccesful for email: ${email} `, 400)
 }
 
-export async function deleteInactiveUsers(timeLimitLimit){
+export async function getEmailListOfInactiveUsers(timeLimit){
     if(!timeLimit) timeLimit = 24*3600*1000 
     let users = await usersRepository.getUsers()
+    if (!users){
+        logger.warning(`No inactive users found for ${timeLimit/3600.000} hours`)
+        return []
+    }
     let inactiveUsers = users.filter(e=>{
         Date.now() - e.last_connection > timeLimit
     })
-    inactiveUsers.forEach(async(iu)=>{
-        await emailService.sendAccountDeletionNotice(iu.email)
-    })
-    //send mail to the deleted users
+    return inactiveUsers.map((e)=>e.email)
+}
+
+export async function deleteInactiveUsers(timeLimit){
+    //1. Get the inactive list of users
+    let emailList = await getEmailListOfInactiveUsers(timeLimit)
+    //2. Notify their account deletion
+    if(emailList){
+        let info = await emailService.sendAccountDeletionNotice(emailList)
+        let emailsToDelete = info.accepted
+    //3. Delete those that received the notification, 
+        return result = await usersRepository.deleteManyUsersByEmail(emailsToDelete)
+    }
 }
 
 async function checkAdmin(email, password){
@@ -92,3 +106,39 @@ async function updateLastConnection(email){
         {email:email},{last_connection:Date.now()})
     return result
 }
+
+export async function checkDocumentsAndUpgradeToPremium(uid){
+    let user = usersRepository.getUser({_id:uid})
+    let requiredDocs = [//change these hardcoded properties to match a library of documents
+        "identificacion",
+        "comprobante_de_domicilio",
+        "comprobante_de_estado_de_cuenta"
+    ]
+    let result = {}
+    result.upgradeToPremium = false
+    result.missingDocs = []
+    for(const reqDoc in requiredDocs){
+        if (!user.documents[reqDoc]) {
+            result.missingDocs.push(reqDoc)
+            return result 
+        }
+    }
+    if(!result.missingDocs.length)  {
+        result.upgradeToPremium = true
+        await usersRepository.updateUser({_id:uid},{role:'premium'})
+    }
+    return result     
+}
+
+export async function notifyProductDeletion(pid){
+    let product = await productsRepository.getProduct(pid)
+    //if(!product)
+    let foundOwner = await usersRepository.getUser({owner:product.owner})
+    //if(!foundOwner)
+    if (foundOwner.role === "premium"){
+        let result = emailService.sendProductRemotionNotice(foundOwner.email, product.title)
+    }
+}
+
+
+

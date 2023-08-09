@@ -5,10 +5,9 @@ import { resetPwRequestsRepository } from '../repository/resetPWrequestsReposito
 import { winstonLogger as logger} from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 
-
-
 class EmailService {
     #clienteNodemailer
+    #cbErrorInfo
     constructor(senderEmail, emailCredentials) {
         this.#clienteNodemailer = createTransport({
         service: 'gmail',//TODO ENV THIS
@@ -17,6 +16,13 @@ class EmailService {
             user: senderEmail,
             pass: emailCredentials}
         })
+        this.#cbErrorInfo = (error, info) =>{
+            if (error) new CustomError(error, 500, "NodemailerCB")
+            else {
+                logger.warning(`Rejected recipients: ${info.rejected}`)
+                logger.info(`Pending recipients: ${info.pending}`)
+            } 
+        }
     }
     async sendRestorePasswordLink(email) {//TODO check if there is an active request
         try {
@@ -30,15 +36,15 @@ class EmailService {
                 html: htmlString,
                 attachments:[]
             }
-            const info = await this.#clienteNodemailer.sendMail(mailOptions)
-            return info
+            const result = await this.#clienteNodemailer.sendMail(mailOptions)
+            return result
         } catch (error) {
             return error
         }
     }
     async sendAccountDeletionNotice(email){
         try {
-            const message = `${email}, your account was deleted for inactivity. Greetings`
+            const message = `Your account was deleted due to inactivity. Greetings`
             const mailOptions = {
                 from: 'ecommerce CH',
                 to: email,

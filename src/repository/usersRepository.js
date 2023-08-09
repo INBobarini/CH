@@ -60,6 +60,11 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
         let updatedDocs = newDocs.concat(user.documents) 
         let result = await this.dao.updateOne(user._id,{documents:updatedDocs})
     }
+    async deleteManyUsersByEmail(emailArray){
+        let criteria = {email: {$in: emailArray}}//incompatible with DAOFS
+        let result = await this.dao.deleteMany(criteria)
+        return result
+    }
 }  
 
 export const usersRepository = new UsersRepository(dao.users)

@@ -2,6 +2,10 @@ import {Router} from 'express'
 import { customUploader } from '../middlewares/multer.js'
 import  * as usersService from '../services/sessionsService.js'
 import { current } from '../middlewares/auth.js'
+import { emailService } from '../services/mailerService.js'
+import { usersRepository } from '../repository/usersRepository.js'
+
+import { handlePremiumUpgrade } from '../controllers/usersController.js'
 
 const usersRouter = Router()
 
@@ -42,13 +46,12 @@ usersRouter.route('/:uid/documents').post(
         //res.status(201).json(req.files)
 
 usersRouter.route('/premium/:uid').post(
-    /*
-        await usersService.checkDocumentsAndUpgradeToPremium(req.body.field_name)
-            await usersRepo.update({status:})
-            //documents: id,comprobante,comprobante
-        if not all documents return error
+    handlePremiumUpgrade
+    //await usersRepo.update({status:})
+    //documents: id,comprobante,comprobante
+    //if not all documents return error
 
-    */
+    
 )
 
 usersRouter.route('/').get(
@@ -59,9 +62,8 @@ usersRouter.route('/').get(
 )
 usersRouter.route('/').delete(
     async(req,res, next)=>{
-        let time = undefined
-        req.result = await usersService.deleteInactiveUsers(time)
-        //mail sender
+        let timeLimit
+        req.result = await usersService.deleteInactiveUsers(timeLimit)
         next()
     }   
 )
