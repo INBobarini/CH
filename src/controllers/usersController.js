@@ -2,8 +2,8 @@ import { CustomError } from "../models/errors/customError.js"
 import { resetPwRequestsRepository } from "../repository/resetPWrequestsRepository.js"
 import { usersRepository } from "../repository/usersRepository.js"
 import * as usersService from "../services/sessionsService.js"
-import { winstonLogger as logger, winstonLogger} from "../utils/winstonLogger.js"
-
+import { winstonLogger as logger} from "../utils/winstonLogger.js"
+import {current} from "../middlewares/auth.js"
 
 export async function handleGetEmail(req,res,next){//gets a code, returns an email
     try{
@@ -52,19 +52,75 @@ export async function changeUserPassword(req,res,next){//gets a code, returns an
     }
 }
 
-export async function handlePremiumUpgrade(req,res,next){
+export async function handlePremium(req,res,next){
     try{
         if(!req.params.uid){
             logger.warning("No req.params.uid in handlePremiumUpgrade")
         }
         else{
-            req.result = await usersService.checkDocumentsAndUpgradeToPremium(req.params.uid) 
+            let uid = req.params.uid
+            let user = await usersRepository.getUser({_id:uid})
+            if (user.role==='user'){//upgrade case
+                let missingDocs = await usersService.checkDocuments(uid)
+                req.result = await usersService.upgradeToPremium(uid, missingDocs) 
+            }
+            else if (user.role==='premium'){//downgrade case
+                req.result = await usersRepository.updateUser({_id:uid},{role:'user'})
+            }
         } 
+        res.status(200).json(req.result)
     }
     catch(error){
         next(error)
     }
 }
+
+export async function handleDeleteInactiveUsers(req, res, next){
+    let timeLimit
+    try {
+        req.result = await usersService.deleteInactiveUsers(timeLimit)
+        next()
+    } catch (error) {
+        next(error)
+    }
+    
+}
+
+export async function handleNewUserDocuments(req, res, next){
+    try {
+        let user = await current(req.session)
+        if (req.files) {
+            let newDocs = []
+            Object.keys(req.files).forEach(key => {
+                req.files[key].forEach(e => {
+                    newDocs.push({
+                        name: e.fieldname,
+                        reference: e.path
+                    })
+                })
+            })
+            req.result = await usersService.updateUserDocuments(user, newDocs)
+            next()
+        }
+    } catch (error) {
+        logger.fatal(error)
+        next(error)
+    }
+    
+}
+
+
+export async function handleGetUsersData(req, res, next){
+    try {
+        req.result = await usersService.getAllUsers()
+        next()
+    } catch (error) {
+        next(error) 
+    }
+    
+    
+}
+
 
 /*export async function handleUpdatePassword(req, res, next) {//better for userController
     const { code, password } = req.body

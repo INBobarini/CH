@@ -24,7 +24,7 @@ sessionsRouter.route('/githubcallback').get(
 
 sessionsRouter.route('/logout')
 .get(async (req,res)=>{
-    let currentUser = current(req.session)
+    let currentUser = await current(req.session)
     if (currentUser){
         await sessionsService.logOutUser(currentUser.email)
         res.redirect('/')
@@ -41,9 +41,9 @@ sessionsRouter.route('/')
 })
 
 sessionsRouter.route('/current')
-.get((req,res)=>{//sacar a session manager, usar en profile view, mandar a un controller de sesiones?
+.get(async(req,res)=>{//sacar a session manager, usar en profile view, mandar a un controller de sesiones?
     try{
-        let currentUser = current(req.session)
+        let currentUser = await current(req.session)
         res.status(200).send(currentUser)
     }
     catch(error){

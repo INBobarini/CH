@@ -32,27 +32,27 @@ export async function logInCheck(email, password) { // hash compare of paswords
     //check if is an admin
     let admin = await checkAdmin(email, password)
     if (admin) {return admin}
-    usersDAOMongoose
     //let existingUser = await usersModel.findOne({ email: email } ); 
-    let existingUser = await usersRepository.getUser({ email: email })
-    logger.info(`User from repo is: ${existingUser.email}`)
-    if(!isValidPassword(existingUser, password)){
-        logger.warning(`password is incorrect for ${email}`)
-        existingUser = null
+    let user = await usersRepository.getUser({ email: email })
+    logger.info(`User from repo is: ${user.email}`)
+    if(!isValidPassword(user, password)){
+        logger.warning(`password is incorrect for ${user.email}`)
+        user = null
         return new CustomError ("Incorrect password", 401)
     }
-    await updateLastConnection(email)
-    return existingUser? existingUser : null //careful with this null
+    await updateLastConnection(user)
+    return user
 }
 
 export async function getUserData(user){//userServices
     let result = await usersRepository.getUser({email:user.email})
+    logger.debug("usersRepo.getUser:"+JSON.stringify(result._id))
     let userDTO = new DTOs.User(result) 
     return userDTO 
 }
 
-export async function updateUserDocuments(email, newDocs){ //userServices
-    return await usersRepository.updateUserDocuments({email:email}, newDocs)
+export async function updateUserDocuments(user, newDocs){ //userServices
+    return await usersRepository.updateUserDocuments({email:user.email}, newDocs)
 }
 
 export async function getAllUsers(){
@@ -101,21 +101,20 @@ async function checkAdmin(email, password){
         return admin
     }
 }
-async function updateLastConnection(email){
+async function updateLastConnection(user){
     let result = await usersRepository.updateUser(
-        {email:email},{last_connection:Date.now()})
+        {_id:user._id},{last_connection:Date.now()})
     return result
 }
 
-export async function checkDocumentsAndUpgradeToPremium(uid){
-    let user = usersRepository.getUser({_id:uid})
+export async function checkDocuments(uid){
+    let user = await usersRepository.getUser({_id:uid})
     let requiredDocs = [//change these hardcoded properties to match a library of documents
         "identificacion",
         "comprobante_de_domicilio",
         "comprobante_de_estado_de_cuenta"
     ]
     let result = {}
-    result.upgradeToPremium = false
     result.missingDocs = []
     for(const reqDoc in requiredDocs){
         if (!user.documents[reqDoc]) {
@@ -123,11 +122,15 @@ export async function checkDocumentsAndUpgradeToPremium(uid){
             return result 
         }
     }
-    if(!result.missingDocs.length)  {
-        result.upgradeToPremium = true
-        await usersRepository.updateUser({_id:uid},{role:'premium'})
+}
+
+export async function upgradeToPremium(uid, missingDocs){
+    if(!missingDocs.length)  {
+        let user = await usersRepository.updateUser({_id:uid},{role:'premium'})
+        return user  
     }
-    return result     
+    return new CustomError(`Missing docs: ${missingDocs}`, 400)
+     
 }
 
 export async function notifyProductDeletion(pid){

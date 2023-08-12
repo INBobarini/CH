@@ -1,12 +1,16 @@
 import { CustomError } from '../models/errors/customError.js'
 import { productsRepository } from '../repository/productsRepository.js'
+import { usersRepository } from '../repository/usersRepository.js'
 import * as DTOs from '../services/DTOs.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 
 
-export const current = function (session){//req.session
+export const current = async function (session){//req.session
     if(session.passport){
-    const currentUser = new DTOs.User(session.passport.user)
+        let email = session.passport.user.email
+        let user = await usersRepository.getUser({email:email})
+        if(!user) {return new CustomError("User has no session", 403)}
+        const currentUser = new DTOs.User(user)
         return currentUser
     }
     else{
@@ -26,7 +30,7 @@ export async function auth(permission){
     //permission puede ser: {notUser:true} or {notAdmin:true}
     return async (req, res, next) => {
         try{
-            let user = current(req.session);
+            let user = await current(req.session);
             if(!user){
                 throw new CustomError("!user", 401)
             }
@@ -50,8 +54,8 @@ export async function auth(permission){
 export async function checkAuthorizations(...authorizationNames) { //pass the functions as strings
     return async (req, res, next) => {
         //--- Gathering reference data ---
-        
-        let user = current(req.session)
+        req.user = await current(req.session)
+        let user = req.user
         if(!user) return new CustomError("User not found for authentication", 401)
         logger.info(`${user.email} requests authorization`) 
         
@@ -63,12 +67,12 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
         //--- Available authorization methods ---
         let authorizations = {}
         authorizations.isAdmin = async function () {
-            let user = current(req.session)
+            let user = await current(req.session)
             if(user.role==="admin") return true
             return false
         }
         authorizations.isPremium = async function () {
-            let user = current(req.session)
+            let user = await current(req.session)
             logger.debug("User"+ JSON.stringify(user))
             if(user.role==="premium") return true
             return false
@@ -96,13 +100,14 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
             return false
         }
         //--- Evaluating the authorizations ---
+        logger.debug(`${user.email} attempts authorization with role ${user.role} using ${authorizationNames}`)
         for (let f of authorizationNames){
             if (await authorizations[f]()){
                 logger.info(`Authorizated by ${f}`)
                 return next()
             }
         }
-        return new CustomError("Not authorized", 401),
+        return new CustomError("No reason to authorize", 401),
         next()
   }  
 }

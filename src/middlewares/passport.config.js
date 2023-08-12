@@ -28,7 +28,7 @@ passport.use('login', new LocalStrategy(
         
         try {
             let user = await sessionsService.logInCheck(email, password)
-            password = null
+            //password = null
             done(null,user)
         } catch (err) {
             new CustomError("Regular login failed", 401, "loginPS")

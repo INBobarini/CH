@@ -28,7 +28,7 @@ export async function handleGet(req, res, next) {
 
 export async function handlePost(req, res, next) {
     try{
-        let userPP = current(req.session)
+        let userPP = await current(req.session)
         if(!req.body){
             throw new CustomError("!req.body", 400)
         }
@@ -44,7 +44,7 @@ export async function handlePost(req, res, next) {
 
 export async function handlePostAndGetAll(req, res, next) {
     try{
-        let userPP = current(req.session)
+        let userPP = await current(req.session)
         if(!req.body){
             throw new CustomError("!req.body", 400)
         }

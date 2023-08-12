@@ -1,0 +1,31 @@
+<input id="email" type="text" placeholder="Enter email">
+<button id="delete">Delete</button>
+<button id="upgrade">Upgrade to premium</button>
+<button id="downgrade">Downgrade </button>
+<table>
+    <tr>
+        <th>Email</th>
+        <th>uid</th>
+        <th>Full Name</th>
+        <th>Role</th>
+        <th>Documents</th>
+        <th>Last_connection</th>
+    </tr>
+    {{#each users}}
+      <tr>
+          <td>{{this.email}}</td>
+          <td>{{this.uid}}</td>
+          <td>{{this.full_name}}</td>
+          <td>{{this.role}}</td>
+          <td>
+            {{#each this.documents}}
+                <p>{{this.name}}: {{this.reference}}</p>
+            {{/each}}
+          </td>
+          <td>{{this.last_connection}}</td>
+      </tr>
+    {{/each}}
+</table>
+<script>
+    //fetch to '/premium/:uid'
+</script>

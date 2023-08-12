@@ -30,13 +30,14 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
     }
 
     async getUsers(){
-        let result = await this.dao.read()
+        let result = await this.dao.readAllRaw()
+        if(!result) return new CustomError("Users not found", 404)
         const DTOUsers = result.map(e =>  new User(e))
         return DTOUsers
     }
     async updateUser(criteria,newData){
         //TODO: verify that password is not modified this way
-        let result = await this.dao.updateOne({criteria}, newData) //newData = {key:value}
+        let result = await this.dao.updateOne(criteria, newData) //newData = {key:value}
         return result
     }
     async updateUserPassword(criteria, newPassword){
@@ -55,10 +56,12 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
         }
         else return new CustomError("Error updating password", 500)  
     }
-    async updateUserDocuments(email, newDocs){
-        let user = await usersRepository.getUser({email:email})
-        let updatedDocs = newDocs.concat(user.documents) 
-        let result = await this.dao.updateOne(user._id,{documents:updatedDocs})
+    async updateUserDocuments(criteria, newDocs){
+        let user = await this.dao.readOne(criteria)
+        let updatedDocs = newDocs.concat(user.documents)
+        logger.debug(JSON.stringify(`Docs to update: ${updatedDocs}`))
+        let result = await this.dao.updateOne(user._id, {documents:updatedDocs})
+        return result
     }
     async deleteManyUsersByEmail(emailArray){
         let criteria = {email: {$in: emailArray}}//incompatible with DAOFS

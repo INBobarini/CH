@@ -5,25 +5,71 @@
 <p>Age: {{user.age}}</p>
 <p>Rol: {{user.role}}</p>
 
+<h5>Documents:</h5>
+<ul>
+  {{#each user.documents}}
+    <li>{{this.name}}: {{this.reference}} </li>
+  {{/each}}
+</ul>
+
+
+<form id="formUpload" enctype="multipart/form-data">
+  <input type="file" name="identificacion" accept=".pdf, .doc, .docx">
+  <br>
+  <input type="file" name="comprobante_de_domicilio" accept=".pdf, .doc, .docx">
+  <br>
+  <input type="file" name="comprobante_de_estado_de_cuenta" accept=".pdf, .doc, .docx">
+  <br>
+  <button type="submit">Upload Documents</button>
+</form>
 
 <form id="formLogout">
   <button type="submit">Logout</button>
 </form>
 
 <script>
-    const formLogout = document.querySelector('#formLogout')
 
-if (formLogout instanceof HTMLFormElement) {
-  formLogout.addEventListener('submit', async function(event) {
-    event.preventDefault()
+  const formLogout = document.querySelector('#formLogout')
+  if (formLogout instanceof HTMLFormElement) {
+    formLogout.addEventListener('submit', async function(event) {
+      event.preventDefault()
 
-    const { status } = await fetch('/api/auth/logout', {
-      method: 'DELETE'
+      const { status } = await fetch('/api/auth/logout', {
+        method: 'DELETE'
+      })
+
+      if (status) {
+        window.location.href = '/api/sessions/login'
+      } 
     })
+  }
 
-    if (status) {
-      window.location.href = '/api/sessions/login'
-    } 
-  })
-}
+  const uploadBtn = document.querySelector('#formUpload')
+  if (uploadBtn instanceof HTMLFormElement) {
+    uploadBtn.addEventListener("submit", 
+      async function (event) {
+        event.preventDefault()
+        const formData = new FormData()
+        formData.append("identificacion", event.target.elements.identificacion.files[0]);
+        formData.append("comprobante_de_domicilio", event.target.elements.comprobante_de_domicilio.files[0]);
+        formData.append("comprobante_de_estado_de_cuenta", event.target.elements.comprobante_de_estado_de_cuenta.files[0]);
+        try {
+          const response = await fetch(
+            window.location.origin+"/api/users/"+"{{user.uid}}"+"/documents", {
+            method: "POST",
+            body: formData,
+          });
+          if (response.ok) {
+            const data = await response.json()
+            console.log("Document uploaded successfully:", data)
+          } else {
+            console.error("Upload failed")
+          }
+        } catch (error) {
+          console.error("Error:", error)
+        }
+      }
+    )
+  }
+
 </script>

@@ -10,7 +10,7 @@ const levels = {
   debug: 5,
 }
 const colors = {
-  fatal: 'bold red cyanBG',
+  fatal: 'bold white redBG',
   error: 'red',
   warning: 'yellow',
   info: 'blue',

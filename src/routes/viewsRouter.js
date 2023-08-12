@@ -4,13 +4,14 @@ import {io} from '../app.js'
 import { __dirname } from '../utils.js'
 import * as pController from '../controllers/productsController.js'
 import * as cController from '../controllers/cartsController.js'
+import * as uController from '../controllers/usersController.js'
 import * as sessionsService from '../services/sessionsService.js'
 import {auth, current, hasSession, checkAuthorizations }  from '../middlewares/auth.js'
 import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
-import * as uController from '../controllers/usersController.js'
+
 
 
 const viewsRouter = express.Router()
@@ -123,7 +124,7 @@ viewsRouter.route('/chat')
 
 viewsRouter.route('/chat')
 .post(
-    await auth({notAdmin:true}),
+    //await auth({notAdmin:true}),//fix
     async(req,res)=>{
         let{user, message} = req.body.newMessage
         let result = await messagesRepository.createOne(user, message)
@@ -157,6 +158,7 @@ viewsRouter.route('/pwRestoreRequest')
 .get(async(req,res)=>{
     res.render('pwRestoreRequest')
 })
+
 viewsRouter.route('/restore/:code')
 .get(
     //if verifycode render, else res.json
@@ -190,3 +192,15 @@ viewsRouter.route('/loggerTest')
     const separatedLogs = logs.map(log => JSON.stringify(log, null, 2)).join('\n');
     res.type('json').send(`[${separatedLogs}]`);
 });
+
+//USERS
+viewsRouter.route('/manageUsers')
+.get(await checkAuthorizations("isAdmin"),
+    uController.handleGetUsersData,
+    async(req,res)=>{
+        let users = req.result
+        res.render('manageUsers',{
+            users: users
+        })
+        
+})

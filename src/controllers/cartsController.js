@@ -60,7 +60,7 @@ export async function handlePostProductInCart(req,res,next){
 
 export async function handleCartPurchase(req,res,next){
     try{ 
-        let purchaser = current(req.session) //email
+        let purchaser = await current(req.session) //email
         req.result = await cartsService.purchaseCart(req.params.cid, purchaser.email )
         req.statusCode = req.result? 201 : 400
         return res.status(req.statusCode).send(req.result)//fix this

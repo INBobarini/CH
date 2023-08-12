@@ -45,12 +45,10 @@ export class DAOMongoose{
             { new: true, projection: { _id: 0 } }
             )
         .lean()
-        if(!result) throw new CustomError ('NOT FOUND TO UPDATE',404)
+        if(!result) return new CustomError ('FAILED UPDATE', 404)
         delete result._id
         return result
     }
-
-    
 
     async updateMany(criteria, newData){
         let result = await this.#model.findByIdAndUpdate(criteria, newData)

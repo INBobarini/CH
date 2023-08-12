@@ -10,6 +10,7 @@ export default class UserEntity {
         this.age = user.age
         this.role = user.role ?? "user"
         this.cart = user.cart
+        this.documents = user.documents
     }
     #types = {
         _id: String,
@@ -18,7 +19,8 @@ export default class UserEntity {
         first_name: String,
         last_name: String,
         role: String,
-        cart: String
+        cart: String,
+        documents: Array
     }
     #required = {
         _id: false,
@@ -27,6 +29,7 @@ export default class UserEntity {
         first_name: false,
         last_name: false,
         role: true,
-        cart: true
+        cart: true,
+        documents: false
     }
 }
