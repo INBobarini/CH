@@ -68,6 +68,10 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
         let result = await this.dao.deleteMany(criteria)
         return result
     }
+    async deleteUser(criteria){
+        let result = await this.dao.deleteOne(criteria)
+        return result
+    }
 }  
 
 export const usersRepository = new UsersRepository(dao.users)

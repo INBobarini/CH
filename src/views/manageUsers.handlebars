@@ -1,7 +1,8 @@
-<input id="email" type="text" placeholder="Enter email">
-<button id="delete">Delete</button>
-<button id="upgrade">Upgrade to premium</button>
-<button id="downgrade">Downgrade </button>
+<input id="uid" type="text" placeholder="Enter uid">
+<button id="deleteBtn">Delete</button>
+<button id="deleteInactiveBtn">Delete inactive</button>
+<button id="upgradeBtn">Upgrade to premium</button>
+<button id="downgradeBtn">Downgrade to user</button>
 <table>
     <tr>
         <th>Email</th>
@@ -26,6 +27,76 @@
       </tr>
     {{/each}}
 </table>
+
 <script>
-    //fetch to '/premium/:uid'
+    //delete
+    const deleteBtn = document.querySelector('#deleteBtn')
+    deleteBtn.addEventListener('click',(e)=>{
+        const uid = document.querySelector("#uid").value
+        console.log(uid)
+        fetch(
+            window.location.origin + '/api/users/' + uid, 
+            {method: 'DELETE'}
+        )
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error deleting user', error);
+        })
+    })
+    //upgrade 
+    const upgradeBtn = document.querySelector('#upgradeBtn')
+    upgradeBtn.addEventListener('click',function(){
+        fetch(
+            window.location.origin + '/api/users/premium/' + uid, 
+            {method: 'POST'}
+        )
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error upgrading user', error);
+        })
+    })
+    //downgrade
+    const downgradeBtn = document.querySelector('#downgradeBtn')
+    downgradeBtn.addEventListener('click',function(){
+        fetch(
+            window.location.origin + '/api/users/premium/' + uid, 
+            {method: 'POST'}
+        )
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error downgrading user', error);
+        })
+    })
+    //deleteInactive
+    const deleteInactiveBtn = document.querySelector('#deleteInactiveBtn')
+    deleteInactiveBtn.addEventListener('click',function(){
+        fetch(
+            window.location.origin + '/api/users/' + uid, 
+            {method: 'DELETE'}
+        )
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function() {
+            window.location.reload()
+        })
+        .catch(function(error) {
+            console.error('Error deleting inactive users', error);
+        })
+    })
 </script>

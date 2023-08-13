@@ -35,6 +35,12 @@ usersRouter.route('/').delete(
     succesfulResponse,
     errorHandler
 )
+usersRouter.route('/:uid').delete(
+    usersController.handleDeleteUser,
+    succesfulResponse,
+    errorHandler
+)
+
 
 export {usersRouter}
 

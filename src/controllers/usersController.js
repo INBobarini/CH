@@ -114,11 +114,24 @@ export async function handleGetUsersData(req, res, next){
     try {
         req.result = await usersService.getAllUsers()
         next()
+        //error case
     } catch (error) {
         next(error) 
     }
-    
-    
+}
+
+export async function handleDeleteUser(req, res, next){
+    try {
+        let uid = req.params.uid
+        if(!uid) return new CustomError("!uid", 400)
+        logger.debug(`Received req.params.uid: ${req.params.uid}`)
+        req.result = await usersRepository.deleteUser({_id:uid})
+        if(!req.result) return new CustomError("!req.result", 500)
+        //error case
+        next()
+    } catch (error) {
+        next(error) 
+    }
 }
 
 
