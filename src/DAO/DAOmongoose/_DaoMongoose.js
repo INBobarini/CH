@@ -20,9 +20,16 @@ export class DAOMongoose{
     async readOne(criteria){
         let result = await this.#model.findOne(criteria).lean()
         if(!result) throw new CustomError ('NOT FOUND TO READ', 404)
-        result=cleanObject(result)
+        result = cleanObject(result)
         
         //let noIdResult = result.map(e=>delete e._id)
+        logger.debug(`Result is ${JSON.stringify(result)}`)
+        return result
+    }
+
+    async readOnePopulated(criteria){
+        let result =  await this.#model.findOne(criteria).populate('products.product')
+        result = cleanObject(result)
         return result
     }
         

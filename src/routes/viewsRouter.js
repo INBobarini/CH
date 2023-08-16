@@ -11,6 +11,8 @@ import { createMockProduct } from '../mocks/mocks.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { CustomError } from '../models/errors/customError.js'
 import { errorHandler, errorHandlerJson } from '../middlewares/errorHandler.js'
+import { cartsResponse } from '../middlewares/successfulResponse.js'
+
 
 
 
@@ -36,7 +38,8 @@ get(
         res.render('home',{
             products:docs,
             styles:'css/index.css',
-            user: req.user||"no logueado",
+            userName: req.user.first_name||"no logueado",
+            userCart: req.user.cart,
             totalPages,
             page,
             limit,
@@ -44,7 +47,7 @@ get(
             hasNextPage,
             prevPage, //TO DO hide prevPage/nextpage buttons if their value is null, 
             nextPage,
-            isAdmin: false|| (req.user.role==="admin")
+            isAdmin: false || (req.user.role==="admin")
         })
     }
 )
@@ -98,17 +101,21 @@ viewsRouter.route('/realtimeproducts/')
 viewsRouter.route('/carts/:cid')
 .get(
     cController.handleGetPopulated,
-    async(req,res)=>{
-    try{
-        let cart = req.result
-        res.render('cart',{
-            products: cart.products,
-            cartId: req.params.cid,
-            hasProducts: Boolean(cart.products.length)
-        })
-    }
-    catch(err){req.logger(err),res.send(err)}
-})
+    async(req,res,next)=>{
+        try{
+            let cart = req.result
+            res.render('cart',{
+                products: cart.products,
+                cartId: req.params.cid,
+                hasProducts: Boolean(cart.products.length)
+            })
+        }
+        catch(err) {
+            next(err)
+        }
+    },
+    errorHandlerJson
+)
 //CHAT
 viewsRouter.route('/chat')
 .get(
@@ -179,13 +186,18 @@ viewsRouter.route('/restore/:code')
 
 let logs = []
 
-viewsRouter.route('/loggerTest')
-.post(async(req,res)=>{
-    logs.push(req.body)
-    if(!req.body) throw new CustomError("No se generó log", 404)
-    else res.status(201)
-    //no error handler defined
-})
+viewsRouter.route('/loggerTest').post(
+    async(req,res,next)=>{
+        try {
+            logs.push(req.body)
+            if(!req.body) throw new CustomError("No se generó log", 404)
+            else res.status(201)
+        } catch (error) {
+            next(error)
+        }
+    },
+    errorHandler
+)
 
 viewsRouter.route('/loggerTest')
 .get(async (req, res) => {

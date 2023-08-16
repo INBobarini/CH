@@ -1,7 +1,6 @@
 import { cartsRepository } from "../repository/cartsRepository.js"
 import { productsRepository } from "../repository/productsRepository.js"
 import { cartsModel } from "../models/cartsModel.js"
-import { cleanObject } from "../DAO/DaoMongoose/_DaoMongoose.js"//fix:service is using a DAO function
 import { ticketsRepository } from "../repository/ticketsRepository.js"
 import { current } from "../middlewares/auth.js"
 import {winstonLogger as logger} from "../utils/winstonLogger.js"
@@ -62,14 +61,14 @@ export async function removeProductFromCart(cid,pid){
     }
     return await cartsRepository.updateCart(cid,foundCart.products)
 }
-export async function updateQuantOfProductInCart(cid,pid,quantity){
+export async function updateQuantOfProductInCart(cid, pid, quantity){
     let foundCart = await getCartAndValidateProdInCart(cid,pid)
     let indexOfProductInCart = foundCart.products.findIndex(e=>e.product==pid)
     foundCart.products[indexOfProductInCart].quantity = quantity
     return await cartsRepository.updateCart(cid,foundCart.products)
 }
-export async function getCartwithPopulatedProducts(cid){
-    return cleanObject(await cartsModel.findById(cid).populate('products.product'))
+export async function getCartWithPopulatedProducts(cid){
+    return await cartsRepository.getCartWithPopulatedProducts(cid)
 }
 
 export async function purchaseCart(cid, purchaserEmail){

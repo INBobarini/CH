@@ -19,6 +19,11 @@ class CartsRepository{
         return result
     }
 
+    async getCartWithPopulatedProducts(cid){
+        let result =  await this.dao.readOnePopulated({_id:cid})
+        return result
+    }
+
     async getCarts(query, paginationOpts){
         let result = await this.dao.readMany(query,paginationOpts)
         logDebug(logger, [query,paginationOpts], this.#stage)

@@ -7,40 +7,39 @@ import { usersRepository } from '../repository/usersRepository.js'
 
 import * as usersController from '../controllers/usersController.js'
 import { errorHandler } from '../middlewares/errorHandler.js'
-import { succesfulResponse } from '../middlewares/succesfulResponse.js'
+import { successfulResponse } from '../middlewares/successfulResponse.js'
+
 
 const usersRouter = Router()
 
 usersRouter.route('/:uid/documents').post(
     customUploader,
     usersController.handleNewUserDocuments,
-    succesfulResponse,
-    errorHandler
+    
+ 
 )
 
 usersRouter.route('/premium/:uid').post(
     await checkAuthorizations("isAdmin"),
     usersController.handlePremium,
-    succesfulResponse,
-    errorHandler
+    
+   
 )
 
 usersRouter.route('/').get(
     usersController.handleGetUsersData,
-    succesfulResponse,
-    errorHandler
+    
 )
 usersRouter.route('/').delete(
     usersController.handleDeleteInactiveUsers,
-    succesfulResponse,
-    errorHandler
+    
 )
 usersRouter.route('/:uid').delete(
     usersController.handleDeleteUser,
-    succesfulResponse,
-    errorHandler
+    
 )
 
+usersRouter.use(successfulResponse, errorHandler)
 
 export {usersRouter}
 

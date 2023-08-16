@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import * as cartsController from '../controllers/cartsController.js'
-import { cartsResponseFormatter } from '../middlewares/responseFormatter.js'
-import {errorHandler} from '../middlewares/errorHandler.js'
+import {errorHandler, errorHandlerJson} from '../middlewares/errorHandler.js'
+import { cartsResponse } from '../middlewares/successfulResponse.js'
 
 //consider getting multiple routes for every method, using arrays, adjust controller accordingly
 
@@ -10,25 +10,29 @@ const cartsRouter = Router()
 cartsRouter.route('/userCart')
 .get(
     cartsController.handleGetUserCart,
-    cartsResponseFormatter,
-
 )
 cartsRouter.route('/:cid')
 .get(
     cartsController.handleGet,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
+)
+
+cartsRouter.route('/:cid')
+.get(
+    cartsController.handleGetPopulated,
+    //cartsResponseFormatter,
 )
 
 cartsRouter.route('/')
 .post(
     cartsController.handlePostCart,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 )
 
 cartsRouter.route('/:cid/product/:pid')
 .post(
     cartsController.handlePostProductInCart,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 
 )
 cartsRouter.route('/:cid/purchase')
@@ -39,27 +43,27 @@ cartsRouter.route('/:cid/purchase')
 cartsRouter.route('/:cid')
 .put(
     cartsController.handlePutProductsInCart,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 )
 
 cartsRouter.route('/:cid/products/:pid')
 .put(
     cartsController.handlePutUpdateQuantity,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 )
 
 cartsRouter.route('/:cid')
 .delete(
     cartsController.handleDeleteCart, 
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 )
 
 cartsRouter.route('/:cid/product/:pid')
 .delete(
     cartsController.handleDeleteProductInCart,
-    cartsResponseFormatter,
+    //cartsResponseFormatter,
 )
 
-cartsRouter.use(errorHandler)
+cartsRouter.use(cartsResponse, errorHandlerJson)
 
 export default cartsRouter 

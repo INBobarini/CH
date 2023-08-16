@@ -18,32 +18,15 @@ class responseObj {
     }
 }
 
-export const productsResponseFormatter = 
-function (req,res){
-    !req.statusCode??200
-    let statusMessage = badStatusMessage
-    if(req.statusCode===200||req.statusCode===201){
-        statusMessage = okStatusMessage
-    }
-    if(statusMessage===badStatusMessage){
-        return res.status(req.statusCode).json({status:statusMessage, payload:"{}"})
-    }
-    req.result.statusCode = req.statusCode
-    !req.statusCode??500
+export const productsResponseFormatter = function (req,res){
     let response = new responseObj(req.result)
-    res.status(req.statusCode).json(response)
+    res.json(response)
 }
 
 export const cartsResponseFormatter = 
 function (req,res){
-    
-    let statusMessage = badStatusMessage
-    if(req.statusCode===200||req.statusCode===201){
-        statusMessage = okStatusMessage
-    }
-    if(statusMessage===badStatusMessage){
-        return res.status(req.statusCode).json({status:statusMessage, payload:"{}"})
+    return res.status(req.statusCode).json({status:statusMessage, payload:"{}"})
     }
     !req.statusCode??500
-    res.status(req.statusCode).json({status:statusMessage, payload:req.result})
+    res.json({status:req.status, payload:req.result})
 }

@@ -2,5 +2,7 @@
     "workbench.colorTheme": "Default Dark Modern",
     "workbench.preferredDarkColorTheme": "Default Dark Modern",
     "workbench.preferredHighContrastColorTheme": "GitHub Dark Dimmed",
-    "window.autoDetectColorScheme": true
+    "window.autoDetectColorScheme": true,
+    "terminal.integrated.fastScrollSensitivity" :1 ,
+    "terminal.integrated.mouseWheelScrollSensitivity":0.2
 }

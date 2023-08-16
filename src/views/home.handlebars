@@ -1,6 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <link rel="icon" type="image/svg+xml" href="https://example.com/image.svg">
-<span>Bienvenido {{user.first_name}}. </span>
+<span>Bienvenido {{userName}}. </span>
 <a href="/api/sessions/profile">Profile</a>
 <a href="/chat">Chat</a>
 {{#if isAdmin}}
@@ -69,23 +69,13 @@ nextBtn.addEventListener('click', function(){
 })
 
 //Get the user cart ID
-let cartId = ""
-fetch(window.location.origin + '/api/carts/userCart')
-.then(function(response) {
-  return response.json()
-})
-.then(function(data) {
-  console.log(data)
-  cartId = data.payload._id
-})
-.catch(function(error) {
-  console.log(error)
-});
 
-//GO TO PRODUCT BUTTONS
+let cartId = "{{userCart}}"
 
-const viewMoreBtns = document.querySelectorAll('.go-to-product')
-viewMoreBtns.forEach(function(node){
+//ADD PRODUCT BUTTONS
+
+const addToCartBtns = document.querySelectorAll('.go-to-product')
+addToCartBtns.forEach(function(node){
   node.addEventListener('click', function(){
     
     fetch(window.location.origin + '/api/carts/' + cartId + '/product/' + node.id , {
