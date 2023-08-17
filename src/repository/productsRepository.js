@@ -20,7 +20,7 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
         return result
     }
     async getManyProductsByIds(pids){
-        let result = await this.dao.readMany({_id:{$in: pids}})
+        let result = await this.dao.readManyPaginated({_id:{$in: pids}})
         
         return result
     }
@@ -30,7 +30,7 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
             limit:limit||10,
             sort:sort||{}
         }
-        let result = await this.dao.readMany(query, options)
+        let result = await this.dao.readManyPaginated(query, options)
         
         return result
     }

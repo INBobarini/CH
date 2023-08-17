@@ -19,7 +19,7 @@ export const cartsDAOMongoose = new CartsDAOMongoose(cartsModel)
 //READ
 //let foundCart = await cartsDAOMongoose.readOne({_id:"648211fefb26aecfb5937403"})
 //console.log(foundCart)
-//let foundCarts = await cartsDAOMongoose.readMany()
+//let foundCarts = await cartsDAOMongoose.readManyPaginated()
 //console.log(foundCarts)
 //AUXILIAR: BUSCAR UN PRODUCTO
 //import { productsDAOMongoose } from "./productsDAOMongoose.js";

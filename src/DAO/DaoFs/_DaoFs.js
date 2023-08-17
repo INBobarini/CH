@@ -29,7 +29,7 @@ export class DAOFS{
         
         return info.find((e)=>{e._id == criteria._id})
     }    
-    async readMany(criteria,options){
+    async readManyPaginated(criteria,options){
         let info = await this.loadData()
         return info.filter((e)=>{e._id == criteria._id})
     }

@@ -11,7 +11,7 @@
   <label for="email">Email:</label>
   <input type="text" id="email" name="email" placeholder="email" required>
   <br>
-  <label for="pass">Pass:</label>
+  <label for="password">Pass:</label>
   <input type="password" id="password" name="password" placeholder="password" required>
   <br>
   <input type="submit" value="Log in">
@@ -44,7 +44,8 @@ if (formLogin instanceof HTMLFormElement) {
         },
         body: JSON.stringify(userData)
     })
-    if (status === 201) {
+    console.log(status)
+    if (status === 201 || status === 200) {
         window.location.href = '/'
       } else {
         console.log('[login] estado inesperado: ' + status)

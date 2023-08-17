@@ -1,7 +1,7 @@
 import { CustomError } from "../models/errors/customError.js"
 import { winstonLogger as logger } from "../utils/winstonLogger.js"
 
-export const successfulResponse = function (req,res,next){//errorHandler must go after this MW
+export function successfulResponse(req,res,next){//errorHandler must go after this MW
     try {
         if(checkResult(req.result)){
             res.status(req.statusCode||200)
@@ -13,10 +13,8 @@ export const successfulResponse = function (req,res,next){//errorHandler must go
     } catch (error) {
         next(error)
     }
-    
-    
 }
-export const productsResponse = function (req,res, next){
+export function productsResponse(req,res, next){
     try {
         if(checkResult(req.result)){
             let response = new responseObj(req.result)
@@ -31,7 +29,7 @@ export const productsResponse = function (req,res, next){
     }
 }
 
-export const cartsResponse = function (req,res,next){
+export function cartsResponse(req,res,next){
     try {
         if(!(checkResult(req.result) instanceof Error)){
             res.status(req.statusCode||200)

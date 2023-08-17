@@ -3,14 +3,12 @@ import { CustomError } from '../models/errors/customError.js'
 import { winstonLogger as logger } from '../utils/winstonLogger.js'
 import { current } from '../middlewares/auth.js'
 
-
 export async function handleGet(req, res, next) {
     try{
         if(!req.params._id){
             //---Productos---
             const{query,limit,page,sort} = req.query//DTO
             req.result = await productsRepository.getProducts(query,limit,page,sort)
-            
             req.statusCode = req.result? 200 : 404
             next()
         }
@@ -107,6 +105,5 @@ export async function handleDeleteAndGetAll(req, res, next) {
         next(error)
     }
 }
-//TESTS
-//Controllers
+
 

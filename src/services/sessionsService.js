@@ -38,7 +38,7 @@ export async function logInCheck(email, password) { // hash compare of paswords
     if(!isValidPassword(user, password)){
         logger.warning(`password is incorrect for ${user.email}`)
         user = null
-        return new CustomError ("Incorrect password", 401)
+        throw new CustomError ("Incorrect password", 401)
     }
     await updateLastConnection(user)
     return user

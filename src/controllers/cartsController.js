@@ -69,25 +69,39 @@ export async function handleCartPurchase(req,res,next){
 }
 
 export async function handlePutProductsInCart(req,res,next){//req.body es un arreglo [{product_Id:,quantity:x}]
-    req.result = await cartsService.fillCart(req.params.cid, req.body)
-    next()
+    try {
+        req.result = await cartsService.fillCart(req.params.cid, req.body)
+        next()
+    } catch (error) {
+        next(error) 
+    }
 }
 
 export async function handlePutUpdateQuantity(req,res,next){//req.body = {"quantity":"9"}
-    req.result = await cartsService.updateQuantOfProductInCart(
-        req.params.cid, req.params.pid, req.body[0].quantity
-    )
-    next()
+    try {
+        req.result = await cartsService.updateQuantOfProductInCart(
+            req.params.cid, req.params.pid, req.body[0].quantity
+        )
+        next()
+    } catch (error) {
+        next(error)  
+    }
 }
 
 export async function handleDeleteCart(req,res,next){
-    req.result = await cartsService.emptyCart(req.params.cid)
-    
-    next() 
+    try {
+        req.result = await cartsService.emptyCart(req.params.cid)
+        next()
+    } catch (error) {
+        next(error) 
+    }  
 }
 
 export async function handleDeleteProductInCart(req,res,next){
-    req.result = await cartsService.removeProductFromCart(req.params.cid, req.params.pid)
-    
-    next()
+    try {
+        req.result = await cartsService.removeProductFromCart(req.params.cid, req.params.pid)
+        next()
+    } catch (error) {
+        next(error) 
+    }  
 }

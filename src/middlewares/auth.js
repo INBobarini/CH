@@ -21,48 +21,30 @@ export const current = async function (session){//req.session
 
 export const hasSession = async (req,res,next)=>{
     if(!req.session.passport){
-        return res.redirect("/api/sessions/login")//dictionary!
+        logger.debug("has Session")
+        res.redirect("/api/sessions/login")//dictionary!
     }
     next()
 }
 
-export async function auth(permission){
-    //permission puede ser: {notUser:true} or {notAdmin:true}
-    return async (req, res, next) => {
-        try{
-            let user = await current(req.session);
-            if(!user){
-                throw new CustomError("!user", 401)
-            }
-            if (user.role === "admin" && permission.notAdmin) {
-                throw new CustomError(`Forbidden for ${user.role} role, ${user.email}`, 403)
-            }
-            if (user.role === "user" && permission.notUser) {
-                throw new CustomError(`Forbidden for ${user.role} role, ${user.email}`, 403)
-            }
-            if (user.role === "premium" && permission.notPremium) {
-                throw new CustomError(`Forbidden for ${user.role} role, ${user.email}`, 403)
-            }
-            next()
-        }
-        catch(err){
-            next(err);
-        }
-    };
-} 
+
 
 export async function checkAuthorizations(...authorizationNames) { //pass the functions as strings
     return async (req, res, next) => {
         //--- Gathering reference data ---
-        req.user = await current(req.session)
-        let user = req.user
-        if(!user) return new CustomError("User not found for authentication", 401)
-        logger.info(`${user.email} requests authorization`) 
+        try {
+            if(!req.session) throw new CustomError("User not found for authentication", 404)
+            req.user = await current(req.session)
+            let user = req.user
+            if(!user) throw new CustomError("User not found for authentication", 401)
+            logger.info(`${user.email} requests authorization`) 
+            
+            let product
+            if(req.params._id){
+                product = await productsRepository.getProduct(req.params._id)
+            }
         
-        let product
-        if(req.params._id){
-            product = await productsRepository.getProduct(req.params._id)
-        }
+        
         
         //--- Available authorization methods ---
         let authorizations = {}
@@ -73,7 +55,6 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
         }
         authorizations.isPremium = async function () {
             let user = await current(req.session)
-            logger.debug("User"+ JSON.stringify(user))
             if(user.role==="premium") return true
             return false
         }
@@ -107,8 +88,11 @@ export async function checkAuthorizations(...authorizationNames) { //pass the fu
                 return next()
             }
         }
-        return new CustomError("No reason to authorize", 401),
-        next()
+        throw new CustomError("No reason to authorize", 401)
+    
+    } catch (error) {
+        next(error)
+    }
   }  
 }
 

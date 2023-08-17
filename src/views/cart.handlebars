@@ -1,4 +1,5 @@
 <a href="/">To product view</a>
+<a href="/tickets">Your tickets</a>
 <h2>Your cart: </h2>
 {{#each products}}
     <button id="{{this.product._id}}" class="reduce-quantity">-1</button>
@@ -14,6 +15,7 @@
 {{else}}
     <p>You have no products in your cart</p>
 {{/if}}
+
 
 
 

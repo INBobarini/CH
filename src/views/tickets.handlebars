@@ -1,0 +1,17 @@
+<a href="/">To product view</a>
+{{#if hasTickets}}
+    <table>
+        <th>Code</th>
+        <th>Amount</th>
+        <th>Date</th>
+    {{#each tickets}}
+    <tr>
+        <td>{{this.code}}</td>
+        <td>{{this.amount}}</td>
+        <td>{{this.purchase_datetime}}</td>
+    </tr>
+    {{/each}}
+    </table>
+{{else}}
+    <p>You have no purchase tickets</p>
+{{/if}}

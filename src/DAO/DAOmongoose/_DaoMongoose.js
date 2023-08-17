@@ -23,7 +23,6 @@ export class DAOMongoose{
         result = cleanObject(result)
         
         //let noIdResult = result.map(e=>delete e._id)
-        logger.debug(`Result is ${JSON.stringify(result)}`)
         return result
     }
 
@@ -33,7 +32,14 @@ export class DAOMongoose{
         return result
     }
         
-    async readMany(criteria,options){
+    async readMany(criteria){
+        if(!criteria) criteria={}
+        let result =  await this.#model.find(criteria)
+        result = cleanObject(result)
+        return result
+    }
+
+    async readManyPaginated(criteria,options){
         if(!criteria) criteria={}
         let result =  await this.#model.paginate(criteria, options)
         result = cleanObject(result)

@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import { customUploader } from '../middlewares/multer.js'
 import  * as usersService from '../services/sessionsService.js'
-import { auth, checkAuthorizations, current } from '../middlewares/auth.js'
+import { checkAuthorizations, current } from '../middlewares/auth.js'
 import { emailService } from '../services/mailerService.js'
 import { usersRepository } from '../repository/usersRepository.js'
 
@@ -22,13 +22,10 @@ usersRouter.route('/:uid/documents').post(
 usersRouter.route('/premium/:uid').post(
     await checkAuthorizations("isAdmin"),
     usersController.handlePremium,
-    
-   
 )
 
 usersRouter.route('/').get(
     usersController.handleGetUsersData,
-    
 )
 usersRouter.route('/').delete(
     usersController.handleDeleteInactiveUsers,

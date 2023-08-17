@@ -26,7 +26,7 @@ console.log(newUser)
 //let foundUser = await usersDAOMongoose.readOne({_id:"6482168b4ee81d40f73e34a8"})
 //console.log(foundUser)
 
-//let foundUsers = await usersDAOMongoose.readMany()
+//let foundUsers = await usersDAOMongoose.readManyPaginated()
 //console.log(foundUsers)
 
 //let updUser = await usersDAOMongoose.updateOne({_id:"6482168b4ee81d40f73e34a8"},{first_name: "Josefa"})

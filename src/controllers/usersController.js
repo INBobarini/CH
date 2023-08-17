@@ -4,6 +4,7 @@ import { usersRepository } from "../repository/usersRepository.js"
 import * as usersService from "../services/sessionsService.js"
 import { winstonLogger as logger} from "../utils/winstonLogger.js"
 import {current} from "../middlewares/auth.js"
+import { ticketsRepository } from "../repository/ticketsRepository.js"
 
 export async function handleGetEmail(req,res,next){//gets a code, returns an email
     try{
@@ -21,31 +22,31 @@ export async function handleGetEmail(req,res,next){//gets a code, returns an ema
     }
 }
 
-export async function changeUserPassword(req,res,next){//gets a code, returns an email
+export async function restoreUserPassword(req,res,next){//gets a code, returns an email
     try{
         if(!req.body.code) throw new CustomError("Undefined code", 400)
         let code = req.body.code 
-        logger.debug(`Code:${code}`)
+        
         if(!req.body.password) throw new CustomError("Undefined pass", 400)
         let password = req.body.password
+        
         let email = await resetPwRequestsRepository.getEmailFromCode(code)
         if(!email) throw new CustomError("Email not found", 404)
         req.email = email
         req.updatedUser = await usersRepository.updateUserPassword({email},password)
+        
         if(req.updatedUser instanceof Error ){
             logger.warning("password update unsuccesful")
-            req.error = req.updatedUser
-            return next()
+            throw new CustomError (req.updatedUser, 404)
         }
         if(req.updatedUser){
             resetPwRequestsRepository.markLinkasUsed(code)
-            req.message = req.updatedUser
-            return next()
+            req.result = req.updatedUser
+            next()
         }
         else{
             throw new CustomError("User's pass was not updated", 500)
         }
-        
     }
     catch(err){
         next(err)
@@ -114,7 +115,16 @@ export async function handleGetUsersData(req, res, next){
     try {
         req.result = await usersService.getAllUsers()
         next()
-        //error case
+    } catch (error) {
+        next(error) 
+    }
+}
+
+export async function handleGetCurrentUserData(req, res, next){
+    try {
+        let user = await current(req.session)
+        req.result = await usersService.getUserData(user)
+        next()
     } catch (error) {
         next(error) 
     }
@@ -126,8 +136,19 @@ export async function handleDeleteUser(req, res, next){
         if(!uid) return new CustomError("!uid", 400)
         logger.debug(`Received req.params.uid: ${req.params.uid}`)
         req.result = await usersRepository.deleteUser({_id:uid})
-        if(!req.result) return new CustomError("!req.result", 500)
-        //error case
+
+        
+        next()
+    } catch (error) {
+        next(error) 
+    }
+}
+
+export async function handleGetUserTickets(req, res, next){
+    try {
+        let user = await current(req.session)
+        if(!user) return new CustomError("!user", 400)
+        req.result = await ticketsRepository.readTickets(user)
         next()
     } catch (error) {
         next(error) 

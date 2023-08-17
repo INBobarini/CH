@@ -1,19 +1,37 @@
 export async function registroController(req, res, next) {
-    req.logger.info("registrado: " + req.user.email)
-    res.status(201).json(req.user)
+    try {
+        req.logger.info("registrado: " + req.user.email)
+        res.status(201).json(req.user)
+    } catch (error) {
+        next(error)
+    }
+    
 }
 export async function loginController(req, res, next) {
-    req.logger.info("logueado: " + req.user.email)
-    res.sendStatus(201)
+    try {
+        req.logger.info("logueado: " + req.user.email)
+        res.status(201).send()
+    } catch (error) {
+        next(error)
+    }
 }
 
 export async function logoutController(req, res, next) {
-    req.logger.info("logout " + req.user.email)
-    req.logout(err => { //req.logout agregado por passport
-        res.sendStatus(200)
-    })
+    try {
+        req.logger.info("logout " + req.user.email)
+        req.logout(err => { //req.logout agregado por passport
+        res.status(204).send()
+        })
+    } catch (error) {
+        next(error)
+    }
 }
 export async function loginGhController(req, res, next) {
-    reg.logger.info("logueado GH: " + req.user.email)
-    res.sendStatus(201)
+    try {
+        reg.logger.info("logueado GH: " + req.user.email)
+        res.status(201).send()
+    } catch (error) {
+        next(error)
+    }
+    
 }

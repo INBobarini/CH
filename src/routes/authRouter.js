@@ -3,7 +3,7 @@ import { loginController, logoutController, registroController, loginGhControlle
 import { autenticationRegister, autenticationLogin, autenticationLoginGh } from '../middlewares/passport.config.js'
 import {errorHandler, errorHandlerJson} from '../middlewares/errorHandler.js'
 import { handleNewPassRestoreRequest } from '../controllers/mailerController.js'
-import { changeUserPassword } from '../controllers/usersController.js'
+import { restoreUserPassword } from '../controllers/usersController.js'
 import { config } from '../config/config.js'
 
 
@@ -44,7 +44,7 @@ authRouter.route('/restore').post(
 )
 
 authRouter.route('/restorePass').put(
-    changeUserPassword,
+    restoreUserPassword,
     (req,res, next)=>{
         if(req.error){
             return res.status(req.error.code).json(JSON.stringify(req.error.message))

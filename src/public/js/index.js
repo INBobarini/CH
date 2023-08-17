@@ -6,12 +6,12 @@ const deleteBtn = document.querySelector("#deleteBtn")
 deleteBtn.addEventListener('click',(event)=>{
     const _id = document.querySelector("#id").value ?? null
     fetch('/realtimeproducts', {
-        method: "DELETE",
-        body: JSON.stringify({_id}),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-      }).then(res => res.text()).then()
+      method: "DELETE",
+      body: JSON.stringify({_id}),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    }).then(res => res.text()).then()
 })
 
 //ADD BTN
@@ -21,12 +21,12 @@ addBtn.addEventListener('click',(event)=>{
     let keys = ["title","description","code","price","thumbnail","stock","status"]//model?
     keys.forEach((e)=>{product[e]=document.querySelector(`#${e}`).value})
     fetch('/realtimeproducts', {
-        method: "POST",
-        body: JSON.stringify(product),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-      }).then(res => res.text()).then()
+      method: "POST",
+      body: JSON.stringify(product),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    }).then(res => res.text()).then()
 })
 
 //plantilla parcial y socket o

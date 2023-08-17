@@ -43,18 +43,17 @@ class UsersRepository { //TODO: create a generic repo integrating the logs, then
     async updateUserPassword(criteria, newPassword){
         let user = await this.dao.readOne(criteria)
         if(!user) {
-            logger.warning("User not found for resetting password")
-            return null
+            throw new CustomError("User not found for resetting password", 404)
         }
         let newEncryptedPass = createHash(newPassword)
         if(isValidPassword(user, newPassword)){//valid means that pws match
-            return new CustomError("Old and new passwords match", 400)
+            throw new CustomError("Old and new passwords match", 400)
         }
         let result = await this.dao.updateOne(user._id, {password:newEncryptedPass})
         if (result){
-            return "Password changed succesfully" //maybe better a response object?
+            return await this.dao.readOne(criteria) 
         }
-        else return new CustomError("Error updating password", 500)  
+        else throw new CustomError("Error updating password", 500)  
     }
     async updateUserDocuments(criteria, newDocs){
         let user = await this.dao.readOne(criteria)

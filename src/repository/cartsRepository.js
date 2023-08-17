@@ -25,7 +25,7 @@ class CartsRepository{
     }
 
     async getCarts(query, paginationOpts){
-        let result = await this.dao.readMany(query,paginationOpts)
+        let result = await this.dao.readManyPaginated(query,paginationOpts)
         logDebug(logger, [query,paginationOpts], this.#stage)
         return result
     }

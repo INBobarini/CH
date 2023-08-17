@@ -64,6 +64,6 @@ cartsRouter.route('/:cid/product/:pid')
     //cartsResponseFormatter,
 )
 
-cartsRouter.use(cartsResponse, errorHandlerJson)
+cartsRouter.use(errorHandlerJson)
 
 export default cartsRouter 
