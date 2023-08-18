@@ -2,7 +2,7 @@ import assert from 'node:assert'
 
 import {createHash, isValidPassword} from '../../src/utils.js'
 
-describe('Cryptography service', ()=>{
+describe.only('Cryptography service', ()=>{
     it ('encrypts a given password', ()=>{
         let password = '123456as'
         let hashedPw = createHash(password)

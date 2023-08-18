@@ -1,7 +1,7 @@
 import { CustomError } from "../models/errors/customError.js"
 import { winstonLogger as logger } from "../utils/winstonLogger.js"
 
-export function successfulResponse(req,res,next){//errorHandler must go after this MW
+export function successfulResponse(req,res, next){//errorHandler must go after this MW
     try {
         if(checkResult(req.result)){
             res.status(req.statusCode||200)
@@ -17,7 +17,7 @@ export function successfulResponse(req,res,next){//errorHandler must go after th
 export function productsResponse(req,res, next){
     try {
         if(checkResult(req.result)){
-            let response = new responseObj(req.result)
+            let response = new paginatedDTO(req.result)
             res.status(req.statusCode||200)
             return res.json(response)
         }
@@ -52,11 +52,11 @@ function checkResult(result){
         if (!result.code) result.code = 500
         return result
     }
-    logger.debug(`Result is: ${JSON.stringify(req.result)}`)
+    logger.debug(`${result}`)
     return true
 }
 
-class responseObj {
+class paginatedDTO {
     constructor(result){
         this.status = result.statusCode || 200
         this.payload = result.docs||[result]; //even if single product, must return an array

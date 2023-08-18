@@ -21,7 +21,7 @@ let correctProduct = {
 
 const httpClient = supertest(`http://localhost:${config.port}`)
 
-describe.only('api rest', () => {
+describe('api rest', () => {
   
   describe('/api/productos', () => {
     /*
@@ -33,11 +33,12 @@ describe.only('api rest', () => {
       await usuariosDaoMongoose.deleteMany({})
     })
     */
+    let expected = 
     describe('when given a correct product', () => {
       it('saves it correctly', async () => {
         const response = await httpClient.post('/api/productos').send()
         assert.strictEqual(response.statusCode, 201)
-        assert.deepStrictEqual(response.body, resultadoEsperado)
+        assert.deepStrictEqual(response.body, expected)
       })
     })
 

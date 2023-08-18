@@ -16,7 +16,7 @@ productosRouter.route(['/:_id','/'])
 
 productosRouter.route('/')
 .post(
-    await checkAuthorizations("isAdmin", "isPremium"),
+    //await checkAuthorizations("isAdmin", "isPremium"),
     productsController.handlePost, 
     )
 
