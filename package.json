@@ -6,7 +6,8 @@
   "scripts": {
     "start": "SET NODE_ENV=production & node ./src/app.js",
     "start:dev": "node ./src/app.js",
-    "test": "mocha test/**/*.test.js"
+    "start:test": "set MONGO_URL=mongodb://127.0.0.1:27017/ecommerceTest && node ./src/app.js",
+    "test":" mocha test/**/*.test.js"
   },
   "keywords": [],
   "author": "Iván Bobarini",

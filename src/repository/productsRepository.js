@@ -10,7 +10,6 @@ class ProductsRepository { //create a generic repo integrating the logs, then ex
     }
     async createProduct(product){
         let result = await this.dao.create(product)
-        
         return result
     }
     async getProduct(pid){

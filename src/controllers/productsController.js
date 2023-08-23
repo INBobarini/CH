@@ -26,13 +26,12 @@ export async function handleGet(req, res, next) {
 
 export async function handlePost(req, res, next) {
     try{
-        let userPP = await current(req.session)
+        //let userPP = await current(req.session)
         if(!req.body){
             throw new CustomError("!req.body", 400)
         }
         req.result = await productsRepository.createProduct(req.body)//DTO?
         req.statusCode = req.result? 201 : 400
-        
         next()
     }
     catch(error){

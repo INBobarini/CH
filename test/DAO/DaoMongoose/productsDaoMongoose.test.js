@@ -39,11 +39,10 @@ const productInput = {
 }
 
 before(async()=>{
-    await mongoose.connect('mongodb://127.0.0.1:27017/testDb')
+    await mongoose.connect('mongodb://127.0.0.1:27017/ecommerceTest')
 })
 
 after(async()=>{
-
     await mongoose.connection.close()
 })
 

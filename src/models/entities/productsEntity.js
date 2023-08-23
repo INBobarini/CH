@@ -33,17 +33,3 @@ export default class ProductEntity {
         this.stock = vProduct.stock
     }
 }
-/*
-let product = 
-    {
-        title: "Mesa de comedor",
-        description: "Madera maciza",
-        code: "843he59jd",
-        price: 2000,
-        stock: 6,
-        status: true,
-        thumbnail: "dining_table.jpeg"
-    }
-let result = new ProductEntity(product)
-//console.log(result)
-*/
