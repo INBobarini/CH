@@ -17,7 +17,7 @@ const NODE_ENV = environment.opts()
 dotenv.config()
 
 export const config = {
-    port: process.env.PORT,
+    port: process.env.PORT||8080,
     mongoUrl: process.env.MONGO_URL,
     cookieKey: process.env.COOKIE_KEY,
     sessionSecret: process.env.SESSION_SECRET,

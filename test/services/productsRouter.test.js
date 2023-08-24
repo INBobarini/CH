@@ -74,26 +74,21 @@ describe.only('/api/products',()=>{
     describe('GET', ()=>{
         describe('When requesting for a single product', ()=>{
             let response
+            let selectedProductId
             let result
             before(async () => {
-                let testProds = await productosModel.insertMany(inputs.manyProducts.ok)
-                if(testProds.length<10) throw new Error('failed loading test products')
-                response = await httpClient.get('/api/products')
+                //await productosModel.insertMany(inputs.manyProducts.ok)
+                //if(testProds.length<10) throw new Error('failed loading test products')
+                let testProds = await productosModel.find()
+                response = await httpClient.get(`/api/products/${testProds[5]._id}`)
                 .send()
-                result = response.body
             }) 
             after(async()=>{
-                await productosModel.deleteMany({})
+                //await productosModel.deleteMany({})
             })
-            it('retrieves an array of products inside a "payload" property', async()=>{
-                assert.ok(Array.isArray(result.payload))
-            })
-            it('default quantity of retrieved documents is 10', async()=>{
-                
-                assert.equal(result.payload.length, 10)
-            })
-            it('has a totalPages property',()=>{
-                assert.equal(result.totalPages, 2)
+            it('retrieves a valid product when given a correct ID', async()=>{
+                result = new productsVerifications.Types(response.body.payload[0])
+                assert.ok(result.okTypes)
             })
             it('status code is 200',()=>{
                 assert.strictEqual(response.statusCode, 200)

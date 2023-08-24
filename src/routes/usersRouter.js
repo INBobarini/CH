@@ -15,8 +15,6 @@ const usersRouter = Router()
 usersRouter.route('/:uid/documents').post(
     customUploader,
     usersController.handleNewUserDocuments,
-    
- 
 )
 
 usersRouter.route('/premium/:uid').post(
@@ -33,7 +31,6 @@ usersRouter.route('/').delete(
 )
 usersRouter.route('/:uid').delete(
     usersController.handleDeleteUser,
-    
 )
 
 usersRouter.use(successfulResponse, errorHandler)
